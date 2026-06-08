@@ -22,7 +22,7 @@ export interface FoodGroup {
 export const FOOD_GROUPS: FoodGroup[] = [
   {
     id: "grains",
-    name: "Grains, White Roots & Tubers",
+    name: "Grains & Starches",
     emoji: "🌾",
     examples: ["Rice", "Roti / Chapati", "Poha", "Idli", "Dosa", "Upma", "Potato", "Bread"],
     benefits: [
@@ -34,7 +34,7 @@ export const FOOD_GROUPS: FoodGroup[] = [
   },
   {
     id: "pulses",
-    name: "Pulses (Beans, Peas, Lentils)",
+    name: "Pulses & Dals",
     emoji: "🫘",
     examples: ["Toor Dal", "Moong Dal", "Rajma", "Chana", "Sambar", "Lobia"],
     benefits: [
@@ -94,7 +94,7 @@ export const FOOD_GROUPS: FoodGroup[] = [
   },
   {
     id: "dglv",
-    name: "Dark Green Leafy Vegetables",
+    name: "Dark Green Leafy Veg",
     emoji: "🥬",
     examples: ["Palak", "Methi", "Drumstick Leaves", "Amaranth (Chaulai)", "Mustard greens"],
     benefits: [
@@ -106,7 +106,7 @@ export const FOOD_GROUPS: FoodGroup[] = [
   },
   {
     id: "vitaminA",
-    name: "Vitamin A-rich Fruits & Vegetables",
+    name: "Vit A-Rich Vegetables",
     emoji: "🥕",
     examples: ["Carrot", "Pumpkin", "Sweet Potato", "Mango", "Papaya", "Red Bell Pepper"],
     benefits: [
