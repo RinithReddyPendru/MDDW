@@ -22,7 +22,7 @@ export interface FoodGroup {
 export const FOOD_GROUPS: FoodGroup[] = [
   {
     id: "grains",
-    name: "Grains, White Roots & Tubers",
+    name: "Grains & Starches",
     emoji: "🌾",
     examples: ["Rice", "Roti / Chapati", "Poha", "Idli", "Dosa", "Upma", "Potato", "Bread"],
     benefits: [
