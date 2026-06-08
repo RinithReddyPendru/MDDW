@@ -94,7 +94,7 @@ export const FOOD_GROUPS: FoodGroup[] = [
   },
   {
     id: "dglv",
-    name: "Dark Green Leafy Vegetables",
+    name: "Dark Green Leafy Veg",
     emoji: "🥬",
     examples: ["Palak", "Methi", "Drumstick Leaves", "Amaranth (Chaulai)", "Mustard greens"],
     benefits: [
@@ -106,7 +106,7 @@ export const FOOD_GROUPS: FoodGroup[] = [
   },
   {
     id: "vitaminA",
-    name: "Vitamin A-rich Fruits & Vegetables",
+    name: "Vit A-Rich Vegetables",
     emoji: "🥕",
     examples: ["Carrot", "Pumpkin", "Sweet Potato", "Mango", "Papaya", "Red Bell Pepper"],
     benefits: [
