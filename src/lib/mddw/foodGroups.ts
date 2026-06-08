@@ -34,7 +34,7 @@ export const FOOD_GROUPS: FoodGroup[] = [
   },
   {
     id: "pulses",
-    name: "Pulses (Beans, Peas, Lentils)",
+    name: "Pulses & Dals",
     emoji: "🫘",
     examples: ["Toor Dal", "Moong Dal", "Rajma", "Chana", "Sambar", "Lobia"],
     benefits: [
