@@ -2,8 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
-import { BADGES, loadProgress, type ProgressState } from "@/lib/mddw/storage";
+import { BADGES, loadProgress, saveProgress, type ProgressState } from "@/lib/mddw/storage";
 import { useLang } from "@/lib/mddw/useLang";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
@@ -18,7 +19,23 @@ export const Route = createFileRoute("/progress")({
 function ProgressPage() {
   const { t } = useLang();
   const [p, setP] = useState<ProgressState | null>(null);
-  useEffect(() => { setP(loadProgress()); }, []);
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => { 
+    const data = loadProgress();
+    setP(data); 
+    setWebhookUrl(data.sheetsWebhookUrl || "");
+  }, []);
+
+  const handleSaveSettings = () => {
+    if (!p) return;
+    const newState = { ...p, sheetsWebhookUrl: webhookUrl };
+    saveProgress(newState);
+    setP(newState);
+    setIsSaved(true);
+    setTimeout(() => setIsSaved(false), 3000);
+  };
 
   if (!p) return null;
 
@@ -26,8 +43,13 @@ function ProgressPage() {
   const avg = games ? Math.round(p.results.reduce((s, r) => s + r.score, 0) / games) : 0;
   const completion = Math.min(100, Math.round((p.unlockedLevel / 3) * 100));
 
+  const chartData = p.results.map((r, i) => ({
+    attempt: i + 1,
+    score: r.score
+  }));
+
   return (
-    <main className="min-h-dvh">
+    <main className="min-h-dvh pb-20">
       <AppHeader showBack />
       <div className="mx-auto max-w-xl px-4 py-5">
         <h2 className="text-xl font-bold mb-4">{t("myProgress")}</h2>
@@ -37,11 +59,29 @@ function ProgressPage() {
             {t("noProgress")}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
-            <Card label={t("gamesPlayed")} value={games} />
-            <Card label={t("highestScore")} value={p.highestScore} />
-            <Card label={t("averageScore")} value={avg} />
-            <Card label={t("completion")} value={`${completion}%`} />
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-3">
+              <Card label={t("gamesPlayed")} value={games} />
+              <Card label={t("highestScore")} value={p.highestScore} />
+              <Card label={t("averageScore")} value={avg} />
+              <Card label={t("completion")} value={`${completion}%`} />
+            </div>
+
+            <div className="bg-card rounded-2xl p-5 border-2 border-border">
+              <h3 className="font-bold mb-4">Score History</h3>
+              <div className="h-48 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData}>
+                    <XAxis dataKey="attempt" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    />
+                    <Line type="monotone" dataKey="score" stroke="#22c55e" strokeWidth={3} dot={{ r: 4, fill: "#22c55e" }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         )}
 
@@ -65,6 +105,28 @@ function ProgressPage() {
               </motion.div>
             );
           })}
+        </div>
+
+        <h3 className="text-lg font-bold mt-8 mb-3">Google Sheets Integration</h3>
+        <div className="bg-card rounded-2xl p-5 border-2 border-border mb-6">
+          <p className="text-sm text-muted-foreground mb-4">
+            To automatically save quiz scores to a Google Sheet, paste your Google Apps Script Web App URL below.
+          </p>
+          <div className="space-y-3">
+            <input 
+              type="text" 
+              value={webhookUrl}
+              onChange={e => setWebhookUrl(e.target.value)}
+              className="w-full bg-background border-2 border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition text-sm"
+              placeholder="https://script.google.com/macros/s/..."
+            />
+            <button
+              onClick={handleSaveSettings}
+              className="w-full rounded-xl bg-primary text-primary-foreground py-3 font-bold shadow-sm active:scale-[0.98]"
+            >
+              {isSaved ? "Saved!" : "Save Webhook URL"}
+            </button>
+          </div>
         </div>
       </div>
     </main>

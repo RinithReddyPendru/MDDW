@@ -8,6 +8,13 @@ export interface GameResult {
   groupsConsumed: number;
   passedMDDW: boolean;
   date: number;
+  userName?: string;
+  phcName?: string;
+  mistakes?: {
+    question: string;
+    userAnswer: string;
+    correctAnswer: string;
+  }[];
 }
 
 export interface ProgressState {
@@ -16,6 +23,9 @@ export interface ProgressState {
   highestScore: number;
   badges: string[];
   lang: Lang;
+  userName?: string;
+  phcName?: string;
+  sheetsWebhookUrl?: string;
 }
 
 const KEY = "mddw_progress_v1";
@@ -26,6 +36,9 @@ const DEFAULT: ProgressState = {
   highestScore: 0,
   badges: [],
   lang: "en",
+  userName: "",
+  phcName: "",
+  sheetsWebhookUrl: "",
 };
 
 export function loadProgress(): ProgressState {

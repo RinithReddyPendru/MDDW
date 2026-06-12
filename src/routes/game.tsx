@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import {
@@ -9,8 +9,9 @@ import {
   type FoodGroupId,
   type QuizFood,
 } from "@/lib/mddw/foodGroups";
-import { recordResult } from "@/lib/mddw/storage";
+import { recordResult, loadProgress, saveProgress } from "@/lib/mddw/storage";
 import { useLang } from "@/lib/mddw/useLang";
+import html2canvas from "html2canvas";
 
 export const Route = createFileRoute("/game")({
   head: () => ({
@@ -67,15 +68,26 @@ function GamePage() {
   const [correct, setCorrect] = useState(0);
   const [wrong, setWrong] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
+  
+  const [mistakes, setMistakes] = useState<{question: string, userAnswer: string, correctAnswer: string}[]>([]);
+  const [userName, setUserName] = useState("");
+  const [phcName, setPhcName] = useState("");
 
-  const start = () => {
+  const start = (name: string, phc: string) => {
+    setUserName(name);
+    setPhcName(phc);
     setQuestions(buildQuestions());
     setQIdx(0);
     setScore(0);
     setCorrect(0);
     setWrong(0);
+    setMistakes([]);
     setPicked(null);
     setPhase("playing");
+  };
+
+  const handleAgain = () => {
+    setPhase("intro");
   };
 
   const current = questions[qIdx];
@@ -90,13 +102,18 @@ function GamePage() {
     } else {
       setScore((s) => s + POINTS_WRONG);
       setWrong((w) => w + 1);
+      setMistakes((m) => [...m, {
+        question: current.food.name,
+        userAnswer: FOOD_GROUP_MAP[current.options[i]].name,
+        correctAnswer: FOOD_GROUP_MAP[current.options[current.correctIndex]].name
+      }]);
     }
   };
 
   const handleNext = () => {
     if (qIdx + 1 >= questions.length) {
       const final = Math.max(0, score);
-      recordResult({
+      const res = recordResult({
         level: 1,
         score: final,
         correct,
@@ -104,7 +121,29 @@ function GamePage() {
         groupsConsumed: 0,
         passedMDDW: final >= 60,
         date: Date.now(),
+        userName,
+        phcName,
+        mistakes
       });
+      
+      // Auto trigger google sheets webhook if set
+      const pState = loadProgress();
+      if (pState.sheetsWebhookUrl && typeof window !== "undefined") {
+        fetch(pState.sheetsWebhookUrl, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({
+            userName,
+            phcName,
+            score: final,
+            correct,
+            total: TOTAL_QUESTIONS,
+            date: new Date().toISOString()
+          })
+        }).catch(e => console.error(e));
+      }
+
       setPhase("result");
     } else {
       setQIdx((i) => i + 1);
@@ -137,7 +176,10 @@ function GamePage() {
               correct={correct}
               wrong={wrong}
               total={questions.length}
-              onAgain={start}
+              mistakes={mistakes}
+              userName={userName}
+              phcName={phcName}
+              onAgain={handleAgain}
               t={t}
             />
           )}
@@ -147,28 +189,71 @@ function GamePage() {
   );
 }
 
-function Intro({ onStart, t }: { onStart: () => void; t: (k: any) => string }) {
+function Intro({ onStart, t }: { onStart: (n: string, p: string) => void; t: (k: any) => string }) {
+  const p = loadProgress();
+  const [name, setName] = useState(p.userName || "");
+  const [phc, setPhc] = useState(p.phcName || "");
+
+  const handleStart = () => {
+    if (!name.trim()) {
+      alert("Please enter your name");
+      return;
+    }
+    const state = loadProgress();
+    state.userName = name;
+    state.phcName = phc;
+    saveProgress(state);
+    onStart(name, phc);
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-      <div className="rounded-3xl bg-gradient-to-br from-primary to-accent text-primary-foreground p-6 shadow-lg">
+      <div className="rounded-3xl bg-gradient-to-br from-primary to-accent text-primary-foreground p-6 shadow-lg mb-6">
         <div className="text-5xl mb-2" aria-hidden>🧠🍱</div>
         <h2 className="text-2xl font-bold">Food Group Quiz</h2>
         <p className="mt-2 text-sm opacity-95">
           {TOTAL_QUESTIONS} questions. A food item will appear — choose the correct food group from 4 options.
         </p>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      
+      <div className="bg-card rounded-2xl p-5 border-2 border-border mb-6">
+        <h3 className="font-bold mb-4">Player Details</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold mb-1 text-muted-foreground">Your Name *</label>
+            <input 
+              type="text" 
+              value={name}
+              onChange={e => setName(e.target.value)}
+              className="w-full bg-background border-2 border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition"
+              placeholder="e.g. Sunita"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold mb-1 text-muted-foreground">Village / PHC</label>
+            <input 
+              type="text" 
+              value={phc}
+              onChange={e => setPhc(e.target.value)}
+              className="w-full bg-background border-2 border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition"
+              placeholder="e.g. Rampur PHC"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
         <div className="rounded-2xl bg-card border-2 border-secondary p-4 text-center">
           <div className="text-2xl font-bold text-secondary">+{POINTS_CORRECT}</div>
-          <div className="text-xs text-muted-foreground font-semibold">Correct answer</div>
+          <div className="text-xs text-muted-foreground font-semibold">Correct</div>
         </div>
         <div className="rounded-2xl bg-card border-2 border-destructive p-4 text-center">
           <div className="text-2xl font-bold text-destructive">{POINTS_WRONG}</div>
-          <div className="text-xs text-muted-foreground font-semibold">Wrong answer</div>
+          <div className="text-xs text-muted-foreground font-semibold">Wrong</div>
         </div>
       </div>
       <button
-        onClick={onStart}
+        onClick={handleStart}
         className="mt-5 w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14"
       >
         ▶ {t("startTraining")}
@@ -298,6 +383,9 @@ function Result({
   correct,
   wrong,
   total,
+  mistakes,
+  userName,
+  phcName,
   onAgain,
   t,
 }: {
@@ -305,11 +393,31 @@ function Result({
   correct: number;
   wrong: number;
   total: number;
+  mistakes: {question: string, userAnswer: string, correctAnswer: string}[];
+  userName: string;
+  phcName: string;
   onAgain: () => void;
   t: (k: any) => string;
 }) {
   const pct = Math.round((correct / total) * 100);
   const passed = pct >= 60;
+  const certificateRef = useRef<HTMLDivElement>(null);
+
+  const downloadCertificate = async () => {
+    if (!certificateRef.current) return;
+    try {
+      const canvas = await html2canvas(certificateRef.current, { scale: 2 });
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `MDDW_Certificate_${userName.replace(/\\s+/g, "_")}.png`;
+      link.click();
+    } catch (e) {
+      console.error(e);
+      alert("Could not generate certificate. Please try again.");
+    }
+  };
+
   const stars = useMemo(() => {
     if (pct >= 90) return 3;
     if (pct >= 70) return 2;
@@ -345,6 +453,58 @@ function Result({
         <Stat label={t("correctAnswers")} value={`${correct}/${total}`} />
         <Stat label={t("wrongAnswers")} value={`${wrong}/${total}`} />
       </div>
+
+      {mistakes.length > 0 && (
+        <div className="mt-6">
+          <h3 className="font-bold text-lg mb-3">Review Mistakes</h3>
+          <div className="space-y-3">
+            {mistakes.map((m, i) => (
+              <div key={i} className="bg-card border-2 border-border rounded-xl p-3 text-sm">
+                <div className="font-semibold text-base mb-1">{m.question}</div>
+                <div className="text-destructive mb-0.5">✗ You answered: {m.userAnswer}</div>
+                <div className="text-secondary">✓ Correct: {m.correctAnswer}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {passed && (
+        <>
+          <button
+            onClick={downloadCertificate}
+            className="mt-6 w-full rounded-2xl bg-blue-600 text-white py-4 font-bold min-h-14 active:scale-[0.98] shadow-md flex items-center justify-center gap-2"
+          >
+            <span className="text-xl">🎓</span> Download Certificate
+          </button>
+          
+          {/* Hidden Certificate DOM for html2canvas */}
+          <div className="overflow-hidden h-0 w-0 absolute opacity-0 pointer-events-none">
+            <div ref={certificateRef} className="w-[800px] h-[600px] bg-white p-12 text-black flex flex-col items-center justify-center relative border-[12px] border-green-600 font-sans">
+              <div className="absolute top-8 left-8 text-6xl">🧠🍱</div>
+              <div className="absolute top-8 right-8 text-6xl opacity-20">🏆</div>
+              <h1 className="text-4xl font-bold text-green-700 uppercase tracking-widest mb-4">Certificate of Completion</h1>
+              <h2 className="text-2xl font-semibold text-gray-600 mb-8">MDDW Master Challenge</h2>
+              <p className="text-lg mb-4 text-gray-500">This certifies that</p>
+              <h3 className="text-5xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 px-12 mb-6 text-center capitalize">{userName}</h3>
+              {phcName && <p className="text-xl text-gray-600 mb-6 font-medium">({phcName})</p>}
+              <p className="text-lg text-gray-500 text-center max-w-lg mb-8">
+                has successfully completed the Minimum Dietary Diversity for Women (MDDW) training module with a score of <strong>{pct}%</strong>.
+              </p>
+              <div className="flex justify-between w-full max-w-md mt-4">
+                <div className="text-center">
+                  <div className="font-bold text-gray-800 text-xl border-b border-gray-400 pb-1 mb-1">{new Date().toLocaleDateString()}</div>
+                  <div className="text-sm text-gray-500 uppercase tracking-wide">Date</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-gray-800 text-xl border-b border-gray-400 pb-1 mb-1">{score} Points</div>
+                  <div className="text-sm text-gray-500 uppercase tracking-wide">Score</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="mt-5 flex flex-col gap-2">
         <button
