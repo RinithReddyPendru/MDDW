@@ -1,15 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
-import { BADGES, loadProgress, saveProgress, type ProgressState } from "@/lib/mddw/storage";
+import { getBadges, loadProgress, saveProgress, type ProgressState } from "@/lib/mddw/storage";
 import { useLang } from "@/lib/mddw/useLang";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
     meta: [
-      { title: "My Progress — MDDW" },
+      { title: "My Progress \u2013 MDDW" },
       { name: "description", content: "Track your MDDW training progress and badges." },
     ],
   }),
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/progress")({
 });
 
 function ProgressPage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [p, setP] = useState<ProgressState | null>(null);
   const [webhookUrl, setWebhookUrl] = useState("");
   const [isSaved, setIsSaved] = useState(false);
@@ -48,8 +48,10 @@ function ProgressPage() {
     score: r.score
   }));
 
+  const badges = getBadges(lang);
+
   return (
-    <main className="min-h-dvh pb-20">
+    <main className="min-h-dvh pb-20 bg-gradient-premium">
       <AppHeader showBack />
       <div className="mx-auto max-w-xl px-4 py-5">
         <h2 className="text-xl font-bold mb-4">{t("myProgress")}</h2>
@@ -67,8 +69,8 @@ function ProgressPage() {
               <Card label={t("completion")} value={`${completion}%`} />
             </div>
 
-            <div className="bg-card rounded-2xl p-5 border-2 border-border">
-              <h3 className="font-bold mb-4">Score History</h3>
+            <div className="glass rounded-2xl p-5 border-2 border-border/50 shadow-sm">
+              <h3 className="font-bold mb-4">{t("scoreHistory")}</h3>
               <div className="h-48 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData}>
@@ -87,7 +89,7 @@ function ProgressPage() {
 
         <h3 className="text-lg font-bold mt-6 mb-3">{t("badges")}</h3>
         <div className="grid grid-cols-2 gap-3">
-          {BADGES.map((b, i) => {
+          {badges.map((b, i) => {
             const earned = p.badges.includes(b.id);
             return (
               <motion.div
@@ -107,10 +109,10 @@ function ProgressPage() {
           })}
         </div>
 
-        <h3 className="text-lg font-bold mt-8 mb-3">Google Sheets Integration</h3>
-        <div className="bg-card rounded-2xl p-5 border-2 border-border mb-6">
+        <h3 className="text-lg font-bold mt-8 mb-3">{t("sheetsIntegration")}</h3>
+        <div className="glass rounded-2xl p-5 border-2 border-border/50 mb-6 shadow-sm">
           <p className="text-sm text-muted-foreground mb-4">
-            To automatically save quiz scores to a Google Sheet, paste your Google Apps Script Web App URL below.
+            {t("sheetsDesc")}
           </p>
           <div className="space-y-3">
             <input 
@@ -118,13 +120,13 @@ function ProgressPage() {
               value={webhookUrl}
               onChange={e => setWebhookUrl(e.target.value)}
               className="w-full bg-background border-2 border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition text-sm"
-              placeholder="https://script.google.com/macros/s/..."
+              placeholder={t("webhookPlaceholder")}
             />
             <button
               onClick={handleSaveSettings}
               className="w-full rounded-xl bg-primary text-primary-foreground py-3 font-bold shadow-sm active:scale-[0.98]"
             >
-              {isSaved ? "Saved!" : "Save Webhook URL"}
+              {isSaved ? t("saved") : t("saveWebhook")}
             </button>
           </div>
         </div>
@@ -135,9 +137,10 @@ function ProgressPage() {
 
 function Card({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-2xl bg-card border-2 border-border p-4">
+    <div className="rounded-2xl glass border-2 border-border/50 p-4 shadow-sm">
       <div className="text-xs font-semibold uppercase text-muted-foreground">{label}</div>
       <div className="text-2xl font-bold text-primary mt-1">{value}</div>
     </div>
   );
 }
+

@@ -1,4 +1,5 @@
-import type { Lang } from "./translations";
+﻿import type { Lang } from "./translations";
+import { t } from "./translations";
 
 export interface GameResult {
   level: 1 | 2 | 3;
@@ -35,7 +36,7 @@ const DEFAULT: ProgressState = {
   unlockedLevel: 1,
   highestScore: 0,
   badges: [],
-  lang: "en",
+  lang: "te",
   userName: "",
   phcName: "",
   sheetsWebhookUrl: "",
@@ -82,10 +83,29 @@ export function recordResult(result: GameResult): ProgressState {
   return p;
 }
 
-export const BADGES: { id: string; name: string; emoji: string; desc: string }[] = [
-  { id: "food_beginner", name: "Food Group Beginner", emoji: "🌱", desc: "Played your first game" },
-  { id: "nutrition_learner", name: "Nutrition Learner", emoji: "📚", desc: "Played 3 games" },
-  { id: "nutrition_champion", name: "Nutrition Champion", emoji: "🏆", desc: "Scored 70+" },
-  { id: "mddw_expert", name: "MDDW Expert", emoji: "⭐", desc: "Scored 90+" },
-  { id: "asha_master", name: "ASHA Master", emoji: "👑", desc: "Mastered Level 3" },
+export interface BadgeDef {
+  id: string;
+  nameKey: string;
+  descKey: string;
+  emoji: string;
+}
+
+const BADGE_DEFS: BadgeDef[] = [
+  { id: "food_beginner", nameKey: "badgeFoodBeginner", descKey: "badgeFoodBeginnerDesc", emoji: "\uD83C\uDF3E" },
+  { id: "nutrition_learner", nameKey: "badgeNutritionLearner", descKey: "badgeNutritionLearnerDesc", emoji: "\uD83D\uDCDA" },
+  { id: "nutrition_champion", nameKey: "badgeNutritionChampion", descKey: "badgeNutritionChampionDesc", emoji: "\uD83C\uDFC6" },
+  { id: "mddw_expert", nameKey: "badgeMddwExpert", descKey: "badgeMddwExpertDesc", emoji: "\u2B50" },
+  { id: "asha_master", nameKey: "badgeAshaMaster", descKey: "badgeAshaMasterDesc", emoji: "\uD83D\uDC51" },
 ];
+
+export function getBadges(lang: Lang): { id: string; name: string; emoji: string; desc: string }[] {
+  return BADGE_DEFS.map((b) => ({
+    id: b.id,
+    name: t(lang, b.nameKey as any),
+    emoji: b.emoji,
+    desc: t(lang, b.descKey as any),
+  }));
+}
+
+// Backward compat export (English badges)
+export const BADGES = getBadges("en");

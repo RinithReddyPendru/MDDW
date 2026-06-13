@@ -6,7 +6,7 @@ import { useLang } from "@/lib/mddw/useLang";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MDDW Master Challenge — ASHA Worker Training" },
+      { title: "MDDW Master Challenge \u2013 ASHA Worker Training" },
       { name: "description", content: "Train ASHA workers on Minimum Dietary Diversity for Women through interactive games." },
       { name: "theme-color", content: "#D97000" },
       { property: "og:title", content: "MDDW Master Challenge" },
@@ -21,21 +21,21 @@ function Index() {
   const { t } = useLang();
   const stats = [
     { value: "10", label: t("foodGroups") },
-    { value: "≥5", label: t("requiredDaily") },
+    { value: "\u22655", label: t("requiredDaily") },
     { value: "3", label: t("levels") },
   ];
 
   return (
-    <main className="min-h-dvh flex flex-col">
+    <main className="min-h-dvh flex flex-col bg-gradient-premium">
       <AppHeader />
       <div className="mx-auto w-full max-w-xl px-4 py-6 flex-1 flex flex-col gap-6">
         <motion.section
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="rounded-3xl bg-gradient-to-br from-primary to-accent text-primary-foreground p-6 shadow-lg"
+          className="rounded-3xl bg-gradient-to-br from-primary/90 to-accent/90 backdrop-blur-md text-primary-foreground p-6 shadow-xl border border-white/20"
         >
-          <div className="text-4xl mb-2" aria-hidden>🌿🥗</div>
+          <div className="text-4xl mb-2" aria-hidden>{"\u{1F33D}\u{1F35A}"}</div>
           <h2 className="text-2xl font-bold text-balance leading-tight">{t("appTitle")}</h2>
           <p className="mt-2 text-sm opacity-95 text-balance">{t("heroDesc")}</p>
         </motion.section>
@@ -47,7 +47,7 @@ function Index() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 * i, duration: 0.3 }}
-              className="rounded-2xl bg-card border border-border p-3 text-center shadow-sm"
+              className="rounded-2xl glass p-3 text-center shadow-sm"
             >
               <div className="text-2xl font-bold text-primary">{s.value}</div>
               <div className="text-[11px] text-muted-foreground font-medium leading-tight mt-1">{s.label}</div>
@@ -60,25 +60,32 @@ function Index() {
             to="/game"
             className="rounded-2xl bg-primary text-primary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
           >
-            🎮 {t("startTraining")}
+            {"\u{1F680}"} {t("startTraining")}
           </Link>
           <Link
             to="/learn"
             className="rounded-2xl bg-secondary text-secondary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
           >
-            📖 {t("learnFoodGroups")}
+            {"\u{1F4D6}"} {t("learnFoodGroups")}
           </Link>
           <Link
             to="/progress"
-            className="rounded-2xl bg-card text-foreground border-2 border-border px-5 py-4 text-lg font-bold text-center shadow-sm active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
+            className="rounded-2xl bg-card text-foreground border-2 border-border/50 px-5 py-4 text-lg font-bold text-center shadow-sm active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
           >
-            📊 {t("myProgress")}
+            {"\u{1F4C8}"} {t("myProgress")}
           </Link>
         </nav>
 
         <p className="text-center text-xs text-muted-foreground mt-auto pt-4">
           {t("mddwExplain")}
         </p>
+        <footer className="mt-8 mb-4 text-center">
+          <div className="glass inline-block px-4 py-2 rounded-full shadow-sm">
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
+              Developed for ASHA Workers
+            </p>
+          </div>
+        </footer>
       </div>
     </main>
   );

@@ -1,4 +1,4 @@
-@import "tailwindcss" source(none);
+﻿@import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
 
@@ -45,8 +45,8 @@
   --color-group-other-veg: var(--group-other-veg);
   --color-group-other-fruit: var(--group-other-fruit);
 
-  --font-display: "Baloo 2", "Segoe UI", system-ui, sans-serif;
-  --font-sans: "Noto Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Baloo 2", "Noto Sans Telugu", system-ui, sans-serif;
+  --font-sans: "Noto Sans", "Noto Sans Telugu", system-ui, sans-serif;
 }
 
 :root {
@@ -127,3 +127,21 @@
 }
 @utility animate-pop-in { animation: pop-in 0.35s ease-out both; }
 @utility animate-shake { animation: shake 0.3s ease-in-out; }
+
+@utility glass {
+  background: color-mix(in oklab, var(--color-card) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in oklab, var(--color-border) 40%, transparent);
+}
+
+@utility bg-gradient-premium {
+  background: linear-gradient(135deg, color-mix(in oklab, var(--color-background) 80%, var(--color-primary) 20%), color-mix(in oklab, var(--color-background) 80%, var(--color-secondary) 20%));
+}
+
+@utility text-gradient {
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
