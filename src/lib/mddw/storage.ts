@@ -39,7 +39,7 @@ const DEFAULT: ProgressState = {
   lang: "te",
   userName: "",
   phcName: "",
-  sheetsWebhookUrl: "",
+  sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbw7H7aBhQsG5_P8g6xZISmsE4QnHh5pSvl24t7Q6Bba5cXQ2PuGfahU0l63FpROXLbo/exec",
 };
 
 export function loadProgress(): ProgressState {
@@ -47,7 +47,12 @@ export function loadProgress(): ProgressState {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return DEFAULT;
-    return { ...DEFAULT, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    const state = { ...DEFAULT, ...parsed };
+    if (!state.sheetsWebhookUrl) {
+      state.sheetsWebhookUrl = DEFAULT.sheetsWebhookUrl;
+    }
+    return state;
   } catch {
     return DEFAULT;
   }
