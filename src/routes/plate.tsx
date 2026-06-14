@@ -78,41 +78,47 @@ function PlateSandbox() {
           </div>
 
           {/* Visual Plate Arena */}
-          <div className="relative aspect-square w-full max-w-[210px] sm:max-w-[230px] md:max-w-[280px] mx-auto rounded-full bg-card/60 backdrop-blur-md border-4 border-primary/20 shadow-lg flex items-center justify-center">
-            <div className="absolute inset-3 rounded-full border border-dashed border-muted-foreground/20 flex items-center justify-center">
-              {selectedIds.length === 0 ? (
-                <span className="text-[11px] md:text-xs font-semibold text-muted-foreground/60 select-none text-center px-4 leading-relaxed">
-                  🍽️ Tap foods to add them to your plate
-                </span>
-              ) : (
-                <div className="relative w-full h-full">
-                  <AnimatePresence>
-                    {SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).map((f, idx, arr) => {
-                      const total = arr.length;
-                      const radius = 55; // circular placement radius
-                      const angle = (idx * 2 * Math.PI) / total;
-                      const x = radius * Math.cos(angle);
-                      const y = radius * Math.sin(angle);
+          <div className="relative aspect-square w-full max-w-[250px] sm:max-w-[280px] md:max-w-[340px] mx-auto rounded-full bg-gradient-to-br from-card/85 to-card/35 backdrop-blur-md border-[6px] border-primary/15 shadow-xl flex items-center justify-center transition-all duration-300">
+            {/* Outer dotted rim */}
+            <div className="absolute inset-2.5 rounded-full border border-dashed border-muted-foreground/35 flex items-center justify-center">
+              {/* Inner plate well */}
+              <div className="absolute inset-2.5 rounded-full bg-gradient-to-br from-background/35 to-background/10 shadow-inner flex items-center justify-center">
+                {selectedIds.length === 0 ? (
+                  <span className="text-[11px] md:text-xs font-semibold text-muted-foreground/60 select-none text-center px-5 leading-relaxed">
+                    🍽️ Tap foods to add them to your plate
+                  </span>
+                ) : (
+                  <div className="relative w-full h-full">
+                    <AnimatePresence>
+                      {SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).map((f, idx, arr) => {
+                        const total = arr.length;
+                        const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+                        const radius = isMobile ? 78 : 108; // circular placement radius
+                        const angle = (idx * 2 * Math.PI) / total;
+                        const x = radius * Math.cos(angle);
+                        const y = radius * Math.sin(angle);
 
-                      return (
-                        <motion.div
-                          key={f.name}
-                          initial={{ scale: 0, x: 0, y: 80 }}
-                          animate={{ scale: 1.1, x: x, y: y }}
-                          exit={{ scale: 0, opacity: 0 }}
-                          transition={{ type: "spring", stiffness: 150 }}
-                          className="absolute top-[40%] left-[43%] text-3xl select-none"
-                        >
-                          {f.emoji}
-                        </motion.div>
-                      );
-                    })}
-                  </AnimatePresence>
-                </div>
-              )}
+                        return (
+                          <motion.div
+                            key={f.name}
+                            initial={{ scale: 0, x: 0, y: 80 }}
+                            animate={{ scale: 1.25, x: x, y: y }}
+                            exit={{ scale: 0, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 150 }}
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl md:text-4xl select-none filter drop-shadow-md cursor-pointer hover:scale-135 transition-transform"
+                            onClick={() => toggleFood(f.name)}
+                          >
+                            {f.emoji}
+                          </motion.div>
+                        );
+                      })}
+                    </AnimatePresence>
+                  </div>
+                )}
+              </div>
             </div>
-            {/* Plate center score badge */}
-            <div className="absolute z-10 bg-primary text-primary-foreground font-bold px-2.5 py-0.5 rounded-full text-[10px] md:text-xs shadow-md">
+            {/* Plate bottom score badge */}
+            <div className="absolute -bottom-3 z-10 bg-primary text-primary-foreground font-bold px-3 py-1 rounded-full text-xs md:text-sm shadow-md border border-primary-foreground/20">
               {score} / 10 Groups
             </div>
           </div>
