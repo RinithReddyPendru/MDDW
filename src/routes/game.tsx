@@ -365,10 +365,8 @@ function Play({
 
   // Dynamic ASHA Companion speech guidance and hints
   let companionMessage = "";
-  if (q.type === "single_food") {
-    if (!answered) {
-      companionMessage = t("hint_" + q.food.group);
-    } else {
+  if (answered || multiSubmitted) {
+    if (q.type === "single_food") {
       if (isCorrect) {
         companionMessage = t("hint_correct");
       } else {
@@ -377,10 +375,6 @@ function Play({
           .replace("{food}", getQuizFoodName(q.food, lang))
           .replace("{group}", correctGroupName);
       }
-    }
-  } else {
-    if (!multiSubmitted) {
-      companionMessage = t("hint_scenario");
     } else {
       const correctSet = new Set(q.correctIndices);
       const pickedSet = new Set(multiPicked);
@@ -414,10 +408,7 @@ function Play({
         />
       </div>
 
-      {/* Interactive ASHA Tutor guidance bubble */}
-      <div className="mb-5">
-        <NutriCompanion message={companionMessage} compact />
-      </div>
+
 
       {/* Food card */}
       {q.type === "single_food" ? (
@@ -538,8 +529,9 @@ function Play({
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-4"
+          className="mt-4 flex flex-col gap-3"
         >
+          <NutriCompanion message={companionMessage} compact />
           <div
             className={`rounded-2xl p-4 text-center font-bold ${
               isCorrect
