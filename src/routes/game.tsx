@@ -363,6 +363,39 @@ function Play({
   const answered = picked !== null;
   const isCorrect = q.type === "single_food" && picked === q.correctIndex;
 
+  // Dynamic ASHA Companion speech guidance and hints
+  let companionMessage = "";
+  if (q.type === "single_food") {
+    if (!answered) {
+      companionMessage = t("hint_" + q.food.group);
+    } else {
+      if (isCorrect) {
+        companionMessage = t("hint_correct");
+      } else {
+        const correctGroupName = foodGroupMap[q.options[q.correctIndex]]?.name ?? q.options[q.correctIndex];
+        companionMessage = t("hint_wrong")
+          .replace("{food}", getQuizFoodName(q.food, lang))
+          .replace("{group}", correctGroupName);
+      }
+    }
+  } else {
+    if (!multiSubmitted) {
+      companionMessage = t("hint_scenario");
+    } else {
+      const correctSet = new Set(q.correctIndices);
+      const pickedSet = new Set(multiPicked);
+      const isPerfect = correctSet.size === pickedSet.size && [...correctSet].every(x => pickedSet.has(x));
+      if (isPerfect) {
+        companionMessage = t("hint_correct");
+      } else {
+        const correctGroupNames = q.correctIndices.map(idx => foodGroupMap[q.options[idx]]?.name).join(", ");
+        companionMessage = t("hint_wrong")
+          .replace("{food}", t(q.scenarioKey))
+          .replace("{group}", correctGroupNames);
+      }
+    }
+  }
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       {/* HUD */}
@@ -379,6 +412,11 @@ function Play({
           animate={{ width: `${((qIdx + 1) / total) * 100}%` }}
           transition={{ duration: 0.4 }}
         />
+      </div>
+
+      {/* Interactive ASHA Tutor guidance bubble */}
+      <div className="mb-5">
+        <NutriCompanion message={companionMessage} compact />
       </div>
 
       {/* Food card */}
