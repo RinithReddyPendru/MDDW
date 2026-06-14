@@ -5,18 +5,15 @@ import { type Lang, t as tFn } from "./translations";
 // Global set of listeners to sync language changes across all instances of the hook
 const listeners = new Set<(lang: Lang) => void>();
 
-// Read initial value safely for SSR
-const getInitialLang = (): Lang => {
-  if (typeof window === "undefined") return "te";
-  return loadProgress().lang;
-};
-
 export function useLang() {
-  const [lang, setLangState] = useState<Lang>(getInitialLang);
+  // Always initialize with a fixed default ("te") on both Server and Client initial render
+  // to prevent Hydration Mismatch in TanStack Start.
+  const [lang, setLangState] = useState<Lang>("te");
 
   useEffect(() => {
-    // Update state to match actual storage on mount
-    setLangState(loadProgress().lang);
+    // Once mounted on the client, sync with actual localStorage state
+    const currentLang = loadProgress().lang;
+    setLangState(currentLang);
 
     const handleUpdate = (newLang: Lang) => {
       setLangState(newLang);
