@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProgressRouteImport } from './routes/progress'
+import { Route as PlateRouteImport } from './routes/plate'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const ProgressRoute = ProgressRouteImport.update({
   id: '/progress',
   path: '/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlateRoute = PlateRouteImport.update({
+  id: '/plate',
+  path: '/plate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/game' | '/learn' | '/progress'
+  fullPaths: '/' | '/game' | '/learn' | '/plate' | '/progress'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/game' | '/learn' | '/progress'
-  id: '__root__' | '/' | '/game' | '/learn' | '/progress'
+  to: '/' | '/game' | '/learn' | '/plate' | '/progress'
+  id: '__root__' | '/' | '/game' | '/learn' | '/plate' | '/progress'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GameRoute: typeof GameRoute
   LearnRoute: typeof LearnRoute
+  PlateRoute: typeof PlateRoute
   ProgressRoute: typeof ProgressRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/progress'
       fullPath: '/progress'
       preLoaderRoute: typeof ProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plate': {
+      id: '/plate'
+      path: '/plate'
+      fullPath: '/plate'
+      preLoaderRoute: typeof PlateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GameRoute: GameRoute,
   LearnRoute: LearnRoute,
+  PlateRoute: PlateRoute,
   ProgressRoute: ProgressRoute,
 }
 export const routeTree = rootRouteImport

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { useLang } from "@/lib/mddw/useLang";
+import { NutriCompanion } from "@/components/mddw/NutriCompanion";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,6 +41,8 @@ function Index() {
           <p className="mt-2 text-sm opacity-95 text-balance">{t("heroDesc")}</p>
         </motion.section>
 
+        <NutriCompanion message={t("companionHome")} />
+
         <div className="grid grid-cols-3 gap-3">
           {stats.map((s, i) => (
             <motion.div
@@ -61,6 +64,12 @@ function Index() {
             className="rounded-2xl bg-primary text-primary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
           >
             {"\u{1F680}"} {t("startTraining")}
+          </Link>
+          <Link
+            to="/plate"
+            className="rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
+          >
+            {"\u{1F37D}"} {t("buildPlate")}
           </Link>
           <Link
             to="/learn"

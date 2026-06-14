@@ -13,6 +13,7 @@ import { recordResult, loadProgress, saveProgress } from "@/lib/mddw/storage";
 import { playPop, playSuccess, playFailure } from "@/lib/mddw/audio";
 import { useLang } from "@/lib/mddw/useLang";
 import html2canvas from "html2canvas";
+import { NutriCompanion } from "@/components/mddw/NutriCompanion";
 
 export const Route = createFileRoute("/game")({
   head: () => ({
@@ -274,7 +275,8 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string) => void; t: (k:
   };
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex flex-col gap-4">
+      <NutriCompanion message={t("companionIntro")} />
       <div className="rounded-3xl bg-gradient-to-br from-primary to-accent text-primary-foreground p-6 shadow-lg mb-6">
         <div className="text-5xl mb-2" aria-hidden>{"\uD83C\uDF3D\uD83C\uDF5A"}</div>
         <h2 className="text-2xl font-bold">{t("foodGroupQuiz")}</h2>
@@ -582,7 +584,8 @@ function Result({
   }, [pct]);
 
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
+    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col gap-4">
+      <NutriCompanion message={passed ? t("companionResultPass") : t("companionResultFail")} />
       <div
         className={`rounded-3xl p-6 text-center shadow-lg ${
           passed ? "bg-secondary text-secondary-foreground" : "bg-accent text-accent-foreground"

@@ -9,6 +9,17 @@ export const LANGS: { code: Lang; label: string }[] = [
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  companionHome: "Hello ASHA Didi! Welcome to the MDDW Master Challenge. Let's learn about the 10 food groups and complete the quiz!",
+  companionIntro: "Before we start, please enter your name and PHC/village details. This will help record your progress in the training dashboard!",
+  companionResultPass: "Congratulations Didi! You successfully passed the quiz. You can now download your MDDW Master training certificate!",
+  companionResultFail: "You did great practice! Try once more to get 60% and unlock your certificate. Let's learn the food groups again!",
+  buildPlate: "Build a Plate (Practice)",
+  plateTitle: "ASHA Diversity Plate Builder",
+  plateDesc: "Add 5 or more food groups to the plate to meet the Minimum Dietary Diversity (MDDW) threshold.",
+  groupsOnPlate: "Food Groups on Plate",
+  diversityAchieved: "🎉 Minimum Dietary Diversity Met!",
+  clearPlate: "Clear Plate",
+
   appTitle: "MDDW Master Challenge",
   appSubtitle: "Minimum Dietary Diversity for Women",
   heroDesc: "Learn MDDW through interactive games and improve nutrition counselling skills.",
@@ -215,6 +226,17 @@ const hi: Dict = {
 };
 
 const te: Dict = {
+  companionHome: "హలో ఆశా దీదీ! MDDW మాస్టర్ ఛాలెంజ్‌కి స్వాగతం. 10 ఆహార సమూహాల గురించి నేర్చుకుని క్విజ్ పూర్తి చేద్దాం!",
+  companionIntro: "మనం ప్రారంభించే ముందు, దయచేసి మీ పేరు మరియు PHC/గ్రామం వివరాలను నమోదు చేయండి. ఇది మీ శిక్షణ పురోగతిని రికార్డ్ చేయడానికి సహాయపడుతుంది!",
+  companionResultPass: "అభినందనలు దీదీ! మీరు విజయవంతంగా క్విజ్ పూర్తి చేసారు. ఇప్పుడు మీ MDDW మాస్టర్ శిక్షణ ధృవీకరణ పత్రాన్ని డౌన్‌లోడ్ చేసుకోవచ్చు!",
+  companionResultFail: "మీరు చాలా బాగా ప్రాక్టీస్ చేసారు! 60% స్కోర్ సాధించి సర్టిఫికేట్ పొందడానికి మరోసారి ప్రయత్నించండి. ఆహార సమూహాలను మళ్లీ నేర్చుకుందాం!",
+  buildPlate: "ఆహార పళ్ళెం (ప్రాక్టీస్)",
+  plateTitle: "ఆశా వైవిధ్య ఆహార పళ్ళెం",
+  plateDesc: "కనీస ఆహార వైవిధ్యం (MDDW) సాధించడానికి పళ్ళెంపై 5 లేదా అంతకంటే ఎక్కువ ఆహార సమూహాలను చేర్చండి.",
+  groupsOnPlate: "పళ్ళెంపై ఉన్న ఆహార సమూహాలు",
+  diversityAchieved: "🎉 కనీస ఆహార వైవిధ్యం లభించింది!",
+  clearPlate: "పళ్ళెం ఖాళీ చేయండి",
+
   appTitle: "MDDW \u0c2e\u0c3e\u0c38\u0c4d\u0c1f\u0c30\u0c4d \u0c1a\u0c3e\u0c32\u0c46\u0c02\u0c1c\u0c4d",
   appSubtitle: "\u0c2e\u0c39\u0c3f\u0c33\u0c32 \u0c15\u0c28\u0c40\u0c38 \u0c06\u0c39\u0c3e\u0c30 \u0c35\u0c48\u0c35\u0c3f\u0c27\u0c4d\u0c2f\u0c02",
   heroDesc: "\u0c07\u0c02\u0c1f\u0c30\u0c3e\u0c15\u0c4d\u0c1f\u0c3f\u0c35\u0c4d \u0c17\u0c47\u0c2e\u0c4d\u200c\u0c32\u0c24\u0c4b MDDW \u0c28\u0c47\u0c30\u0c4d\u0c1a\u0c41\u0c15\u0c4b\u0c02\u0c21\u0c3f \u0c2e\u0c30\u0c3f\u0c2f\u0c41 \u0c2a\u0c4b\u0c37\u0c15\u0c3e\u0c39\u0c3e\u0c30 \u0c38\u0c32\u0c39\u0c3e \u0c28\u0c48\u0c2a\u0c41\u0c23\u0c4d\u0c2f\u0c3e\u0c32\u0c28\u0c41 \u0c2e\u0c46\u0c30\u0c41\u0c17\u0c41\u0c2a\u0c30\u0c1a\u0c41\u0c15\u0c4b\u0c02\u0c21\u0c3f.",
