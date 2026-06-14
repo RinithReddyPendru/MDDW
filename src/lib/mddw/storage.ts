@@ -39,7 +39,7 @@ const DEFAULT: ProgressState = {
   lang: "te",
   userName: "",
   phcName: "",
-  sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbw7H7aBhQsG5_P8g6xZISmsE4QnHh5pSvl24t7Q6Bba5cXQ2PuGfahU0l63FpROXLbo/exec",
+  sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbzFeaYmJCqD6XYFl-RtsqS2N33DKxHsptZqu43rIuVEGr03cj4HgnXvL44LiN53ZUKN/exec",
 };
 
 export function loadProgress(): ProgressState {
