@@ -10,6 +10,7 @@ import {
   type QuizFood,
 } from "@/lib/mddw/foodGroups";
 import { recordResult, loadProgress, saveProgress } from "@/lib/mddw/storage";
+import { playPop, playSuccess, playFailure } from "@/lib/mddw/audio";
 import { useLang } from "@/lib/mddw/useLang";
 import html2canvas from "html2canvas";
 
@@ -122,6 +123,7 @@ function GamePage() {
   const handlePick = (i: number) => {
     if (current.type === "scenario") {
       if (multiSubmitted) return;
+      playPop();
       setMultiPicked(prev => prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]);
       return;
     }
@@ -130,9 +132,11 @@ function GamePage() {
     setPicked(i);
     const ok = (current.type === "single_food") && i === current.correctIndex;
     if (ok) {
+      playSuccess();
       setScore((s) => s + POINTS_CORRECT);
       setCorrect((c) => c + 1);
     } else {
+      playFailure();
       setScore((s) => s + Math.max(0, POINTS_WRONG));
       setWrong((w) => w + 1);
       setMistakes((m) => [...m, {
@@ -152,9 +156,11 @@ function GamePage() {
     const isPerfect = correctSet.size === pickedSet.size && [...correctSet].every(x => pickedSet.has(x));
     
     if (isPerfect) {
+      playSuccess();
       setScore((s) => s + POINTS_CORRECT);
       setCorrect((c) => c + 1);
     } else {
+      playFailure();
       setScore((s) => s + Math.max(0, POINTS_WRONG));
       setWrong((w) => w + 1);
       setMistakes((m) => [...m, {

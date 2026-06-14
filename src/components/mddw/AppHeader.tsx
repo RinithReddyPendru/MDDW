@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useLang } from "@/lib/mddw/useLang";
 import { LANGS, type Lang } from "@/lib/mddw/translations";
+import { useState } from "react";
+import { isMuted, toggleMute } from "@/lib/mddw/audio";
 
 interface Props {
   showBack?: boolean;
@@ -8,6 +10,13 @@ interface Props {
 
 export function AppHeader({ showBack }: Props) {
   const { lang, setLang, t } = useLang();
+  const [muted, setMuted] = useState(isMuted());
+
+  const handleToggleMute = () => {
+    const nextMuted = toggleMute();
+    setMuted(nextMuted);
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
       <div className="mx-auto max-w-xl px-4 py-3 flex items-center gap-2">
@@ -26,6 +35,13 @@ export function AppHeader({ showBack }: Props) {
           <h1 className="text-base font-bold leading-tight truncate">{t("appTitle")}</h1>
           <p className="text-[11px] text-muted-foreground leading-tight truncate">{t("appSubtitle")}</p>
         </div>
+        <button
+          onClick={handleToggleMute}
+          className="p-2.5 rounded-lg border border-border bg-card hover:bg-muted text-foreground transition min-h-11 min-w-11 flex items-center justify-center"
+          aria-label={muted ? "Unmute sounds" : "Mute sounds"}
+        >
+          {muted ? "🔇" : "🔊"}
+        </button>
         <select
           aria-label={t("language")}
           value={lang}
