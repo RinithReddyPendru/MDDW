@@ -38,7 +38,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
     name: {
       en: "Grains & Starches",
       hi: "अनाज और स्टार्च",
-      te: "ధాన్యాలు & పిండి పదార్థాలు",
+      te: "ధాన్యాలు మరియు పిండి పదార్థాలు",
     },
     examples: {
       en: ["Rice", "Roti / Chapati", "Poha", "Idli", "Dosa", "Upma", "Potato", "Bread"],
@@ -67,7 +67,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
     name: {
       en: "Pulses & Beans",
       hi: "दालें और फलियाँ",
-      te: "పప్పులు & గింజలు",
+      te: "పప్పులు మరియు చిక్కుళ్లు",
     },
     examples: {
       en: ["Toor Dal", "Moong Dal", "Chana", "Rajma", "Soybean", "Lentils"],
@@ -87,7 +87,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
     name: {
       en: "Nuts & Seeds",
       hi: "मेवे और बीज",
-      te: "గింజలు & విత్తనాలు",
+      te: "గింజలు మరియు విత్తనాలు",
     },
     examples: {
       en: ["Groundnuts (Peanuts)", "Almonds", "Walnuts", "Sesame Seeds", "Flax Seeds"],
@@ -107,7 +107,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
     name: {
       en: "Dairy",
       hi: "डेयरी",
-      te: "పాలు & పాల పదార్థాలు",
+      te: "పాలు మరియు పాల పదార్థాలు",
     },
     examples: {
       en: ["Milk", "Curd / Dahi", "Paneer", "Buttermilk"],
@@ -127,7 +127,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
     name: {
       en: "Meat, Fish & Poultry",
       hi: "मांस और मछली",
-      te: "మాంసం & చేపలు",
+      te: "మాంసం మరియు చేపలు",
     },
     examples: {
       en: ["Chicken", "Fish", "Mutton", "Prawns"],
@@ -187,7 +187,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
     name: {
       en: "Vitamin A Rich",
       hi: "विटामिन A से भरपूर",
-      te: "విటమిన్ ఎ ఎక్కువ",
+      te: "విటమిన్-ఎ సమృద్ధిగా ఉండే పండ్లు మరియు కూరగాయలు",
     },
     examples: {
       en: ["Carrot", "Pumpkin", "Mango", "Papaya", "Sweet Potato"],
