@@ -189,13 +189,11 @@ function GamePage() {
           mode: "no-cors",
           headers: { "Content-Type": "text/plain" },
           body: JSON.stringify({
-            workerName: userName + (phcName ? " (" + phcName + ")" : ""),
+            name: userName,
+            phc: phcName,
             score: final,
             correct: correct,
-            wrong: wrong,
-            passed: final >= 60,
-            lang: lang,
-            date: new Date().toLocaleDateString()
+            total: TOTAL_QUESTIONS
           })
         }).catch(e => console.error(e));
       }
