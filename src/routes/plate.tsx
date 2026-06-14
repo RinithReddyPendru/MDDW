@@ -43,7 +43,6 @@ function PlateSandbox() {
   const score = activeGroups.size;
   const isDiverse = score >= 5;
 
-  // Trigger celebration chime once when hitting diverse threshold
   if (isDiverse && !celebrated) {
     playSuccess();
     setCelebrated(true);
@@ -64,20 +63,21 @@ function PlateSandbox() {
   };
 
   return (
-    <main className="min-h-dvh bg-gradient-premium pb-10">
+    <main className="h-dvh flex flex-col bg-gradient-premium overflow-hidden">
       <AppHeader showBack />
-      <div className="mx-auto max-w-xl px-4 py-5 flex flex-col gap-6">
-        {/* Title details */}
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">{t("plateTitle")}</h2>
-          <p className="text-sm text-muted-foreground mt-1">{t("plateDesc")}</p>
+      <div className="flex-1 flex flex-col justify-between px-4 py-3 max-w-xl mx-auto w-full overflow-hidden">
+        
+        {/* Compact Header Details */}
+        <div className="text-center">
+          <h2 className="text-lg font-bold text-foreground leading-tight">{t("plateTitle")}</h2>
+          <p className="text-[11px] text-muted-foreground leading-tight mt-0.5">{t("plateDesc")}</p>
         </div>
 
-        {/* Visual Plate Arena */}
-        <div className="relative aspect-square w-full max-w-[280px] mx-auto rounded-full bg-card/60 backdrop-blur-md border-4 border-primary/20 shadow-xl flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-4 rounded-full border border-dashed border-muted-foreground/20 flex items-center justify-center">
+        {/* Visual Plate Arena - Scaled down for mobile viewports */}
+        <div className="relative aspect-square w-full max-w-[210px] sm:max-w-[230px] mx-auto rounded-full bg-card/60 backdrop-blur-md border-4 border-primary/20 shadow-lg flex items-center justify-center">
+          <div className="absolute inset-3 rounded-full border border-dashed border-muted-foreground/20 flex items-center justify-center">
             {selectedIds.length === 0 ? (
-              <span className="text-sm font-semibold text-muted-foreground/60 select-none text-center px-6">
+              <span className="text-[11px] font-semibold text-muted-foreground/60 select-none text-center px-4 leading-relaxed">
                 🍽️ Tap foods below to add them to your plate
               </span>
             ) : (
@@ -85,7 +85,7 @@ function PlateSandbox() {
                 <AnimatePresence>
                   {SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).map((f, idx, arr) => {
                     const total = arr.length;
-                    const radius = 65; // px
+                    const radius = 52; // Scale down placement circle radius
                     const angle = (idx * 2 * Math.PI) / total;
                     const x = radius * Math.cos(angle);
                     const y = radius * Math.sin(angle);
@@ -93,11 +93,11 @@ function PlateSandbox() {
                     return (
                       <motion.div
                         key={f.name}
-                        initial={{ scale: 0, x: 0, y: 100 }}
-                        animate={{ scale: 1.1, x: x, y: y }}
+                        initial={{ scale: 0, x: 0, y: 80 }}
+                        animate={{ scale: 1, x: x, y: y }}
                         exit={{ scale: 0, opacity: 0 }}
                         transition={{ type: "spring", stiffness: 150 }}
-                        className="absolute top-[40%] left-[45%] text-4xl select-none"
+                        className="absolute top-[40%] left-[43%] text-3xl select-none"
                       >
                         {f.emoji}
                       </motion.div>
@@ -107,86 +107,90 @@ function PlateSandbox() {
               </div>
             )}
           </div>
-          {/* Plate center badge */}
-          <div className="absolute z-10 bg-primary text-primary-foreground font-bold px-3 py-1 rounded-full text-xs shadow-md">
+          {/* Plate center score badge */}
+          <div className="absolute z-10 bg-primary text-primary-foreground font-bold px-2.5 py-0.5 rounded-full text-[10px] shadow-md">
             {score} / 10 Groups
           </div>
         </div>
 
-        {/* Celebration Banner */}
-        <AnimatePresence>
-          {isDiverse && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-secondary text-secondary-foreground rounded-2xl p-4 text-center font-bold text-sm shadow-md border-2 border-secondary-foreground/20"
-            >
-              {t("diversityAchieved")} 🥦🥛🥚
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Celebration Banner - Inline & compact */}
+        <div className="min-h-8 flex items-center justify-center">
+          <AnimatePresence>
+            {isDiverse && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-secondary text-secondary-foreground rounded-xl px-4 py-1.5 text-center font-bold text-xs shadow-sm border border-secondary-foreground/10"
+              >
+                {t("diversityAchieved")} 🥦🥛🍳
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-        {/* Selected food group listing grid */}
-        <div className="glass rounded-2xl p-5 border border-border/50">
-          <h3 className="font-bold text-xs mb-3 uppercase tracking-wider text-muted-foreground">
+        {/* Compact Active Group Badges (10 circular items on 1-2 rows depending on viewport) */}
+        <div className="glass rounded-xl p-3 border border-border/50">
+          <h3 className="font-bold text-[10px] mb-2 uppercase tracking-wider text-muted-foreground text-center">
             {t("groupsOnPlate")}
           </h3>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-wrap justify-center gap-1.5">
             {FOOD_GROUPS.map(g => {
               const active = activeGroups.has(g.id);
               return (
                 <div
                   key={g.id}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition border ${
+                  title={g.name}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-lg transition border ${
                     active
-                      ? "bg-primary/10 border-primary text-foreground"
-                      : "bg-muted/30 border-transparent text-muted-foreground opacity-60"
+                      ? "bg-primary/20 border-primary shadow-sm scale-110"
+                      : "bg-muted/40 border-transparent opacity-40"
                   }`}
                 >
-                  <span className="text-base">{g.emoji}</span>
-                  <span className="truncate">{g.name}</span>
+                  {g.emoji}
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* Food grid (Toggles) */}
-        <div className="grid grid-cols-5 gap-2.5">
-          {SANDBOX_FOODS.map(f => {
-            const active = selectedIds.includes(f.name);
-            const label = lang === "te" ? f.nameTe : f.name;
-            return (
-              <button
-                key={f.name}
-                onClick={() => toggleFood(f.name)}
-                className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition active:scale-95 ${
-                  active
-                    ? "bg-primary/20 border-primary shadow-sm"
-                    : "bg-card border-border hover:bg-muted"
-                }`}
-              >
-                <span className="text-3xl">{f.emoji}</span>
-                <span className="text-[10px] font-bold truncate max-w-full text-center leading-none text-muted-foreground">
-                  {label}
-                </span>
-              </button>
-            );
-          })}
+        {/* Horizontal Scrolling Food Selection tray - Keeps grid on a single row! */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex gap-2.5 overflow-x-auto px-1 py-2 scrollbar-none snap-x">
+            {SANDBOX_FOODS.map(f => {
+              const active = selectedIds.includes(f.name);
+              const label = lang === "te" ? f.nameTe : f.name;
+              return (
+                <button
+                  key={f.name}
+                  onClick={() => toggleFood(f.name)}
+                  className={`flex-shrink-0 snap-center flex flex-col items-center gap-1 p-2 w-[72px] rounded-xl border transition active:scale-95 ${
+                    active
+                      ? "bg-primary/20 border-primary shadow-sm"
+                      : "bg-card border-border hover:bg-muted"
+                  }`}
+                >
+                  <span className="text-2xl">{f.emoji}</span>
+                  <span className="text-[10px] font-bold truncate max-w-full text-center leading-none text-muted-foreground">
+                    {label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Actions */}
+        {/* Bottom Actions */}
         <div className="flex gap-2.5">
           <button
             onClick={handleClear}
-            className="flex-1 rounded-2xl bg-muted hover:bg-muted/80 text-foreground py-3.5 font-bold text-center active:scale-[0.98] border border-border transition min-h-12 text-sm"
+            className="flex-1 rounded-xl bg-muted hover:bg-muted/80 text-foreground py-2.5 font-bold text-center active:scale-[0.98] border border-border transition text-xs"
           >
             ❌ {t("clearPlate")}
           </button>
           <Link
             to="/"
-            className="flex-1 rounded-2xl bg-primary text-primary-foreground py-3.5 font-bold text-center active:scale-[0.98] transition min-h-12 text-sm shadow-md"
+            className="flex-1 rounded-xl bg-primary text-primary-foreground py-2.5 font-bold text-center active:scale-[0.98] transition text-xs shadow-md"
           >
             🏠 {t("home")}
           </Link>
