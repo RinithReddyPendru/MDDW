@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { useLang } from "@/lib/mddw/useLang";
-import { getFoodGroups } from "@/lib/mddw/foodGroups";
+import { getFoodGroups, QUIZ_FOODS, type QuizFood, type FoodGroupId } from "@/lib/mddw/foodGroups";
 import { playPop, playSuccess } from "@/lib/mddw/audio";
 
 export const Route = createFileRoute("/plate")({
@@ -16,28 +16,35 @@ export const Route = createFileRoute("/plate")({
   component: PlateSandbox,
 });
 
-const SANDBOX_FOODS = [
-  { name: "Rice", nameTe: "అన్నం", emoji: "🍚", group: "grains" },
-  { name: "Toor Dal", nameTe: "కంది పప్పు", emoji: "🍲", group: "pulses" },
-  { name: "Groundnut", nameTe: "వేరుశెనగలు", emoji: "🥜", group: "nuts" },
-  { name: "Milk", nameTe: "పాలు", emoji: "🥛", group: "dairy" },
-  { name: "Chicken", nameTe: "కోడి మాంసం", emoji: "🍗", group: "meat" },
-  { name: "Boiled Egg", nameTe: "గుడ్డు", emoji: "🍳", group: "eggs" },
-  { name: "Palak", nameTe: "పాలకూర", emoji: "🌿", group: "dglv" },
-  { name: "Carrot", nameTe: "క్యారెట్", emoji: "🥕", group: "vitaminA" },
-  { name: "Tomato", nameTe: "టమాటా", emoji: "🍅", group: "otherVeg" },
-  { name: "Banana", nameTe: "అరటి పండు", emoji: "🍌", group: "otherFruit" },
-];
+function getRandomSandboxFoods(): QuizFood[] {
+  const groups: FoodGroupId[] = [
+    "grains",
+    "pulses",
+    "nuts",
+    "dairy",
+    "meat",
+    "eggs",
+    "dglv",
+    "vitaminA",
+    "otherVeg",
+    "otherFruit"
+  ];
+  return groups.map(groupId => {
+    const groupFoods = QUIZ_FOODS.filter(f => f.group === groupId);
+    return groupFoods[Math.floor(Math.random() * groupFoods.length)];
+  });
+}
 
 function PlateSandbox() {
   const { t, lang } = useLang();
   const FOOD_GROUPS = getFoodGroups(lang);
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [sandboxFoods, setSandboxFoods] = useState<QuizFood[]>(() => getRandomSandboxFoods());
   const [celebrated, setCelebrated] = useState(false);
 
   const activeGroups = new Set(
-    SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).map(f => f.group)
+    sandboxFoods.filter(f => selectedIds.includes(f.name)).map(f => f.group)
   );
 
   const score = activeGroups.size;
@@ -60,6 +67,7 @@ function PlateSandbox() {
   const handleClear = () => {
     playPop();
     setSelectedIds([]);
+    setSandboxFoods(getRandomSandboxFoods());
   };
 
   return (
@@ -90,7 +98,7 @@ function PlateSandbox() {
                 ) : (
                   <div className="relative w-full h-full">
                     <AnimatePresence>
-                      {SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).map((f, idx, arr) => {
+                      {sandboxFoods.filter(f => selectedIds.includes(f.name)).map((f, idx, arr) => {
                         const total = arr.length;
                         const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
                         const radius = isMobile ? 78 : 108; // circular placement radius
@@ -145,14 +153,14 @@ function PlateSandbox() {
               {t("selectedIngredients")}
             </span>
             <div className="flex flex-wrap justify-center gap-1.5 min-h-[36px] w-full py-1.5 px-2 rounded-xl bg-card/45 border border-border/20 backdrop-blur-sm">
-              {SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).length === 0 ? (
+              {sandboxFoods.filter(f => selectedIds.includes(f.name)).length === 0 ? (
                 <span className="text-[10px] text-muted-foreground/50 italic py-0.5">
                   {t("emptyPlate")}
                 </span>
               ) : (
                 <AnimatePresence>
-                  {SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).map(f => {
-                    const label = lang === "te" ? f.nameTe : f.name;
+                  {sandboxFoods.filter(f => selectedIds.includes(f.name)).map(f => {
+                    const label = lang === "te" ? f.nameTe : lang === "hi" ? f.nameHi : f.name;
                     return (
                       <motion.div
                         key={f.name}
@@ -211,9 +219,9 @@ function PlateSandbox() {
           <div className="flex flex-col gap-1.5">
             {/* Mobile (touch swipe) */}
             <div className="flex md:hidden gap-2.5 overflow-x-auto px-1 py-2 scrollbar-none snap-x">
-              {SANDBOX_FOODS.map(f => {
+              {sandboxFoods.map(f => {
                 const active = selectedIds.includes(f.name);
-                const label = lang === "te" ? f.nameTe : f.name;
+                const label = lang === "te" ? f.nameTe : lang === "hi" ? f.nameHi : f.name;
                 return (
                   <button
                     key={f.name}
@@ -235,9 +243,9 @@ function PlateSandbox() {
 
             {/* Laptop/Desktop (5x2 clean grid for easy mouse-clicks) */}
             <div className="hidden md:grid grid-cols-5 gap-2.5">
-              {SANDBOX_FOODS.map(f => {
+              {sandboxFoods.map(f => {
                 const active = selectedIds.includes(f.name);
-                const label = lang === "te" ? f.nameTe : f.name;
+                const label = lang === "te" ? f.nameTe : lang === "hi" ? f.nameHi : f.name;
                 return (
                   <button
                     key={f.name}
