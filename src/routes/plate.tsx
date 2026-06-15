@@ -219,12 +219,15 @@ function PlateSandbox() {
           <div className="flex flex-col gap-1.5">
             {/* Mobile (touch swipe) */}
             <div className="flex md:hidden gap-2.5 overflow-x-auto px-1 py-2 scrollbar-none snap-x">
-              {sandboxFoods.map(f => {
+              {sandboxFoods.map((f, idx) => {
                 const active = selectedIds.includes(f.name);
                 const label = lang === "te" ? f.nameTe : lang === "hi" ? f.nameHi : f.name;
                 return (
-                  <button
+                  <motion.button
                     key={f.name}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.02 }}
                     onClick={() => toggleFood(f.name)}
                     className={`flex-shrink-0 snap-center flex flex-col items-center gap-1 p-2 w-[72px] rounded-xl border transition active:scale-95 ${
                       active
@@ -236,19 +239,22 @@ function PlateSandbox() {
                     <span className="text-[10px] font-bold truncate max-w-full text-center leading-none text-muted-foreground">
                       {label}
                     </span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
 
             {/* Laptop/Desktop (5x2 clean grid for easy mouse-clicks) */}
             <div className="hidden md:grid grid-cols-5 gap-2.5">
-              {sandboxFoods.map(f => {
+              {sandboxFoods.map((f, idx) => {
                 const active = selectedIds.includes(f.name);
                 const label = lang === "te" ? f.nameTe : lang === "hi" ? f.nameHi : f.name;
                 return (
-                  <button
+                  <motion.button
                     key={f.name}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: idx * 0.02, type: "spring", stiffness: 150 }}
                     onClick={() => toggleFood(f.name)}
                     className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition active:scale-95 ${
                       active
@@ -260,7 +266,7 @@ function PlateSandbox() {
                     <span className="text-[10px] font-bold truncate max-w-full text-center leading-none text-muted-foreground">
                       {label}
                     </span>
-                  </button>
+                  </motion.button>
                 );
               })}
             </div>
