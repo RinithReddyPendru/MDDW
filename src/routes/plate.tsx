@@ -67,10 +67,10 @@ function PlateSandbox() {
       <AppHeader showBack />
       
       {/* Responsive layout container: Row on laptop (md), Column on mobile */}
-      <div className="flex-1 flex flex-col md:flex-row items-center justify-center md:gap-10 px-4 py-3 max-w-4xl mx-auto w-full overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 px-4 py-3 max-w-5xl mx-auto w-full overflow-y-auto md:overflow-hidden">
         
         {/* LEFT COLUMN: Title & Plate Arena */}
-        <div className="flex-1 flex flex-col items-center justify-between md:justify-center md:gap-6 w-full h-full md:h-auto overflow-hidden">
+        <div className="flex-1 flex flex-col items-center justify-center gap-4 w-full md:w-1/2 h-auto">
           {/* Header Details */}
           <div className="text-center md:mb-2">
             <h2 className="text-lg md:text-2xl font-bold text-foreground leading-tight">{t("plateTitle")}</h2>
@@ -180,7 +180,7 @@ function PlateSandbox() {
         </div>
 
         {/* RIGHT COLUMN: Badges & Food Grid Selection */}
-        <div className="flex-1 flex flex-col justify-end md:justify-center gap-4 w-full h-auto overflow-hidden md:border-l md:border-border/30 md:pl-8">
+        <div className="flex-1 flex flex-col justify-center gap-4 w-full md:w-1/2 h-auto md:border-l md:border-border/30 md:pl-8">
           
           {/* Active Group Badges Card */}
           <div className="glass rounded-xl p-3 border border-border/50 shadow-sm">
