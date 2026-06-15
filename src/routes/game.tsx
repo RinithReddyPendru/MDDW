@@ -138,7 +138,7 @@ function GamePage() {
       setCorrect((c) => c + 1);
     } else {
       playFailure();
-      setScore((s) => s + Math.max(0, POINTS_WRONG));
+      setScore((s) => Math.max(0, s + POINTS_WRONG));
       setWrong((w) => w + 1);
       setMistakes((m) => [...m, {
         question: getQuizFoodName((current as any).food, lang),
@@ -162,7 +162,7 @@ function GamePage() {
       setCorrect((c) => c + 1);
     } else {
       playFailure();
-      setScore((s) => s + Math.max(0, POINTS_WRONG));
+      setScore((s) => Math.max(0, s + POINTS_WRONG));
       setWrong((w) => w + 1);
       setMistakes((m) => [...m, {
         question: t(current.scenarioKey as any),

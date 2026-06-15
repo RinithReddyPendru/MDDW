@@ -138,6 +138,45 @@ function PlateSandbox() {
               )}
             </AnimatePresence>
           </div>
+
+          {/* Selected Ingredients list dynamically updated */}
+          <div className="w-full max-w-sm mt-1 flex flex-col items-center gap-1">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
+              {t("selectedIngredients")}
+            </span>
+            <div className="flex flex-wrap justify-center gap-1.5 min-h-[36px] w-full py-1.5 px-2 rounded-xl bg-card/45 border border-border/20 backdrop-blur-sm">
+              {SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).length === 0 ? (
+                <span className="text-[10px] text-muted-foreground/50 italic py-0.5">
+                  {t("emptyPlate")}
+                </span>
+              ) : (
+                <AnimatePresence>
+                  {SANDBOX_FOODS.filter(f => selectedIds.includes(f.name)).map(f => {
+                    const label = lang === "te" ? f.nameTe : f.name;
+                    return (
+                      <motion.div
+                        key={f.name}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        layout
+                        className="flex items-center gap-1 bg-primary/10 border border-primary/20 text-foreground px-2 py-0.5 rounded-full text-[10px] font-semibold shadow-sm"
+                      >
+                        <span>{f.emoji}</span>
+                        <span>{label}</span>
+                        <button
+                          onClick={() => toggleFood(f.name)}
+                          className="ml-1 hover:text-destructive transition text-[9px] font-bold opacity-60 hover:opacity-100"
+                        >
+                          ✕
+                        </button>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* RIGHT COLUMN: Badges & Food Grid Selection */}

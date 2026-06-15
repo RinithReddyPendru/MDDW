@@ -32,6 +32,8 @@ const en: Dict = {
   groupsOnPlate: "Food Groups on Plate",
   diversityAchieved: "🎉 Minimum Dietary Diversity Met!",
   clearPlate: "Clear Plate",
+  selectedIngredients: "Selected Ingredients",
+  emptyPlate: "Plate is empty. Select foods below!",
 
   appTitle: "MDDW Master Challenge",
   appSubtitle: "Minimum Dietary Diversity for Women",
@@ -253,12 +255,25 @@ const hi: Dict = {
   badgeMddwExpertDesc: "90+ \u0938\u094d\u0915\u094b\u0930 \u092a\u094d\u0930\u093e\u092a\u094d\u0924",
   badgeAshaMaster: "ASHA \u092e\u093e\u0938\u094d\u091f\u0930",
   badgeAshaMasterDesc: "\u0932\u0947\u0935\u0932 3 \u092a\u0942\u0930\u093e \u0915\u093f\u092f\u093e",
+  buildPlate: "थाली बनाएँ (अभ्यास)",
+  plateTitle: "आशा विविधता थाली निर्माता",
+  plateDesc: "न्यूनतम आहार विविधता (MDDW) सीमा को पूरा करने के लिए थाली में 5 या अधिक खाद्य समूह जोड़ें।",
+  groupsOnPlate: "थाली में खाद्य समूह",
+  diversityAchieved: "🎉 न्यूनतम आहार विविधता पूरी हुई!",
+  clearPlate: "थाली खाली करें",
+  selectedIngredients: "चुनी गई सामग्रियां",
+  emptyPlate: "थाली खाली है। नीचे से खाद्य पदार्थ चुनें!",
+  scenarioKamala: "कमला का भोजन: चावल, अरहर दाल और पालक",
+  scenarioRani: "रानी का भोजन: चपाती / रोटी, उबला अंडा और दूध",
+  scenarioQuestion: "इस भोजन में कौन से खाद्य समूह मौजूद हैं?",
+  groupsText: "समूह",
+  submitAnswer: "उत्तर सबमिट करें",
 };
 
 const te: Dict = {
-  companionHome: "హలో ఆశా దీదీ! MDDW మాస్టర్ ఛాలెంజ్‌కి స్వాగతం. 10 ఆహార సమూహాల గురించి నేర్చుకుని క్విజ్ పూర్తి చేద్దాం!",
+  companionHome: "హలో ఆశా అక్క! MDDW మాస్టర్ ఛాలెంజ్‌కి స్వాగతం. 10 ఆహార సమూహాల గురించి నేర్చుకుని క్విజ్ పూర్తి చేద్దాం!",
   companionIntro: "మనం ప్రారంభించే ముందు, దయచేసి మీ పేరు మరియు PHC/గ్రామం వివరాలను నమోదు చేయండి. ఇది మీ శిక్షణ పురోగతిని రికార్డ్ చేయడానికి సహాయపడుతుంది!",
-  companionResultPass: "అద్భుతమైన పని, దీదీ! మీరు నిజమైన పోషకాహార విజేత. ఇప్పుడు మీ గ్రామాల్లోని తల్లులకు ప్రతిరోజూ ఈ 10 ఆహార సమూహాలలో కనీసం 5 ఆహార సమూహాలను చేర్చాలని మార్గదర్శకత్వం చేయవచ్చు!",
+  companionResultPass: "అద్భుతమైన పని, అక్క! మీరు నిజమైన పోషకాహార విజేత. ఇప్పుడు మీ గ్రామాల్లోని తల్లులకు ప్రతిరోజూ ఈ 10 ఆహార సమూహాలలో కనీసం 5 ఆహార సమూహాలను చేర్చాలని మార్గదర్శకత్వం చేయవచ్చు!",
   companionResultFail: "మంచి ప్రయత్నం, అక్క! గుర్తుంచుకోండి, వైవిధ్యమైన ప్లేట్‌లో ప్రతిరోజూ 10 ఆహార సమూహాలలో కనీసం 5 వేర్వేరు ఆహార సమూహాలు ఉండాలి. మరోసారి ప్రాక్టీస్ చేద్దాం, మీరు సాధించగలరు!",
   hint_grains: "సూచన: ఇది శరీరానికి శక్తినిచ్చే పిండిపదార్థాలు ఉండే ప్రధాన ధాన్యం లేదా దుంప కూర.",
   hint_pulses: "సూచన: ఇది పప్పుధాన్యాలకు చెందినది, పెరగడానికి అవసరమైన ప్లాంట్ ప్రొటీన్లు సమృద్ధిగా ఉంటాయి.",
@@ -375,6 +390,13 @@ const te: Dict = {
   badgeMddwExpertDesc: "90+ \u0c38\u0c4d\u0c15\u0c4b\u0c30\u0c4d \u0c38\u0c3e\u0c27\u0c3f\u0c02\u0c1a\u0c3e\u0c30\u0c41",
   badgeAshaMaster: "ASHA \u0c2e\u0c3e\u0c38\u0c4d\u0c1f\u0c30\u0c4d",
   badgeAshaMasterDesc: "\u0c38\u0c4d\u0c25\u0c3e\u0c2f\u0c3f 3 \u0c2a\u0c42\u0c30\u0c4d\u0c24\u0c3f \u0c1a\u0c47\u0c36\u0c3e\u0c30\u0c41",
+  selectedIngredients: "ఎంచుకున్న పదార్థాలు",
+  emptyPlate: "ప్లేట్ ఖాళీగా ఉంది. కింద ఉన్న ఆహారాలను ఎంచుకోండి!",
+  scenarioKamala: "కమల భోజనం: అన్నం, కందిపప్పు, మరియు పాలకూర",
+  scenarioRani: "రాణి భోజనం: చపాతీ / రోటీ, ఉడకబెట్టిన గుడ్డు, మరియు పాలు",
+  scenarioQuestion: "ఈ భోజనంలో ఏ ఆహార సమూహాలు ఉన్నాయి?",
+  groupsText: "సమూహాలు",
+  submitAnswer: "సమాధానాన్ని సమర్పించండి",
 };
 
 const DICTS: Record<Lang, Dict> = { en, hi, te };
