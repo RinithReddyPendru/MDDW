@@ -116,10 +116,10 @@ const en: Dict = {
   saveWebhook: "Save Webhook URL",
   saved: "Saved!",
   // Certificate
-  certificateTitle: "Certificate of Completion",
+  certificateTitle: "Certificate of Participation",
   certificateSubtitle: "MDDW Master Challenge",
   certifiesText: "This certifies that",
-  completedText: "has successfully completed the Minimum Dietary Diversity for Women (MDDW) training module with a score of",
+  completedText: "has successfully participated in the Minimum Dietary Diversity for Women (MDDW) training module.",
   dateLabel: "Date",
   scoreLabel: "Score",
   points: "Points",

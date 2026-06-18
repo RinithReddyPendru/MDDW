@@ -27,7 +27,7 @@ export const Route = createFileRoute("/game")({
 
 const TOTAL_QUESTIONS = 10;
 const POINTS_CORRECT = 10;
-const POINTS_WRONG = -5;
+const POINTS_WRONG = 0;
 
 export type Question =
   | { type: "single_food"; food: QuizFood; options: FoodGroupId[]; correctIndex: number; }
@@ -249,6 +249,7 @@ function GamePage() {
               userName={userName}
               phcName={phcName}
               onAgain={handleAgain}
+              lang={lang}
               t={t}
             />
           )}
@@ -316,8 +317,8 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string) => void; t: (k:
           <div className="text-2xl font-bold text-secondary">+{POINTS_CORRECT}</div>
           <div className="text-xs text-muted-foreground font-semibold">{t("correctPoints")}</div>
         </div>
-        <div className="rounded-2xl glass border-2 border-destructive/50 p-4 text-center shadow-sm">
-          <div className="text-2xl font-bold text-destructive">{POINTS_WRONG}</div>
+        <div className="rounded-2xl glass border-2 border-border/50 p-4 text-center shadow-sm">
+          <div className="text-2xl font-bold text-muted-foreground">{POINTS_WRONG}</div>
           <div className="text-xs text-muted-foreground font-semibold">{t("wrongPoints")}</div>
         </div>
       </div>
@@ -566,6 +567,173 @@ function Play({
   );
 }
 
+interface CertificateProps {
+  userName: string;
+  phcName: string;
+  score: number;
+  pct: number;
+  lang: string;
+  t: (k: any) => string;
+  isPreview?: boolean;
+  certificateRef?: React.RefObject<HTMLDivElement | null>;
+}
+
+function Certificate({
+  userName,
+  phcName,
+  score,
+  pct,
+  lang,
+  t,
+  isPreview = false,
+  certificateRef,
+}: CertificateProps) {
+  const formattedDate = new Date().toLocaleDateString(
+    lang === "en" ? "en-US" : lang === "hi" ? "hi-IN" : "te-IN",
+    { year: "numeric", month: "long", day: "numeric" }
+  );
+
+  const containerClasses = isPreview
+    ? "w-full max-w-lg aspect-[4/3] rounded-2xl shadow-xl border-[8px] sm:border-[12px] border-emerald-800 bg-gradient-to-br from-[#faf6eb] via-[#fdfcf7] to-[#f5edd6] p-4 sm:p-8 flex flex-col items-center justify-center relative overflow-hidden text-black font-sans mx-auto"
+    : "w-[800px] h-[600px] border-[16px] border-emerald-800 bg-gradient-to-br from-[#faf6eb] via-[#fdfcf7] to-[#f5edd6] p-12 flex flex-col items-center justify-center relative overflow-hidden text-black font-sans";
+
+  const innerBorderClasses = isPreview
+    ? "absolute inset-1 sm:inset-2 border border-amber-500/30 rounded-lg sm:rounded-xl pointer-events-none"
+    : "absolute inset-3 border-2 border-amber-500/30 pointer-events-none";
+
+  const cornerFlourish = (position: "top-left" | "top-right" | "bottom-left" | "bottom-right") => {
+    const classes = {
+      "top-left": "top-2 left-2 border-t-2 border-l-2",
+      "top-right": "top-2 right-2 border-t-2 border-r-2",
+      "bottom-left": "bottom-2 left-2 border-b-2 border-l-2",
+      "bottom-right": "bottom-2 right-2 border-b-2 border-r-2",
+    }[position];
+    const printableClasses = {
+      "top-left": "top-4 left-4 border-t-[3px] border-l-[3px]",
+      "top-right": "top-4 right-4 border-t-[3px] border-r-[3px]",
+      "bottom-left": "bottom-4 left-4 border-b-[3px] border-l-[3px]",
+      "bottom-right": "bottom-4 right-4 border-b-[3px] border-r-[3px]",
+    }[position];
+    return (
+      <div
+        className={`absolute ${isPreview ? classes : printableClasses} border-amber-500/50 ${
+          isPreview ? "w-3 h-3 sm:w-4 sm:h-4" : "w-6 h-6"
+        } pointer-events-none`}
+      />
+    );
+  };
+
+  return (
+    <div ref={certificateRef} className={containerClasses}>
+      {/* Borders and flourishes */}
+      <div className={innerBorderClasses} />
+      {cornerFlourish("top-left")}
+      {cornerFlourish("top-right")}
+      {cornerFlourish("bottom-left")}
+      {cornerFlourish("bottom-right")}
+
+      {/* Decorative Top Leaf/Crest Icon */}
+      <div className={`flex items-center justify-center ${isPreview ? "mb-1 sm:mb-2" : "mb-3"}`}>
+        <div
+          className={`relative flex items-center justify-center bg-gradient-to-br from-amber-400 to-amber-600 rounded-full shadow-md border border-amber-200 ${
+            isPreview ? "w-10 h-10 sm:w-12 sm:h-12" : "w-16 h-16"
+          }`}
+        >
+          <span className={isPreview ? "text-xl sm:text-2xl" : "text-3xl"}>{"\uD83C\uDFC6"}</span>
+        </div>
+      </div>
+
+      {/* Title & Subtitle */}
+      <h1
+        className={`font-serif font-extrabold text-emerald-950 tracking-wider uppercase text-center ${
+          isPreview ? "text-lg sm:text-2xl mb-0.5" : "text-3xl mb-1"
+        }`}
+      >
+        {t("certificateTitle")}
+      </h1>
+      <h2
+        className={`font-sans font-bold text-amber-700 tracking-wide text-center uppercase ${
+          isPreview ? "text-[10px] sm:text-sm mb-3 sm:mb-4" : "text-md mb-6"
+        }`}
+      >
+        {t("certificateSubtitle")}
+      </h2>
+
+      {/* Certifies text */}
+      <p className={`italic text-gray-500 text-center ${isPreview ? "text-[10px] sm:text-xs mb-1" : "text-sm mb-2"}`}>
+        {t("certifiesText")}
+      </p>
+
+      {/* Recipient Name */}
+      <h3
+        className={`font-serif font-black text-gray-900 border-b-2 border-amber-400/50 pb-0.5 px-4 sm:px-8 text-center capitalize tracking-wide ${
+          isPreview ? "text-lg sm:text-2xl mb-1 max-w-[280px] sm:max-w-md truncate" : "text-4xl mb-2 px-12"
+        }`}
+      >
+        {userName}
+      </h3>
+
+      {/* PHC/Village */}
+      {phcName && (
+        <p className={`font-semibold text-emerald-800 text-center ${isPreview ? "text-[10px] sm:text-sm mb-3" : "text-md mb-4"}`}>
+          ({phcName})
+        </p>
+      )}
+
+      {/* Completion description */}
+      <p
+        className={`text-gray-600 text-center leading-relaxed ${
+          isPreview ? "text-[10px] sm:text-xs max-w-[280px] sm:max-w-xs mb-4" : "text-sm max-w-md mb-8"
+        }`}
+      >
+        {t("completedText")}
+      </p>
+
+      {/* Footer Column Section */}
+      <div className={`flex justify-between items-center w-full ${isPreview ? "max-w-[280px] sm:max-w-xs mt-1 px-2" : "max-w-md mt-4 px-4"}`}>
+        {/* Date */}
+        <div className="text-center flex-1">
+          <div
+            className={`font-serif font-bold text-gray-800 border-b border-gray-300 pb-0.5 mb-0.5 ${
+              isPreview ? "text-[9px] sm:text-xs" : "text-sm"
+            }`}
+          >
+            {formattedDate}
+          </div>
+          <div className={`text-gray-400 uppercase tracking-wider font-semibold ${isPreview ? "text-[8px]" : "text-[10px]"}`}>
+            {t("dateLabel")}
+          </div>
+        </div>
+
+        {/* Seal */}
+        <div className="flex-1 flex justify-center">
+          <div
+            className={`relative bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-600 rounded-full shadow-lg border border-amber-200 flex items-center justify-center ${
+              isPreview ? "w-10 h-10 sm:w-12 sm:h-12" : "w-16 h-16"
+            }`}
+          >
+            <span className={isPreview ? "text-lg sm:text-xl" : "text-2xl"}>{"\uD83C\uDF96\uFE0F"}</span>
+          </div>
+        </div>
+
+        {/* Signature */}
+        <div className="text-center flex-1">
+          <div
+            className={`font-serif italic text-emerald-800 font-semibold border-b border-gray-300 pb-0.5 mb-0.5 ${
+              isPreview ? "text-[9px] sm:text-xs" : "text-sm"
+            }`}
+          >
+            {"\u2728"} Janani Mitra
+          </div>
+          <div className={`text-gray-400 uppercase tracking-wider font-semibold ${isPreview ? "text-[8px]" : "text-[10px]"}`}>
+            Program Coordinator
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Result({
   score,
   correct,
@@ -575,6 +743,7 @@ function Result({
   userName,
   phcName,
   onAgain,
+  lang,
   t,
 }: {
   score: number;
@@ -585,6 +754,7 @@ function Result({
   userName: string;
   phcName: string;
   onAgain: () => void;
+  lang: string;
   t: (k: any) => string;
 }) {
   const pct = Math.round((correct / total) * 100);
@@ -598,7 +768,7 @@ function Result({
       const image = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.href = image;
-      link.download = `MDDW_Certificate_${userName.replace(/\\s+/g, "_")}.png`;
+      link.download = `MDDW_Certificate_${userName.replace(/\s+/g, "_")}.png`;
       link.click();
     } catch (e) {
       console.error(e);
@@ -658,41 +828,47 @@ function Result({
         </div>
       )}
 
-      {passed && (
-        <>
+      {true && (
+        <div className="mt-6 border-t-2 border-border pt-6">
+          <h3 className="font-bold text-lg mb-4 text-center text-primary">
+            {"\uD83C\uDFC5"} {t("certificatePreview" as any) || "Your Certificate"}
+          </h3>
+          
+          {/* Certificate Live Preview */}
+          <div className="mb-4">
+            <Certificate
+              userName={userName}
+              phcName={phcName}
+              score={score}
+              pct={pct}
+              lang={lang}
+              t={t}
+              isPreview={true}
+            />
+          </div>
+          
+          {/* Download Button */}
           <button
             onClick={downloadCertificate}
-            className="mt-6 w-full rounded-2xl bg-blue-600 text-white py-4 font-bold min-h-14 active:scale-[0.98] shadow-md flex items-center justify-center gap-2"
+            className="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white py-4 font-bold min-h-14 active:scale-[0.98] shadow-md flex items-center justify-center gap-2 transition-colors"
           >
-            <span className="text-xl">{"\uD83C\uDFC5"}</span> {t("downloadCertificate")}
+            <span className="text-xl">{"\uD83D\uDCE5"}</span> {t("downloadCertificate")}
           </button>
           
           {/* Hidden Certificate DOM for html2canvas */}
-          <div className="overflow-hidden h-0 w-0 absolute opacity-0 pointer-events-none">
-            <div ref={certificateRef} className="w-[800px] h-[600px] bg-white p-12 text-black flex flex-col items-center justify-center relative border-[12px] border-green-600 font-sans">
-              <div className="absolute top-8 left-8 text-6xl">{"\uD83C\uDF3E\uD83C\uDF5A"}</div>
-              <div className="absolute top-8 right-8 text-6xl opacity-20">{"\uD83C\uDFC6"}</div>
-              <h1 className="text-4xl font-bold text-green-700 uppercase tracking-widest mb-4">{t("certificateTitle")}</h1>
-              <h2 className="text-2xl font-semibold text-gray-600 mb-8">{t("certificateSubtitle")}</h2>
-              <p className="text-lg mb-4 text-gray-500">{t("certifiesText")}</p>
-              <h3 className="text-5xl font-bold text-gray-900 border-b-2 border-gray-300 pb-2 px-12 mb-6 text-center capitalize">{userName}</h3>
-              {phcName && <p className="text-xl text-gray-600 mb-6 font-medium">({phcName})</p>}
-              <p className="text-lg text-gray-500 text-center max-w-lg mb-8">
-                {t("completedText")} <strong>{pct}%</strong>.
-              </p>
-              <div className="flex justify-between w-full max-w-md mt-4">
-                <div className="text-center">
-                  <div className="font-bold text-gray-800 text-xl border-b border-gray-400 pb-1 mb-1">{new Date().toLocaleDateString()}</div>
-                  <div className="text-sm text-gray-500 uppercase tracking-wide">{t("dateLabel")}</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-gray-800 text-xl border-b border-gray-400 pb-1 mb-1">{score} {t("points")}</div>
-                  <div className="text-sm text-gray-500 uppercase tracking-wide">{t("scoreLabel")}</div>
-                </div>
-              </div>
-            </div>
+          <div className="absolute top-[-9999px] left-[-9999px] pointer-events-none">
+            <Certificate
+              userName={userName}
+              phcName={phcName}
+              score={score}
+              pct={pct}
+              lang={lang}
+              t={t}
+              isPreview={false}
+              certificateRef={certificateRef}
+            />
           </div>
-        </>
+        </div>
       )}
 
       <div className="mt-5 flex flex-col gap-2">
@@ -728,5 +904,4 @@ function Stat({ label, value, accent }: { label: string; value: string | number;
   );
 }
 
-
-
+// Force trigger HMR
