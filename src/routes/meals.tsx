@@ -81,21 +81,21 @@ function MealsComponent() {
                 >
                   <button
                     onClick={() => setExpandedDish(isExpanded ? null : meal.id)}
-                    className="flex flex-col w-full text-left font-bold text-lg active:scale-[0.99] transition-transform group"
+                    className="flex items-center gap-4 p-4 w-full text-left active:scale-[0.99] transition-transform group"
                   >
-                    <div className="relative w-full h-40 bg-muted/20">
-                      <img src={meal.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end text-white">
-                        <span className="text-xl drop-shadow-md">{t(meal.nameKey)}</span>
-                        <motion.span
-                          animate={{ rotate: isExpanded ? 180 : 0 }}
-                          className="text-xl drop-shadow-md text-white/90"
-                        >
-                          {"\u25BC"}
-                        </motion.span>
-                      </div>
+                    <div className="w-20 h-20 shrink-0 overflow-hidden rounded-2xl shadow-md border-2 border-border/50">
+                      <img src={meal.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     </div>
+                    <div className="flex flex-col items-start flex-1">
+                       <span className="text-xl font-extrabold text-foreground">{t(meal.nameKey)}</span>
+                       <span className="text-sm text-muted-foreground font-medium mt-1">Tap to decode</span>
+                    </div>
+                    <motion.span
+                        animate={{ rotate: isExpanded ? 180 : 0 }}
+                        className="text-2xl text-primary drop-shadow-sm"
+                      >
+                        {"\u25BC"}
+                    </motion.span>
                   </button>
 
                   <AnimatePresence>
@@ -142,6 +142,7 @@ function MealsComponent() {
     </main>
   );
 }
+
 
 
 
