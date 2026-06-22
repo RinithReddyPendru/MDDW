@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/mddw/useLang";
@@ -184,3 +184,4 @@ function DishModal({ mealId, onClose, lang, t }: any) {
     </>
   )
 }
+
