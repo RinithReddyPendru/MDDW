@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as PlateRouteImport } from './routes/plate'
+import { Route as MealsRouteImport } from './routes/meals'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,11 @@ const ProgressRoute = ProgressRouteImport.update({
 const PlateRoute = PlateRouteImport.update({
   id: '/plate',
   path: '/plate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealsRoute = MealsRouteImport.update({
+  id: '/meals',
+  path: '/meals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
 }
@@ -60,21 +68,23 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/game' | '/learn' | '/plate' | '/progress'
+  fullPaths: '/' | '/game' | '/learn' | '/meals' | '/plate' | '/progress'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/game' | '/learn' | '/plate' | '/progress'
-  id: '__root__' | '/' | '/game' | '/learn' | '/plate' | '/progress'
+  to: '/' | '/game' | '/learn' | '/meals' | '/plate' | '/progress'
+  id: '__root__' | '/' | '/game' | '/learn' | '/meals' | '/plate' | '/progress'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GameRoute: typeof GameRoute
   LearnRoute: typeof LearnRoute
+  MealsRoute: typeof MealsRoute
   PlateRoute: typeof PlateRoute
   ProgressRoute: typeof ProgressRoute
 }
@@ -93,6 +103,13 @@ declare module '@tanstack/react-router' {
       path: '/plate'
       fullPath: '/plate'
       preLoaderRoute: typeof PlateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meals': {
+      id: '/meals'
+      path: '/meals'
+      fullPath: '/meals'
+      preLoaderRoute: typeof MealsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -123,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GameRoute: GameRoute,
   LearnRoute: LearnRoute,
+  MealsRoute: MealsRoute,
   PlateRoute: PlateRoute,
   ProgressRoute: ProgressRoute,
 }

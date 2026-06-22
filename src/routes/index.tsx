@@ -71,6 +71,12 @@ function Index() {
           >
             {"\u{1F37D}"} {t("buildPlate")}
           </Link>
+                    <Link
+            to="/meals"
+            className="rounded-2xl bg-amber-600 hover:bg-amber-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
+          >
+            {"🔍"} {t("dishDecoderTitle")}
+          </Link>
           <Link
             to="/learn"
             className="rounded-2xl bg-secondary text-secondary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"

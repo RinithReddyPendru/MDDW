@@ -9,6 +9,48 @@ export const LANGS: { code: Lang; label: string }[] = [
 type Dict = Record<string, string>;
 
 const en: Dict = {
+
+  dishDecoderTitle: "Dish Breakdown",
+  dishDecoderDesc: "Click on a dish to see its ingredients and their MDD-W food groups.",
+  tabBreakfast: "Breakfast",
+  tabLunch: "Lunch",
+  tabDinner: "Dinner",
+
+  dish_idli_sambar: "Idli with Sambar",
+  dish_upma: "Upma",
+  dish_pesarattu: "Pesarattu",
+  dish_puri_potato: "Puri with Potato Curry",
+  dish_egg_dosa: "Egg Dosa",
+
+  dish_sambar_rice: "Sambar Rice",
+  dish_palakura_annam: "Palakura Annam",
+  dish_chicken_pulao: "Chicken Pulao",
+  dish_curd_rice: "Curd Rice",
+  dish_veg_biryani: "Vegetable Biryani",
+
+  dish_roti_tomato_dal: "Roti with Tomato Pappu",
+  dish_chapati_gongura: "Chapati with Gongura Pappu",
+  dish_egg_curry_rice: "Egg Curry with Rice",
+  dish_bisi_bele_bath: "Bisi Bele Bath",
+  dish_fish_pulusu_rice: "Fish Pulusu with Rice",
+
+  ing_rice: "Rice",
+  ing_urad_dal: "Urad Dal",
+  ing_mixed_veg: "Mixed Veggies",
+  ing_semolina: "Semolina / Wheat",
+  ing_moong_dal: "Moong Dal",
+  ing_wheat: "Wheat Flour",
+  ing_potato: "Potato",
+  ing_egg: "Egg",
+  ing_toor_dal: "Toor Dal",
+  ing_spinach: "Spinach (Palak)",
+  ing_chicken: "Chicken",
+  ing_curd: "Curd (Yogurt)",
+  ing_tomato: "Tomato",
+  ing_gongura: "Gongura Leaves",
+  ing_onion_tomato: "Onion / Tomato Gravy",
+  ing_fish: "Fish",
+
   companionHome: "Hello ASHA Sister! Welcome to the MDDW Master Challenge. Let's learn about the 10 food groups and complete the quiz!",
   companionIntro: "Before we start, please enter your name and PHC/village details. This will help record your progress in the training dashboard!",
   companionResultPass: "Excellent work, Sister! You are a true Nutrition Champion. Now you can guide mothers in your village to include at least 5 of these 10 food groups every day!",
@@ -144,6 +186,48 @@ const en: Dict = {
 };
 
 const hi: Dict = {
+
+  dishDecoderTitle: "डिश विवरण (Dish Breakdown)",
+  dishDecoderDesc: "सामग्री और उनके MDD-W खाद्य समूहों को देखने के लिए किसी डिश पर क्लिक करें।",
+  tabBreakfast: "नाश्ता",
+  tabLunch: "दोपहर का भोजन",
+  tabDinner: "रात का खाना",
+
+  dish_idli_sambar: "सांभर के साथ इडली",
+  dish_upma: "उपमा",
+  dish_pesarattu: "पेसरट्टू",
+  dish_puri_potato: "आलू करी के साथ पूरी",
+  dish_egg_dosa: "अंडा डोसा",
+
+  dish_sambar_rice: "सांभर राइस",
+  dish_palakura_annam: "पालक राइस",
+  dish_chicken_pulao: "चिकन पुलाव",
+  dish_curd_rice: "दही चावल",
+  dish_veg_biryani: "वेज बिरयानी",
+
+  dish_roti_tomato_dal: "टमाटर दाल के साथ रोटी",
+  dish_chapati_gongura: "गोंगूरा दाल के साथ चपाती",
+  dish_egg_curry_rice: "अंडा करी और चावल",
+  dish_bisi_bele_bath: "बिसी बेले बाथ",
+  dish_fish_pulusu_rice: "फिश पुलुसु और चावल",
+
+  ing_rice: "चावल",
+  ing_urad_dal: "उड़द दाल",
+  ing_mixed_veg: "मिश्रित सब्जियां",
+  ing_semolina: "सूजी / गेहूं",
+  ing_moong_dal: "मूंग दाल",
+  ing_wheat: "गेहूं का आटा",
+  ing_potato: "आलू",
+  ing_egg: "अंडा",
+  ing_toor_dal: "तूर दाल",
+  ing_spinach: "पालक",
+  ing_chicken: "चिकन",
+  ing_curd: "दही",
+  ing_tomato: "टमाटर",
+  ing_gongura: "गोंगूरा के पत्ते",
+  ing_onion_tomato: "प्याज / टमाटर ग्रेवी",
+  ing_fish: "मछली",
+
   companionHome: "नमस्ते आशा सिस्टर! एमडीडीडब्ल्यू मास्टर चैलेंज में आपका स्वागत है। आइए 10 खाद्य समूहों के बारे में जानें और प्रश्नोत्तरी पूरी करें!",
   companionIntro: "शुरू करने से पहले, कृपया अपना नाम और पीएचसी/गांव का विवरण दर्ज करें। इससे आपकी प्रगति को रिकॉर्ड करने में मदद मिलेगी!",
   companionResultPass: "अद्भुत कार्य, सिस्टर! आप एक सच्चे पोषण चैंपियन हैं। अब आप अपने गाँव की माताओं को हर दिन इन 10 खाद्य समूहों में से कम से कम 5 खाद्य समूहों को शामिल करने के लिए मार्गदर्शन कर सकती हैं!",
@@ -271,6 +355,48 @@ const hi: Dict = {
 };
 
 const te: Dict = {
+
+  dishDecoderTitle: "వంటకం వివరాలు",
+  dishDecoderDesc: "పదార్థాలు మరియు వాటి MDD-W ఆహార సమూహాలను చూడటానికి వంటకం పై క్లిక్ చేయండి.",
+  tabBreakfast: "అల్పాహారం",
+  tabLunch: "మధ్యాహ్న భోజనం",
+  tabDinner: "రాత్రి భోజనం",
+
+  dish_idli_sambar: "సాంబార్ తో ఇడ్లీ",
+  dish_upma: "ఉప్మా",
+  dish_pesarattu: "పెసరట్టు",
+  dish_puri_potato: "బంగాళదుంప కూరతో పూరీ",
+  dish_egg_dosa: "గుడ్డు దోస",
+
+  dish_sambar_rice: "సాంబార్ అన్నం",
+  dish_palakura_annam: "పాలకూర అన్నం",
+  dish_chicken_pulao: "చికెన్ పులావ్",
+  dish_curd_rice: "పెరుగు అన్నం",
+  dish_veg_biryani: "వెజ్ బిర్యానీ",
+
+  dish_roti_tomato_dal: "టమాటా పప్పుతో రోటీ",
+  dish_chapati_gongura: "గోంగూర పప్పుతో చపాతీ",
+  dish_egg_curry_rice: "గుడ్డు కూర మరియు అన్నం",
+  dish_bisi_bele_bath: "బిసి బేలే బాత్",
+  dish_fish_pulusu_rice: "చేపల పులుసు మరియు అన్నం",
+
+  ing_rice: "బియ్యం",
+  ing_urad_dal: "మినప పప్పు",
+  ing_mixed_veg: "కూరగాయలు",
+  ing_semolina: "ఉప్మా రవ్వ / గోధుమ",
+  ing_moong_dal: "పెసర పప్పు",
+  ing_wheat: "గోధుమ పిండి",
+  ing_potato: "బంగాళదుంప",
+  ing_egg: "గుడ్డు",
+  ing_toor_dal: "కంది పప్పు",
+  ing_spinach: "పాలకూర",
+  ing_chicken: "చికెన్",
+  ing_curd: "పెరుగు",
+  ing_tomato: "టమాటా",
+  ing_gongura: "గోంగూర ఆకులు",
+  ing_onion_tomato: "ఉల్లిపాయ / టమాటా గ్రేవీ",
+  ing_fish: "చేప",
+
   companionHome: "హలో ఆశా అక్క! MDDW మాస్టర్ ఛాలెంజ్‌కి స్వాగతం. 10 ఆహార సమూహాల గురించి నేర్చుకుని క్విజ్ పూర్తి చేద్దాం!",
   companionIntro: "మనం ప్రారంభించే ముందు, దయచేసి మీ పేరు మరియు PHC/గ్రామం వివరాలను నమోదు చేయండి. ఇది మీ శిక్షణ పురోగతిని రికార్డ్ చేయడానికి సహాయపడుతుంది!",
   companionResultPass: "అద్భుతమైన పని, అక్క! మీరు నిజమైన పోషకాహార విజేత. ఇప్పుడు మీ గ్రామాల్లోని తల్లులకు ప్రతిరోజూ ఈ 10 ఆహార సమూహాలలో కనీసం 5 ఆహార సమూహాలను చేర్చాలని మార్గదర్శకత్వం చేయవచ్చు!",
