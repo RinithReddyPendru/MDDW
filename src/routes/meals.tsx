@@ -81,15 +81,21 @@ function MealsComponent() {
                 >
                   <button
                     onClick={() => setExpandedDish(isExpanded ? null : meal.id)}
-                    className="flex w-full items-center justify-between p-4 text-left font-bold text-lg active:scale-[0.99] transition-transform"
+                    className="flex flex-col w-full text-left font-bold text-lg active:scale-[0.99] transition-transform group"
                   >
-                    <span>{t(meal.nameKey)}</span>
-                    <motion.span
-                      animate={{ rotate: isExpanded ? 180 : 0 }}
-                      className="text-xl text-primary"
-                    >
-                      {"\u25BC"}
-                    </motion.span>
+                    <div className="relative w-full h-40 bg-muted/20">
+                      <img src={meal.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                      <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end text-white">
+                        <span className="text-xl drop-shadow-md">{t(meal.nameKey)}</span>
+                        <motion.span
+                          animate={{ rotate: isExpanded ? 180 : 0 }}
+                          className="text-xl drop-shadow-md text-white/90"
+                        >
+                          {"\u25BC"}
+                        </motion.span>
+                      </div>
+                    </div>
                   </button>
 
                   <AnimatePresence>
@@ -136,6 +142,7 @@ function MealsComponent() {
     </main>
   );
 }
+
 
 
 
