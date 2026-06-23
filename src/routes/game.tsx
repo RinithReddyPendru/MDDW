@@ -280,6 +280,10 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string) 
       alert(t("enterNameAlert"));
       return;
     }
+    if (!phone.trim()) {
+      alert("Please enter your WhatsApp Mobile Number to receive your certificate.");
+      return;
+    }
     const state = loadProgress();
     state.userName = name;
     state.phcName = phc;
@@ -302,7 +306,7 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string) 
         <h3 className="font-bold mb-4">{t("playerDetails")}</h3>
                   <div className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold mb-1 text-muted-foreground">Mobile Number (Optional)</label>
+              <label className="block text-sm font-semibold mb-1 text-muted-foreground">WhatsApp Mobile Number</label>
               <input 
                 type="tel" 
                 value={phone}
