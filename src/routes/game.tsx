@@ -107,6 +107,7 @@ function GamePage() {
   
   const [mistakes, setMistakes] = useState<{question: string, userAnswer: string, correctAnswer: string}[]>([]);
   const [userName, setUserName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [phcName, setPhcName] = useState("");
 
   const start = (name: string, phc: string) => {

@@ -11,6 +11,8 @@ export interface GameResult {
   date: number;
   userName?: string;
   phcName?: string;
+  phoneNumber?: string;
+  phoneNumber?: string;
   mistakes?: {
     question: string;
     userAnswer: string;
@@ -39,6 +41,7 @@ const DEFAULT: ProgressState = {
   lang: "te",
   userName: "",
   phcName: "",
+  phoneNumber: "",
   sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbzFeaYmJCqD6XYFl-RtsqS2N33DKxHsptZqu43rIuVEGr03cj4HgnXvL44LiN53ZUKN/exec",
 };
 
