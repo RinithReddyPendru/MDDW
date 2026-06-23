@@ -219,6 +219,11 @@ const en: Dict = {
   ing_egg_curry: "Eggs",
   ing_bhindi: "Okra (Bhindi)",
 
+
+  scenarioCounseling: "Counseling: Kamala is pregnant. Today she ate Rice, Dal, and Milk.",
+  scenarioQuestionMissing: "To reach the 5-group minimum, which 2 food groups should she ADD?",
+  shareWhatsapp: "Share to WhatsApp",
+
 };
 
 const hi: Dict = {
@@ -423,6 +428,11 @@ const hi: Dict = {
   ing_ghee: "घी / मक्खन",
   ing_egg_curry: "अंडे",
   ing_bhindi: "भिंडी",
+
+
+  scenarioCounseling: "परामर्श: कमला गर्भवती है। आज उसने चावल, दाल और दूध खाया।",
+  scenarioQuestionMissing: "5-समूह के न्यूनतम लक्ष्य तक पहुँचने के लिए, उसे कौन से 2 खाद्य समूह जोड़ने चाहिए?",
+  shareWhatsapp: "WhatsApp पर शेयर करें",
 
 };
 
@@ -630,6 +640,11 @@ const te: Dict = {
   ing_ghee: "నెయ్యి / వెన్న",
   ing_egg_curry: "గుడ్లు",
   ing_bhindi: "బెండకాయ",
+
+
+  scenarioCounseling: "కౌన్సెలింగ్: కమల గర్భవతి. ఈరోజు ఆమె అన్నం, పప్పు మరియు పాలు తాగింది.",
+  scenarioQuestionMissing: "కనీసం 5-సమూహాల లక్ష్యాన్ని చేరుకోవడానికి, ఆమె ఏ 2 ఆహార సమూహాలను చేర్చాలి?",
+  shareWhatsapp: "WhatsApp ద్వారా షేర్ చేయండి",
 
 };
 

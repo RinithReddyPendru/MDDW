@@ -31,7 +31,7 @@ const POINTS_WRONG = 0;
 
 export type Question =
   | { type: "single_food"; food: QuizFood; options: FoodGroupId[]; correctIndex: number; }
-  | { type: "scenario"; scenarioKey: string; foods: QuizFood[]; options: FoodGroupId[]; correctIndices: number[]; };
+  | { type: "scenario"; scenarioKey: string; customQuestionKey?: string; foods: QuizFood[]; options: FoodGroupId[]; correctIndices: number[]; };
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -72,7 +72,16 @@ function buildQuestions(FOOD_GROUPS: ReturnType<typeof getFoodGroups>): Question
   const s2Opts = shuffle([...s2Groups, ...s2Distractors]);
   const s2Correct = s2Opts.map((id, i) => s2Groups.includes(id) ? i : -1).filter(i => i !== -1);
 
+  
+  // Scenario 3: Recommendation (Grains, Pulses, Dairy). Missing 2 for 5-group minimum.
+  const s3Foods = [QUIZ_FOODS.find(f => f.name === "Rice")!, QUIZ_FOODS.find(f => f.name === "Toor Dal")!, QUIZ_FOODS.find(f => f.name === "Milk")!];
+  const s3CorrectGroups: FoodGroupId[] = ["dglv", "vit_a_rich"];
+  const s3Distractors = shuffle(FOOD_GROUPS.map(g => g.id).filter(id => !s3CorrectGroups.includes(id) && !["grains", "pulses", "dairy"].includes(id))).slice(0, 3);
+  const s3Opts = shuffle([...s3CorrectGroups, ...s3Distractors]);
+  const s3Correct = s3Opts.map((id, i) => s3CorrectGroups.includes(id) ? i : -1).filter(i => i !== -1);
+
   const scenarios: Question[] = [
+    { type: "scenario", scenarioKey: "scenarioCounseling", customQuestionKey: "scenarioQuestionMissing", foods: s3Foods, options: s3Opts, correctIndices: s3Correct },
     { type: "scenario", scenarioKey: "scenarioKamala", foods: s1Foods, options: s1Opts, correctIndices: s1Correct },
     { type: "scenario", scenarioKey: "scenarioRani", foods: s2Foods, options: s2Opts, correctIndices: s2Correct },
   ];
@@ -444,8 +453,8 @@ function Play({
             ))}
           </div>
           <div className="text-sm uppercase font-bold text-primary tracking-wide">
-            {t("scenarioQuestion")}
-          </div>
+              {t((q.customQuestionKey || "scenarioQuestion") as any)}
+            </div>
         </motion.div>
       )}
 
