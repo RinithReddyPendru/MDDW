@@ -110,9 +110,10 @@ function GamePage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phcName, setPhcName] = useState("");
 
-  const start = (name: string, phc: string) => {
+  const start = (name: string, phc: string, phone: string) => {
     setUserName(name);
     setPhcName(phc);
+    setPhoneNumber(phone);
     setQuestions(buildQuestions(FOOD_GROUPS));
     setQIdx(0);
     setScore(0);
@@ -269,9 +270,10 @@ function GamePage() {
   );
 }
 
-function Intro({ onStart, t }: { onStart: (n: string, p: string) => void; t: (k: any) => string }) {
+function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string) => void; t: (k: any) => string }) {
   const [name, setName] = useState("");
   const [phc, setPhc] = useState("");
+  const [phone, setPhone] = useState("");
 
   const handleStart = () => {
     if (!name.trim()) {
@@ -282,7 +284,7 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string) => void; t: (k:
     state.userName = name;
     state.phcName = phc;
     saveProgress(state);
-    onStart(name, phc);
+    onStart(name, phc, phone);
   };
 
   return (
@@ -298,8 +300,18 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string) => void; t: (k:
       
       <div className="glass rounded-2xl p-5 border-2 border-border/50 mb-6 shadow-sm">
         <h3 className="font-bold mb-4">{t("playerDetails")}</h3>
-        <div className="space-y-4">
-          <div>
+                  <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold mb-1 text-muted-foreground">Mobile Number (Optional)</label>
+              <input 
+                type="tel" 
+                value={phone}
+                onChange={e => setPhone(e.target.value)}
+                className="w-full bg-background border-2 border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition"
+                placeholder="e.g. 9876543210"
+              />
+            </div>
+            <div>
             <label className="block text-sm font-semibold mb-1 text-muted-foreground">{t("yourName")}</label>
             <input 
               type="text" 
