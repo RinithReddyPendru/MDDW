@@ -58,18 +58,36 @@ function Index() {
           ))}
         </div>
 
-                <nav className="flex flex-col gap-3">
+        <nav className="flex flex-col gap-3">
           <Link
             to="/learn"
+            className="rounded-2xl bg-secondary text-secondary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
+          >
+            {"📖"} {t("learnFoodGroups")}
+          </Link>
+          <Link
+            to="/plate"
+            className="rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
+          >
+            {"🍽"} {t("buildPlate")}
+          </Link>
+          <Link
+            to="/game" search={{ mode: "image" }}
             className="rounded-2xl bg-primary text-primary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
           >
-            🚀 {t("nav_course")}
+            {"📸"} {t("dishDecoderTitle")}
+          </Link>
+          <Link
+            to="/game" search={{ mode: "counseling" }}
+            className="rounded-2xl bg-amber-600 hover:bg-amber-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
+          >
+            {"🗣"} {t("startTraining")}
           </Link>
           <Link
             to="/progress"
             className="rounded-2xl bg-card text-foreground border-2 border-border/50 px-5 py-4 text-lg font-bold text-center shadow-sm active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
           >
-            📈 {t("myProgress")}
+            {"📈"} {t("myProgress")}
           </Link>
         </nav>
 

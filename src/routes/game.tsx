@@ -25,6 +25,11 @@ export const Route = createFileRoute("/game")({
     ],
   }),
   component: GamePage,
+  validateSearch: (search: Record<string, unknown>) => {
+    return {
+      mode: search.mode as string || 'image',
+    }
+  },
 });
 
 type GameMode = "standard" | "counseling" | "visual";
