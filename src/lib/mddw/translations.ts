@@ -9,6 +9,8 @@ export const LANGS: { code: Lang; label: string }[] = [
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  suggest_prompt: "It seems the mother only ate a few foods. What additional food group could you suggest to her to improve her diet?",
+  suggest_wrong: "Not quite! Try suggesting a food group she missed.",
 
   dishDecoderTitle: "Dish Breakdown",
   dishDecoderDesc: "Click on a dish to see its ingredients and their MDD-W food groups.",
@@ -227,6 +229,8 @@ const en: Dict = {
 };
 
 const hi: Dict = {
+  suggest_prompt: "ऐसा लगता है कि माँ ने केवल कुछ खाद्य पदार्थ खाए हैं। आप उसे अपने आहार में सुधार करने के लिए कौन सा अतिरिक्त खाद्य समूह सुझा सकते हैं?",
+  suggest_wrong: "बिल्कुल नहीं! उसे एक ऐसा खाद्य समूह सुझाने का प्रयास करें जो उसने नहीं खाया।",
   askNext: "आप आगे क्या पूछेंगी?",
   finishScenario: "दृश्य समाप्त करें",
   "Nothing special today. Just rice and pappu (dal).": "आज कुछ खास नहीं। बस चावल और दाल।",
@@ -487,6 +491,8 @@ const hi: Dict = {
 };
 
 const te: Dict = {
+  suggest_prompt: "తల్లి కొన్ని ఆహారాలను మాత్రమే తిన్నట్లుంది. ఆమె ఆహారాన్ని మెరుగుపరచడానికి మీరు ఆమెకు ఏ అదనపు ఆహార సమూహాన్ని సూచించగలరు?",
+  suggest_wrong: "సరిగ్గా కాదు! ఆమె తినని ఆహార సమూహాన్ని సూచించడానికి ప్రయత్నించండి.",
   askNext: "మీరు తదుపరి ఏమి అడుగుతారు?",
   finishScenario: "సన్నివేశాన్ని ముగించండి",
   "Nothing special today. Just rice and pappu (dal).": "ఈరోజు ప్రత్యేకంగా ఏమీ లేదు. కేవలం అన్నం, పప్పు.",
