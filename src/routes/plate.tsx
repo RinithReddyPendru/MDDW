@@ -273,19 +273,29 @@ function PlateSandbox() {
           </div>
 
           {/* Bottom Actions */}
-          <div className="flex gap-2.5">
-            <button
-              onClick={handleClear}
-              className="flex-1 rounded-xl bg-muted hover:bg-muted/80 text-foreground py-2.5 font-bold text-center active:scale-[0.98] border border-border transition text-xs"
-            >
-              ❌ {t("clearPlate")}
-            </button>
-            <Link
-              to="/"
-              className="flex-1 rounded-xl bg-primary text-primary-foreground py-2.5 font-bold text-center active:scale-[0.98] transition text-xs shadow-md"
-            >
-              🏠 {t("home")}
-            </Link>
+          <div className="flex flex-col gap-2.5">
+            {isDiverse && (
+              <Link
+                to="/game"
+                className="w-full rounded-xl bg-purple-600 hover:bg-purple-700 text-white py-3 font-bold text-center active:scale-[0.98] transition shadow-md flex items-center justify-center gap-2"
+              >
+                {t("nav_scenarios") || "Next: Practical Scenarios"} ➡️
+              </Link>
+            )}
+            <div className="flex gap-2.5">
+              <button
+                onClick={handleClear}
+                className="flex-1 rounded-xl bg-muted hover:bg-muted/80 text-foreground py-2.5 font-bold text-center active:scale-[0.98] border border-border transition text-xs"
+              >
+                🧹 {t("clearPlate")}
+              </button>
+              <Link
+                to="/"
+                className="flex-1 rounded-xl bg-primary text-primary-foreground py-2.5 font-bold text-center active:scale-[0.98] transition text-xs shadow-md"
+              >
+                🏠 {t("home")}
+              </Link>
+            </div>
           </div>
         </div>
 

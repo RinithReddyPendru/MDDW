@@ -181,7 +181,7 @@ function GamePage() {
         <AnimatePresence mode="wait">
           {phase === "intro" && <Intro key="intro" onStart={start} t={t} />}
           {phase === "playing" && current && current.type === "probing_scenario" && (
-            <PlayProbing key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} />
+            <PlayProbing key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} t={t} lang={lang} foodGroupMap={FOOD_GROUP_MAP} allGroups={FOOD_GROUPS} />
           )}
           {phase === "playing" && current && current.type === "image_dish" && (
             <PlayImageDish key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} foodGroupMap={FOOD_GROUP_MAP} t={t} />
@@ -490,30 +490,76 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap }: any) {
   );
 }
 
-function PlayProbing({ q, qIdx, total, onNext }: any) {
+function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups }: any) {
   const data = q.data;
   const [stepId, setStepId] = useState(data.firstStepId);
   const [discovered, setDiscovered] = useState(data.initialDiscovered);
   const [finished, setFinished] = useState(false);
   const [feedback, setFeedback] = useState<string|null>(null);
+  
+  // Suggestion Step State
+  const [suggestStep, setSuggestStep] = useState(false);
+  const [suggestOptions, setSuggestOptions] = useState<any[]>([]);
 
   const currentStep = data.steps[stepId];
 
   const handleOption = (opt: any) => {
     if (opt.feedback && !opt.isCorrect) {
-      setFeedback(opt.feedback);
+      setFeedback(t(opt.feedback) !== opt.feedback ? t(opt.feedback) : opt.feedback);
       playFailure();
       return;
     }
     setFeedback(null);
     playSuccess();
+    
+    let newDiscovered = [...discovered];
     if (opt.discoveredGroups) {
-      setDiscovered((prev: any) => [...prev, ...opt.discoveredGroups]);
+      newDiscovered = [...newDiscovered, ...opt.discoveredGroups];
+      setDiscovered(newDiscovered);
     }
+    
     if (opt.nextStepId) {
       setStepId(opt.nextStepId);
     } else if (opt.isCorrect) {
+      // Check if suggestion step is needed (less than 5 groups)
+      const uniqueGroupIds = Array.from(new Set(newDiscovered.map(g => g.id)));
+      if (uniqueGroupIds.length < 5) {
+        // Generate suggestion options
+        const missingGroups = allGroups.filter((g:any) => !uniqueGroupIds.includes(g.id));
+        const presentGroups = allGroups.filter((g:any) => uniqueGroupIds.includes(g.id));
+        
+        const correctOpt = missingGroups[Math.floor(Math.random() * missingGroups.length)];
+        // Pick 2 distractors from already present (if available) or random others
+        const distractors = presentGroups.sort(() => 0.5 - Math.random()).slice(0, 2);
+        if (distractors.length < 2) {
+           const otherMissing = missingGroups.filter((g:any) => g.id !== correctOpt.id).sort(() => 0.5 - Math.random()).slice(0, 2 - distractors.length);
+           distractors.push(...otherMissing);
+        }
+        
+        const opts = [
+           { group: correctOpt, isCorrect: true },
+           { group: distractors[0], isCorrect: false },
+           { group: distractors[1], isCorrect: false }
+        ].sort(() => 0.5 - Math.random());
+        
+        setSuggestOptions(opts);
+        setSuggestStep(true);
+      } else {
+        setFinished(true);
+      }
+    }
+  };
+  
+  const handleSuggestPick = (opt: any) => {
+    if (opt.isCorrect) {
+      playSuccess();
+      setFeedback(null);
       setFinished(true);
+      setSuggestStep(false);
+      setDiscovered([...discovered, { id: opt.group.id, name: opt.group.name, emoji: opt.group.emoji }]);
+    } else {
+      playFailure();
+      setFeedback(t("suggest_wrong"));
     }
   };
 
@@ -538,35 +584,60 @@ function PlayProbing({ q, qIdx, total, onNext }: any) {
           </div>
         </div>
 
-        {!finished ? (
+        {!finished && !suggestStep ? (
           <div className="mb-6">
             <div className="bg-purple-600/10 text-foreground p-4 rounded-2xl rounded-tl-none font-medium text-lg leading-relaxed shadow-sm">
-              {currentStep.motherText}
+              {t(currentStep.motherText)}
             </div>
+          </div>
+        ) : suggestStep ? (
+          <div className="mb-6">
+             <div className="bg-amber-500/10 text-foreground p-4 rounded-2xl rounded-tl-none font-medium text-lg leading-relaxed shadow-sm">
+                {t("suggest_prompt")}
+             </div>
           </div>
         ) : (
           <div className="mb-6 bg-secondary/15 text-secondary-foreground p-4 rounded-2xl font-bold text-center">
-            {data.finalLesson}
+            {t(data.finalLesson)}
           </div>
         )}
 
         <div className="flex flex-wrap gap-2 justify-center">
           <AnimatePresence>
-            {discovered.map((g: any, i: number) => (
-              <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-card border-2 border-border px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-sm">
-                <span>{g.emoji}</span> {g.name}
-              </motion.div>
-            ))}
+            {discovered.map((g: any, i: number) => {
+              const translatedG = foodGroupMap[g.id];
+              return (
+                <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-card border-2 border-border px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-sm">
+                  <span>{translatedG?.emoji || g.emoji}</span> {translatedG?.name || g.name}
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </div>
       </div>
 
-      {!finished && (
+      {!finished && !suggestStep && (
         <div className="space-y-3">
-          <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">What do you ask next?</div>
+          <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">{t('askNext' as any)}</div>
           {currentStep.options.map((opt: any, i: number) => (
             <button key={i} onClick={() => handleOption(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-4 rounded-2xl font-medium transition active:scale-[0.98]">
-              {opt.text}
+              {t(opt.text)}
+            </button>
+          ))}
+          {feedback && (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-destructive/15 text-destructive p-4 rounded-xl text-sm font-bold mt-2">
+              ⚠️ {feedback}
+            </motion.div>
+          )}
+        </div>
+      )}
+      
+      {suggestStep && (
+        <div className="space-y-3">
+          <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Select a food group</div>
+          {suggestOptions.map((opt: any, i: number) => (
+            <button key={i} onClick={() => handleSuggestPick(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-4 rounded-2xl font-medium transition active:scale-[0.98] flex items-center gap-3">
+              <span className="text-2xl">{opt.group.emoji}</span> <span>{opt.group.name}</span>
             </button>
           ))}
           {feedback && (
