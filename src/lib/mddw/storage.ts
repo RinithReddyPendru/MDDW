@@ -1,4 +1,4 @@
-﻿import type { Lang } from "./translations";
+import type { Lang } from "./translations";
 import { t } from "./translations";
 
 export interface GameResult {
@@ -27,6 +27,7 @@ export interface ProgressState {
   lang: Lang;
   userName?: string;
   phcName?: string;
+  phoneNumber?: string;
   sheetsWebhookUrl?: string;
 }
 
