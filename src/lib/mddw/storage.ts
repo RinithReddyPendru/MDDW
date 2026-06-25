@@ -12,7 +12,6 @@ export interface GameResult {
   userName?: string;
   phcName?: string;
   phoneNumber?: string;
-  phoneNumber?: string;
   mistakes?: {
     question: string;
     userAnswer: string;

@@ -14,6 +14,7 @@ import { playPop, playSuccess, playFailure } from "@/lib/mddw/audio";
 import { useLang } from "@/lib/mddw/useLang";
 import html2canvas from "html2canvas";
 import { NutriCompanion } from "@/components/mddw/NutriCompanion";
+import { PROBING_SCENARIOS, type ProbingScenarioData } from "@/lib/mddw/probingScenarios";
 
 export const Route = createFileRoute("/game")({
   head: () => ({
@@ -31,7 +32,9 @@ const POINTS_WRONG = 0;
 
 export type Question =
   | { type: "single_food"; food: QuizFood; options: FoodGroupId[]; correctIndex: number; }
-  | { type: "scenario"; scenarioKey: string; customQuestionKey?: string; foods: QuizFood[]; options: FoodGroupId[]; correctIndices: number[]; };
+  | { type: "scenario"; scenarioKey: string; customQuestionKey?: string; foods: QuizFood[]; options: FoodGroupId[]; correctIndices: number[]; }
+  | { type: "image_dish"; imagePath: string; dishNameKey: string; options: FoodGroupId[]; correctIndices: number[]; }
+  | { type: "probing_scenario"; scenarioId: string; data: ProbingScenarioData; };
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -75,7 +78,7 @@ function buildQuestions(FOOD_GROUPS: ReturnType<typeof getFoodGroups>): Question
   
   // Scenario 3: Recommendation (Grains, Pulses, Dairy). Missing 2 for 5-group minimum.
   const s3Foods = [QUIZ_FOODS.find(f => f.name === "Rice")!, QUIZ_FOODS.find(f => f.name === "Toor Dal")!, QUIZ_FOODS.find(f => f.name === "Milk")!];
-  const s3CorrectGroups: FoodGroupId[] = ["dglv", "vit_a_rich"];
+  const s3CorrectGroups: FoodGroupId[] = ["dglv", "vita_rich"];
   const s3Distractors = shuffle(FOOD_GROUPS.map(g => g.id).filter(id => !s3CorrectGroups.includes(id) && !["grains", "pulses", "dairy"].includes(id))).slice(0, 3);
   const s3Opts = shuffle([...s3CorrectGroups, ...s3Distractors]);
   const s3Correct = s3Opts.map((id, i) => s3CorrectGroups.includes(id) ? i : -1).filter(i => i !== -1);
@@ -86,7 +89,22 @@ function buildQuestions(FOOD_GROUPS: ReturnType<typeof getFoodGroups>): Question
     { type: "scenario", scenarioKey: "scenarioRani", foods: s2Foods, options: s2Opts, correctIndices: s2Correct },
   ];
 
-  return [...normalQs, ...scenarios];
+    const standardQs = [...normalQs, ...scenarios].slice(0, 10);
+
+  const allGroupsOptions = FOOD_GROUPS.map(g => g.id);
+  const practicalQs: Question[] = [
+    { 
+      type: "image_dish" as const, 
+      imagePath: "/assets/images/practical_thali.png", 
+      dishNameKey: "dish_idli_sambar", 
+      options: allGroupsOptions, 
+      correctIndices: allGroupsOptions.map((id, i) => ["grains", "pulses", "dglv"].includes(id) ? i : -1).filter(i => i !== -1)
+    },
+    { type: "probing_scenario" as const, scenarioId: "scenario_a", data: PROBING_SCENARIOS["scenario_a"] },
+    { type: "probing_scenario" as const, scenarioId: "scenario_b", data: PROBING_SCENARIOS["scenario_b"] }
+  ];
+
+  return [...standardQs, ...practicalQs];
 }
 
 type Phase = "intro" | "playing" | "result";
@@ -373,7 +391,7 @@ function Play({
   lang,
   t,
 }: {
-  q: Question;
+  q: Extract<Question, { type: "single_food" | "scenario" }>;
   qIdx: number;
   total: number;
   score: number;
@@ -931,3 +949,177 @@ function Stat({ label, value, accent }: { label: string; value: string | number;
 }
 
 // Force trigger HMR
+
+
+function PlayImageDish({
+  q, qIdx, total, score, multiPicked, multiSubmitted, onMultiSubmit, onPick, onNext, foodGroupMap, t
+}: {
+  q: Extract<Question, { type: "image_dish" }>;
+  qIdx: number; total: number; score: number; multiPicked: number[]; multiSubmitted: boolean;
+  onMultiSubmit: () => void; onPick: (i: number) => void; onNext: () => void;
+  foodGroupMap: any; t: any;
+}) {
+  const isRight = (i: number) => q.correctIndices.includes(i);
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <div className="flex items-center justify-between mb-3">
+         <div className="font-bold text-primary text-sm tracking-widest uppercase">Practical Round</div>
+         <div className="text-muted-foreground text-sm">Q {qIdx + 1} / {total}</div>
+      </div>
+      <div className="h-2 rounded-full bg-muted overflow-hidden mb-5">
+        <motion.div className="h-full bg-primary" initial={{ width: 0 }} animate={{ width: `${((qIdx + 1) / total) * 100}%` }} transition={{ duration: 0.4 }} />
+      </div>
+
+      <div className="rounded-3xl glass border-2 border-border/50 overflow-hidden shadow-lg mb-5 relative">
+        <div className="absolute top-3 right-3 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-bold uppercase backdrop-blur-sm z-10">
+          Real-Life Meal
+        </div>
+        <img src={q.imagePath} alt="Meal" className="w-full h-64 object-cover object-center" />
+        <div className="p-4 bg-card">
+          <h3 className="font-bold text-lg mb-1">What food groups can you spot?</h3>
+          <p className="text-sm text-muted-foreground">Select all that apply.</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2.5">
+        {q.options.map((opt, i) => {
+          const g = foodGroupMap[opt as string];
+          if (!g) return null;
+          const isPicked = multiPicked.includes(i);
+          const right = isRight(i);
+          let stateClass = "bg-card border-border";
+          if (multiSubmitted) {
+            if (right && isPicked) stateClass = "bg-secondary/20 border-secondary text-foreground";
+            else if (right && !isPicked) stateClass = "bg-secondary/10 border-secondary border-dashed text-foreground opacity-80";
+            else if (!right && isPicked) stateClass = "bg-destructive/15 border-destructive text-foreground";
+            else stateClass = "bg-card border-border opacity-50";
+          } else if (isPicked) {
+            stateClass = "bg-primary/10 border-primary border-2 text-foreground";
+          }
+          return (
+            <motion.button
+              key={opt as string} onClick={() => onPick(i)} disabled={multiSubmitted} whileTap={!multiSubmitted ? { scale: 0.98 } : undefined}
+              className={`rounded-2xl border-2 p-3 text-left flex items-center gap-2 shadow-sm transition ${stateClass}`}
+            >
+              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 ${isPicked ? 'bg-primary border-primary' : 'border-muted-foreground/30'}`}>
+                {isPicked && <div className="w-2.5 h-2.5 bg-primary-foreground rounded-sm" />}
+              </div>
+              <span className="text-xl shrink-0" aria-hidden>{g.emoji}</span>
+              <span className="flex-1 font-bold text-xs leading-tight">{g.name}</span>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {!multiSubmitted && multiPicked.length > 0 && (
+        <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} onClick={onMultiSubmit} className="mt-6 w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md min-h-14">
+          Submit Answer
+        </motion.button>
+      )}
+
+      {multiSubmitted && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-4 flex flex-col gap-3">
+          <button onClick={onNext} className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md min-h-14">
+            Next ➡️
+          </button>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+}
+
+
+function PlayProbing({ q, qIdx, total, score, onNext, setScore }: { q: Extract<Question, { type: "probing_scenario" }>; qIdx: number; total: number; score: number; onNext: () => void; setScore: any; }) {
+  const data = q.data;
+  const [stepId, setStepId] = useState(data.firstStepId);
+  const [discovered, setDiscovered] = useState(data.initialDiscovered);
+  const [finished, setFinished] = useState(false);
+  const [feedback, setFeedback] = useState<string|null>(null);
+
+  const currentStep = data.steps[stepId];
+
+  const handleOption = (opt: any) => {
+    if (opt.feedback && !opt.isCorrect) {
+      setFeedback(opt.feedback);
+      return;
+    }
+    setFeedback(null);
+    if (opt.discoveredGroups) {
+      setDiscovered((prev: any) => [...prev, ...opt.discoveredGroups]);
+    }
+    if (opt.nextStepId) {
+      setStepId(opt.nextStepId);
+    } else if (opt.isCorrect) {
+      setScore((s: number) => s + 10);
+      setFinished(true);
+    }
+  };
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+      <div className="flex items-center justify-between mb-3">
+         <div className="font-bold text-primary text-sm tracking-widest uppercase">Counseling Practice</div>
+         <div className="text-muted-foreground text-sm">Q {qIdx + 1} / {total}</div>
+      </div>
+      <div className="h-2 rounded-full bg-muted overflow-hidden mb-5">
+        <motion.div className="h-full bg-primary" initial={{ width: 0 }} animate={{ width: `${((qIdx + 1) / total) * 100}%` }} transition={{ duration: 0.4 }} />
+      </div>
+
+      <div className="glass rounded-3xl p-6 border-2 border-border/50 mb-6 shadow-sm">
+        <div className="flex items-center gap-4 border-b-2 border-border/50 pb-4 mb-4">
+          <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center text-3xl shrink-0 shadow-inner">
+            {data.avatarIcon}
+          </div>
+          <div>
+            <div className="font-bold text-lg">{data.motherName}</div>
+            <div className="text-sm text-muted-foreground">Mother</div>
+          </div>
+        </div>
+
+        {!finished ? (
+          <div className="mb-6">
+            <div className="bg-primary/10 text-primary-foreground text-foreground p-4 rounded-2xl rounded-tl-none font-medium text-lg leading-relaxed shadow-sm">
+              {currentStep.motherText}
+            </div>
+          </div>
+        ) : (
+          <div className="mb-6 bg-secondary/15 text-secondary-foreground p-4 rounded-2xl font-bold text-center">
+            {data.finalLesson}
+          </div>
+        )}
+
+        <div className="flex flex-wrap gap-2 justify-center">
+          <AnimatePresence>
+            {discovered.map((g: any, i: number) => (
+              <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-card border-2 border-border px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-sm">
+                <span>{g.emoji}</span> {g.name}
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {!finished && (
+        <div className="space-y-3">
+          <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">What do you ask next?</div>
+          {currentStep.options.map((opt: any, i: number) => (
+            <button key={i} onClick={() => handleOption(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-4 rounded-2xl font-medium transition active:scale-[0.98]">
+              {opt.text}
+            </button>
+          ))}
+          {feedback && (
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-destructive/15 text-destructive p-4 rounded-xl text-sm font-bold mt-2">
+              {"⚠️"} {feedback}
+            </motion.div>
+          )}
+        </div>
+      )}
+
+      {finished && (
+        <button onClick={onNext} className="mt-6 w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md min-h-14">
+          Finish Scenario ➡️
+        </button>
+      )}
+    </motion.div>
+  );
+}
