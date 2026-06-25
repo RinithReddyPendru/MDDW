@@ -211,7 +211,7 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string, 
 
   const handleStart = () => {
     if (!name.trim()) return alert(t("enterNameAlert"));
-    if (!phone.trim()) return alert("Please enter your WhatsApp Mobile Number to receive your certificate.");
+    if (!phone.trim()) return alert(t("whatsappAlert"));
     
     const state = loadProgress();
     state.userName = name;
@@ -225,19 +225,19 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string, 
       <NutriCompanion message={t("companionIntro")} />
       
       <div className="glass rounded-2xl p-5 border-2 border-border/50 mb-4 shadow-sm">
-        <h3 className="font-bold mb-4">Select Quiz Mode</h3>
+        <h3 className="font-bold mb-4">{t("selectQuizMode")}</h3>
         <div className="grid grid-cols-1 gap-3">
           <button onClick={() => setMode("standard")} className={`p-4 rounded-xl border-2 text-left transition ${mode === "standard" ? "bg-primary/10 border-primary" : "bg-card border-border"}`}>
             <div className="font-bold text-lg">📚 Standard MCQ</div>
-            <div className="text-sm text-muted-foreground mt-1">10 questions on basic food groups.</div>
+            <div className="text-sm text-muted-foreground mt-1">{t("modeStandardDesc")}</div>
           </button>
           <button onClick={() => setMode("counseling")} className={`p-4 rounded-xl border-2 text-left transition ${mode === "counseling" ? "bg-secondary/10 border-secondary" : "bg-card border-border"}`}>
             <div className="font-bold text-lg">🗣️ Counseling Practice</div>
-            <div className="text-sm text-muted-foreground mt-1">5 interactive mother interviews.</div>
+            <div className="text-sm text-muted-foreground mt-1">{t("modeCounselingDesc")}</div>
           </button>
           <button onClick={() => setMode("visual")} className={`p-4 rounded-xl border-2 text-left transition ${mode === "visual" ? "bg-blue-500/10 border-blue-500" : "bg-card border-border"}`}>
             <div className="font-bold text-lg">📸 Real-Life Meals</div>
-            <div className="text-sm text-muted-foreground mt-1">5 visual plate identification rounds.</div>
+            <div className="text-sm text-muted-foreground mt-1">{t("modeVisualDesc")}</div>
           </button>
         </div>
       </div>
@@ -246,8 +246,8 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string, 
         <h3 className="font-bold mb-4">{t("playerDetails")}</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-semibold mb-1 text-muted-foreground">WhatsApp Mobile Number</label>
-            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-background border-2 border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition" placeholder="e.g. 9876543210" />
+            <label className="block text-sm font-semibold mb-1 text-muted-foreground">{t("whatsappLabel")}</label>
+            <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-background border-2 border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition" placeholder={t("whatsappPlaceholder") as string} />
           </div>
           <div>
             <label className="block text-sm font-semibold mb-1 text-muted-foreground">{t("yourName")}</label>
