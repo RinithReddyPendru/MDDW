@@ -9,6 +9,17 @@ export const LANGS: { code: Lang; label: string }[] = [
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  selectQuizMode: "Select Quiz Mode",
+  modeStandard: "Standard MCQ",
+  modeStandardDesc: "10 questions on basic food groups.",
+  modeCounseling: "Counseling Practice",
+  modeCounselingDesc: "5 interactive mother interviews.",
+  modeVisual: "Real-Life Meals",
+  modeVisualDesc: "5 visual plate identification rounds.",
+  whatsappLabel: "WhatsApp Mobile Number",
+  whatsappPlaceholder: "e.g. 9876543210",
+  whatsappAlert: "Please enter your WhatsApp Mobile Number to receive your certificate.",
+
   suggest_prompt: "It seems the mother only ate a few foods. What additional food group could you suggest to her to improve her diet?",
   suggest_wrong: "Not quite! Try suggesting a food group she missed.",
 
@@ -384,6 +395,17 @@ const en: Dict = {
 };
 
 const hi: Dict = {
+  selectQuizMode: "क्विज़ मोड चुनें",
+  modeStandard: "मानक प्रश्नोत्तरी",
+  modeStandardDesc: "बुनियादी खाद्य समूहों पर 10 प्रश्न।",
+  modeCounseling: "परामर्श अभ्यास",
+  modeCounselingDesc: "5 संवादात्मक माता साक्षात्कार।",
+  modeVisual: "वास्तविक भोजन",
+  modeVisualDesc: "5 प्लेट पहचान राउंड।",
+  whatsappLabel: "व्हाट्सएप मोबाइल नंबर",
+  whatsappPlaceholder: "उदा. 9876543210",
+  whatsappAlert: "अपना प्रमाणपत्र प्राप्त करने के लिए कृपया अपना व्हाट्सएप मोबाइल नंबर दर्ज करें।",
+
   suggest_prompt: "ऐसा लगता है कि माँ ने केवल कुछ खाद्य पदार्थ खाए हैं। आप उसे अपने आहार में सुधार करने के लिए कौन सा अतिरिक्त खाद्य समूह सुझा सकते हैं?",
   suggest_wrong: "बिल्कुल नहीं! उसे एक ऐसा खाद्य समूह सुझाने का प्रयास करें जो उसने नहीं खाया।",
   askNext: "आप आगे क्या पूछेंगी?",
@@ -801,6 +823,17 @@ const hi: Dict = {
 };
 
 const te: Dict = {
+  selectQuizMode: "క్విజ్ మోడ్‌ను ఎంచుకోండి",
+  modeStandard: "ప్రామాణిక క్విజ్",
+  modeStandardDesc: "ప్రాథమిక ఆహార సమూహాలపై 10 ప్రశ్నలు.",
+  modeCounseling: "కౌన్సెలింగ్ సాధన",
+  modeCounselingDesc: "5 ఇంటరాక్టివ్ తల్లి ఇంటర్వ్యూలు.",
+  modeVisual: "నిజ జీవిత భోజనం",
+  modeVisualDesc: "5 ప్లేట్ గుర్తింపు రౌండ్లు.",
+  whatsappLabel: "వాట్సాప్ మొబైల్ నంబర్",
+  whatsappPlaceholder: "ఉదా. 9876543210",
+  whatsappAlert: "మీ సర్టిఫికేట్‌ను స్వీకరించడానికి దయచేసి మీ వాట్సాప్ మొబైల్ నంబర్‌ను నమోదు చేయండి.",
+
   suggest_prompt: "తల్లి కొన్ని ఆహారాలను మాత్రమే తిన్నట్లుంది. ఆమె ఆహారాన్ని మెరుగుపరచడానికి మీరు ఆమెకు ఏ అదనపు ఆహార సమూహాన్ని సూచించగలరు?",
   suggest_wrong: "సరిగ్గా కాదు! ఆమె తినని ఆహార సమూహాన్ని సూచించడానికి ప్రయత్నించండి.",
   askNext: "మీరు తదుపరి ఏమి అడుగుతారు?",
