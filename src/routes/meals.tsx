@@ -20,6 +20,7 @@ function MealsComponent() {
   const tabs: { id: MealCategory; label: string }[] = [
     { id: "breakfast", label: t("tabBreakfast") },
     { id: "lunch", label: t("tabLunch") },
+    { id: "snack", label: t("tabSnack") || "Snacks" },
     { id: "dinner", label: t("tabDinner") },
   ];
 
