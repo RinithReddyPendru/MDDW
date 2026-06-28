@@ -26,7 +26,7 @@ function MealsComponent() {
 
   return (
     <main className="min-h-dvh flex flex-col bg-background pb-10">
-      <AppHeader />
+      <AppHeader showBack />
       <div className="flex-1 mx-auto w-full max-w-xl px-4 py-6 flex flex-col gap-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}

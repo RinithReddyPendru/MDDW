@@ -392,6 +392,7 @@ const en: Dict = {
   dish_chapati_with_egg_bhurji: "Chapati with Egg Bhurji",
   dish_rice_with_dosakaya_pachadi: "Rice with Dosakaya Pachadi",
 
+
 };
 
 const hi: Dict = {
@@ -819,6 +820,7 @@ const hi: Dict = {
   dish_rice_with_bendakaya_fry: "Rice with Bendakaya Fry (हिंदी)",
   dish_chapati_with_egg_bhurji: "Chapati with Egg Bhurji (हिंदी)",
   dish_rice_with_dosakaya_pachadi: "Rice with Dosakaya Pachadi (हिंदी)",
+
 
 };
 
@@ -1249,6 +1251,7 @@ const te: Dict = {
   dish_rice_with_bendakaya_fry: "Rice with Bendakaya Fry (తెలుగు)",
   dish_chapati_with_egg_bhurji: "Chapati with Egg Bhurji (తెలుగు)",
   dish_rice_with_dosakaya_pachadi: "Rice with Dosakaya Pachadi (తెలుగు)",
+
 
 };
 
