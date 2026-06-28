@@ -72,7 +72,7 @@ function Index() {
             {"🍽"} {t("buildPlate")}
           </Link>
           <Link
-            to="/game" search={{ mode: "image" }}
+            to="/meals"
             className="rounded-2xl bg-primary text-primary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
           >
             {"📸"} {t("dishDecoderTitle")}

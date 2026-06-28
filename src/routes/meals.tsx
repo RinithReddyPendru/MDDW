@@ -166,13 +166,17 @@ function DishModal({ mealId, onClose, lang, t }: any) {
                      key={i} 
                      className="flex items-center justify-between bg-muted/40 p-4 rounded-2xl border border-border/50"
                    >
-                      <span className="font-bold text-lg text-foreground">{t(ing.nameKey)}</span>
+                      <div className="flex flex-col pr-3">
+                        <span className="font-bold text-base text-foreground">{group.name}</span>
+                        <span className="text-xs font-medium text-muted-foreground mt-0.5 line-clamp-2">
+                          {group.examples.join(", ")}
+                        </span>
+                      </div>
                       <div
-                        className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-bold shadow-sm"
+                        className="flex items-center justify-center w-10 h-10 rounded-full shadow-sm shrink-0"
                         style={{ backgroundColor: `var(--${group.colorVar}-bg)`, color: `var(--${group.colorVar}-text)` }}
                       >
-                        <span>{group.emoji}</span>
-                        <span>{group.name}</span>
+                        <span className="text-xl">{group.emoji}</span>
                       </div>
                    </motion.div>
                  )

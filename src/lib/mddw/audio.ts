@@ -16,11 +16,14 @@ export function toggleMute(): boolean {
   return muted;
 }
 
+let sharedCtx: AudioContext | null = null;
 function getAudioContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
+  if (sharedCtx) return sharedCtx;
   const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
   if (!AudioCtx) return null;
-  return new AudioCtx();
+  sharedCtx = new AudioCtx();
+  return sharedCtx;
 }
 
 export function playPop() {
