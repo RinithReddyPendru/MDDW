@@ -23,8 +23,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/idli_peanut_chutney.png",
     ingredients: [
-      { nameKey: "dish_idli_with_peanut_chutney", groupId: "grains" },
-      { nameKey: "dish_idli_with_peanut_chutney", groupId: "nuts" },
+      { nameKey: "ing_idli_with_peanut_chutney_grains", groupId: "grains" },
+      { nameKey: "ing_idli_with_peanut_chutney_nuts", groupId: "nuts" },
     ],
   },
   {
@@ -33,8 +33,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/idli_peanut_chutney.png",
     ingredients: [
-      { nameKey: "dish_pesarattu_with_upma", groupId: "pulses" },
-      { nameKey: "dish_pesarattu_with_upma", groupId: "grains" },
+      { nameKey: "ing_pesarattu_with_upma_pulses", groupId: "pulses" },
+      { nameKey: "ing_pesarattu_with_upma_grains", groupId: "grains" },
     ],
   },
   {
@@ -43,8 +43,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/atukulu_chana.png",
     ingredients: [
-      { nameKey: "dish_uggani_with_bajji", groupId: "grains" },
-      { nameKey: "dish_uggani_with_bajji", groupId: "otherVeg" },
+      { nameKey: "ing_uggani_with_bajji_grains", groupId: "grains" },
+      { nameKey: "ing_uggani_with_bajji_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -53,9 +53,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/idli_peanut_chutney.png",
     ingredients: [
-      { nameKey: "dish_minapa_dosa_with_tomato_chutney", groupId: "grains" },
-      { nameKey: "dish_minapa_dosa_with_tomato_chutney", groupId: "pulses" },
-      { nameKey: "dish_minapa_dosa_with_tomato_chutney", groupId: "otherVeg" },
+      { nameKey: "ing_minapa_dosa_with_tomato_chutney_grains", groupId: "grains" },
+      { nameKey: "ing_minapa_dosa_with_tomato_chutney_pulses", groupId: "pulses" },
+      { nameKey: "ing_minapa_dosa_with_tomato_chutney_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -64,8 +64,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/pongal.png",
     ingredients: [
-      { nameKey: "dish_pongal", groupId: "grains" },
-      { nameKey: "dish_pongal", groupId: "pulses" },
+      { nameKey: "ing_pongal_grains", groupId: "grains" },
+      { nameKey: "ing_pongal_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -74,8 +74,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/puri_potato_curry.png",
     ingredients: [
-      { nameKey: "dish_puri_with_potato_curry", groupId: "grains" },
-      { nameKey: "dish_puri_with_potato_curry", groupId: "otherVeg" },
+      { nameKey: "ing_puri_with_potato_curry_grains", groupId: "grains" },
+      { nameKey: "ing_puri_with_potato_curry_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -84,8 +84,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/ragi_sangati_chutney.png",
     ingredients: [
-      { nameKey: "dish_ragi_sangati_with_groundnut_chutney", groupId: "grains" },
-      { nameKey: "dish_ragi_sangati_with_groundnut_chutney", groupId: "nuts" },
+      { nameKey: "ing_ragi_sangati_with_groundnut_chutney_grains", groupId: "grains" },
+      { nameKey: "ing_ragi_sangati_with_groundnut_chutney_nuts", groupId: "nuts" },
     ],
   },
   {
@@ -94,8 +94,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/atukulu_chana.png",
     ingredients: [
-      { nameKey: "dish_atukulu_with_roasted_chana", groupId: "grains" },
-      { nameKey: "dish_atukulu_with_roasted_chana", groupId: "pulses" },
+      { nameKey: "ing_atukulu_with_roasted_chana_grains", groupId: "grains" },
+      { nameKey: "ing_atukulu_with_roasted_chana_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -104,8 +104,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/atukulu_chana.png",
     ingredients: [
-      { nameKey: "dish_punugulu_with_coconut_chutney", groupId: "grains" },
-      { nameKey: "dish_punugulu_with_coconut_chutney", groupId: "otherFruit" },
+      { nameKey: "ing_punugulu_with_coconut_chutney_grains", groupId: "grains" },
+      { nameKey: "ing_punugulu_with_coconut_chutney_otherFruit", groupId: "otherFruit" },
     ],
   },
   {
@@ -114,8 +114,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "breakfast",
     imageUrl: "/images/meals/puri_potato_curry.png",
     ingredients: [
-      { nameKey: "dish_dibba_rotti", groupId: "grains" },
-      { nameKey: "dish_dibba_rotti", groupId: "pulses" },
+      { nameKey: "ing_dibba_rotti_grains", groupId: "grains" },
+      { nameKey: "ing_dibba_rotti_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -124,9 +124,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_rice_with_gongura_pachadi_and_dal", groupId: "grains" },
-      { nameKey: "dish_rice_with_gongura_pachadi_and_dal", groupId: "dglv" },
-      { nameKey: "dish_rice_with_gongura_pachadi_and_dal", groupId: "pulses" },
+      { nameKey: "ing_rice_with_gongura_pachadi_and_dal_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_gongura_pachadi_and_dal_dglv", groupId: "dglv" },
+      { nameKey: "ing_rice_with_gongura_pachadi_and_dal_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -135,8 +135,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_rice_with_gutti_vankaya_kura", groupId: "grains" },
-      { nameKey: "dish_rice_with_gutti_vankaya_kura", groupId: "otherVeg" },
+      { nameKey: "ing_rice_with_gutti_vankaya_kura_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_gutti_vankaya_kura_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -145,8 +145,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/chicken_curry_rice.png",
     ingredients: [
-      { nameKey: "dish_andhra_chicken_curry_with_rice", groupId: "meat" },
-      { nameKey: "dish_andhra_chicken_curry_with_rice", groupId: "grains" },
+      { nameKey: "ing_andhra_chicken_curry_with_rice_meat", groupId: "meat" },
+      { nameKey: "ing_andhra_chicken_curry_with_rice_grains", groupId: "grains" },
     ],
   },
   {
@@ -155,9 +155,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_rice_with_sambar_and_cabbage_poriyal", groupId: "grains" },
-      { nameKey: "dish_rice_with_sambar_and_cabbage_poriyal", groupId: "pulses" },
-      { nameKey: "dish_rice_with_sambar_and_cabbage_poriyal", groupId: "otherVeg" },
+      { nameKey: "ing_rice_with_sambar_and_cabbage_poriyal_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_sambar_and_cabbage_poriyal_pulses", groupId: "pulses" },
+      { nameKey: "ing_rice_with_sambar_and_cabbage_poriyal_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -166,9 +166,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/chicken_curry_rice.png",
     ingredients: [
-      { nameKey: "dish_pappu_charu_with_rice_and_omelette", groupId: "grains" },
-      { nameKey: "dish_pappu_charu_with_rice_and_omelette", groupId: "pulses" },
-      { nameKey: "dish_pappu_charu_with_rice_and_omelette", groupId: "eggs" },
+      { nameKey: "ing_pappu_charu_with_rice_and_omelette_grains", groupId: "grains" },
+      { nameKey: "ing_pappu_charu_with_rice_and_omelette_pulses", groupId: "pulses" },
+      { nameKey: "ing_pappu_charu_with_rice_and_omelette_eggs", groupId: "eggs" },
     ],
   },
   {
@@ -177,8 +177,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_lemon_rice_with_curd", groupId: "grains" },
-      { nameKey: "dish_lemon_rice_with_curd", groupId: "dairy" },
+      { nameKey: "ing_lemon_rice_with_curd_grains", groupId: "grains" },
+      { nameKey: "ing_lemon_rice_with_curd_dairy", groupId: "dairy" },
     ],
   },
   {
@@ -187,8 +187,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/chicken_curry_rice.png",
     ingredients: [
-      { nameKey: "dish_rice_with_royyala_iguru", groupId: "grains" },
-      { nameKey: "dish_rice_with_royyala_iguru", groupId: "meat" },
+      { nameKey: "ing_rice_with_royyala_iguru_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_royyala_iguru_meat", groupId: "meat" },
     ],
   },
   {
@@ -197,8 +197,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/chicken_curry_rice.png",
     ingredients: [
-      { nameKey: "dish_ragi_mudde_with_natu_kodi_pulusu", groupId: "grains" },
-      { nameKey: "dish_ragi_mudde_with_natu_kodi_pulusu", groupId: "meat" },
+      { nameKey: "ing_ragi_mudde_with_natu_kodi_pulusu_grains", groupId: "grains" },
+      { nameKey: "ing_ragi_mudde_with_natu_kodi_pulusu_meat", groupId: "meat" },
     ],
   },
   {
@@ -207,9 +207,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_tomato_pappu_with_rice", groupId: "grains" },
-      { nameKey: "dish_tomato_pappu_with_rice", groupId: "pulses" },
-      { nameKey: "dish_tomato_pappu_with_rice", groupId: "otherVeg" },
+      { nameKey: "ing_tomato_pappu_with_rice_grains", groupId: "grains" },
+      { nameKey: "ing_tomato_pappu_with_rice_pulses", groupId: "pulses" },
+      { nameKey: "ing_tomato_pappu_with_rice_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -218,9 +218,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "lunch",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_rice_with_palakura_pappu", groupId: "grains" },
-      { nameKey: "dish_rice_with_palakura_pappu", groupId: "dglv" },
-      { nameKey: "dish_rice_with_palakura_pappu", groupId: "pulses" },
+      { nameKey: "ing_rice_with_palakura_pappu_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_palakura_pappu_dglv", groupId: "dglv" },
+      { nameKey: "ing_rice_with_palakura_pappu_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -229,7 +229,7 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/atukulu_chana.png",
     ingredients: [
-      { nameKey: "dish_mirchi_bajji", groupId: "otherVeg" },
+      { nameKey: "ing_mirchi_bajji_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -238,8 +238,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/pongal.png",
     ingredients: [
-      { nameKey: "dish_bobbatlu", groupId: "grains" },
-      { nameKey: "dish_bobbatlu", groupId: "pulses" },
+      { nameKey: "ing_bobbatlu_grains", groupId: "grains" },
+      { nameKey: "ing_bobbatlu_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -248,7 +248,7 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/pongal.png",
     ingredients: [
-      { nameKey: "dish_roasted_peanuts_and_jaggery", groupId: "nuts" },
+      { nameKey: "ing_roasted_peanuts_and_jaggery_nuts", groupId: "nuts" },
     ],
   },
   {
@@ -257,7 +257,7 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/pongal.png",
     ingredients: [
-      { nameKey: "dish_boiled_sweet_potato", groupId: "vitaminA" },
+      { nameKey: "ing_boiled_sweet_potato_vitaminA", groupId: "vitaminA" },
     ],
   },
   {
@@ -266,8 +266,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/pongal.png",
     ingredients: [
-      { nameKey: "dish_ariselu", groupId: "grains" },
-      { nameKey: "dish_ariselu", groupId: "nuts" },
+      { nameKey: "ing_ariselu_grains", groupId: "grains" },
+      { nameKey: "ing_ariselu_nuts", groupId: "nuts" },
     ],
   },
   {
@@ -276,8 +276,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/pongal.png",
     ingredients: [
-      { nameKey: "dish_cut_fruits", groupId: "vitaminA" },
-      { nameKey: "dish_cut_fruits", groupId: "otherFruit" },
+      { nameKey: "ing_cut_fruits_vitaminA", groupId: "vitaminA" },
+      { nameKey: "ing_cut_fruits_otherFruit", groupId: "otherFruit" },
     ],
   },
   {
@@ -286,8 +286,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/atukulu_chana.png",
     ingredients: [
-      { nameKey: "dish_murukulu", groupId: "grains" },
-      { nameKey: "dish_murukulu", groupId: "pulses" },
+      { nameKey: "ing_murukulu_grains", groupId: "grains" },
+      { nameKey: "ing_murukulu_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -296,8 +296,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/ragi_sangati_chutney.png",
     ingredients: [
-      { nameKey: "dish_ragi_biscuits_with_milk", groupId: "grains" },
-      { nameKey: "dish_ragi_biscuits_with_milk", groupId: "dairy" },
+      { nameKey: "ing_ragi_biscuits_with_milk_grains", groupId: "grains" },
+      { nameKey: "ing_ragi_biscuits_with_milk_dairy", groupId: "dairy" },
     ],
   },
   {
@@ -306,7 +306,7 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/atukulu_chana.png",
     ingredients: [
-      { nameKey: "dish_sundal", groupId: "pulses" },
+      { nameKey: "ing_sundal_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -315,7 +315,7 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/atukulu_chana.png",
     ingredients: [
-      { nameKey: "dish_masala_vada", groupId: "pulses" },
+      { nameKey: "ing_masala_vada_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -324,9 +324,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/puri_potato_curry.png",
     ingredients: [
-      { nameKey: "dish_chapati_with_paneer_butter_masala", groupId: "grains" },
-      { nameKey: "dish_chapati_with_paneer_butter_masala", groupId: "dairy" },
-      { nameKey: "dish_chapati_with_paneer_butter_masala", groupId: "otherVeg" },
+      { nameKey: "ing_chapati_with_paneer_butter_masala_grains", groupId: "grains" },
+      { nameKey: "ing_chapati_with_paneer_butter_masala_dairy", groupId: "dairy" },
+      { nameKey: "ing_chapati_with_paneer_butter_masala_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -335,8 +335,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_rice_with_rasam_and_potato_fry", groupId: "grains" },
-      { nameKey: "dish_rice_with_rasam_and_potato_fry", groupId: "otherVeg" },
+      { nameKey: "ing_rice_with_rasam_and_potato_fry_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_rasam_and_potato_fry_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -345,8 +345,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/puri_potato_curry.png",
     ingredients: [
-      { nameKey: "dish_jowar_roti_with_brinjal_curry", groupId: "grains" },
-      { nameKey: "dish_jowar_roti_with_brinjal_curry", groupId: "otherVeg" },
+      { nameKey: "ing_jowar_roti_with_brinjal_curry_grains", groupId: "grains" },
+      { nameKey: "ing_jowar_roti_with_brinjal_curry_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -355,8 +355,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/chicken_curry_rice.png",
     ingredients: [
-      { nameKey: "dish_rice_with_mutton_kheema", groupId: "grains" },
-      { nameKey: "dish_rice_with_mutton_kheema", groupId: "meat" },
+      { nameKey: "ing_rice_with_mutton_kheema_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_mutton_kheema_meat", groupId: "meat" },
     ],
   },
   {
@@ -365,9 +365,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/chicken_curry_rice.png",
     ingredients: [
-      { nameKey: "dish_dosa_with_chicken_stew", groupId: "grains" },
-      { nameKey: "dish_dosa_with_chicken_stew", groupId: "pulses" },
-      { nameKey: "dish_dosa_with_chicken_stew", groupId: "meat" },
+      { nameKey: "ing_dosa_with_chicken_stew_grains", groupId: "grains" },
+      { nameKey: "ing_dosa_with_chicken_stew_pulses", groupId: "pulses" },
+      { nameKey: "ing_dosa_with_chicken_stew_meat", groupId: "meat" },
     ],
   },
   {
@@ -376,9 +376,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_rice_with_sorakaya_pappu", groupId: "grains" },
-      { nameKey: "dish_rice_with_sorakaya_pappu", groupId: "otherVeg" },
-      { nameKey: "dish_rice_with_sorakaya_pappu", groupId: "pulses" },
+      { nameKey: "ing_rice_with_sorakaya_pappu_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_sorakaya_pappu_otherVeg", groupId: "otherVeg" },
+      { nameKey: "ing_rice_with_sorakaya_pappu_pulses", groupId: "pulses" },
     ],
   },
   {
@@ -387,8 +387,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/idli_peanut_chutney.png",
     ingredients: [
-      { nameKey: "dish_upma_with_curd", groupId: "grains" },
-      { nameKey: "dish_upma_with_curd", groupId: "dairy" },
+      { nameKey: "ing_upma_with_curd_grains", groupId: "grains" },
+      { nameKey: "ing_upma_with_curd_dairy", groupId: "dairy" },
     ],
   },
   {
@@ -397,8 +397,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_rice_with_bendakaya_fry", groupId: "grains" },
-      { nameKey: "dish_rice_with_bendakaya_fry", groupId: "otherVeg" },
+      { nameKey: "ing_rice_with_bendakaya_fry_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_bendakaya_fry_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -407,9 +407,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/chicken_curry_rice.png",
     ingredients: [
-      { nameKey: "dish_chapati_with_egg_bhurji", groupId: "grains" },
-      { nameKey: "dish_chapati_with_egg_bhurji", groupId: "eggs" },
-      { nameKey: "dish_chapati_with_egg_bhurji", groupId: "otherVeg" },
+      { nameKey: "ing_chapati_with_egg_bhurji_grains", groupId: "grains" },
+      { nameKey: "ing_chapati_with_egg_bhurji_eggs", groupId: "eggs" },
+      { nameKey: "ing_chapati_with_egg_bhurji_otherVeg", groupId: "otherVeg" },
     ],
   },
   {
@@ -418,8 +418,8 @@ export const MDDW_MEALS: Meal[] = [
     category: "dinner",
     imageUrl: "/images/meals/rice_gutti_vankaya.png",
     ingredients: [
-      { nameKey: "dish_rice_with_dosakaya_pachadi", groupId: "grains" },
-      { nameKey: "dish_rice_with_dosakaya_pachadi", groupId: "otherVeg" },
+      { nameKey: "ing_rice_with_dosakaya_pachadi_grains", groupId: "grains" },
+      { nameKey: "ing_rice_with_dosakaya_pachadi_otherVeg", groupId: "otherVeg" },
     ],
   },
 ];

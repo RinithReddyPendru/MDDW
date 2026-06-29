@@ -167,9 +167,9 @@ function DishModal({ mealId, onClose, lang, t }: any) {
                      className="flex items-center justify-between bg-muted/40 p-4 rounded-2xl border border-border/50"
                    >
                       <div className="flex flex-col pr-3">
-                        <span className="font-bold text-base text-foreground">{group.name}</span>
+                        <span className="font-bold text-base text-foreground">{t(ing.nameKey)}</span>
                         <span className="text-xs font-medium text-muted-foreground mt-0.5 line-clamp-2">
-                          {group.examples.join(", ")}
+                          {group.name} • {group.examples.join(", ")}
                         </span>
                       </div>
                       <div
