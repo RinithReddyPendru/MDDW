@@ -28,7 +28,7 @@ export const PROBING_SCENARIOS: Record<string, ProbingScenarioData> = {
   "scenario_1": {
     scenarioId: "scenario_1",
     motherName: "Kamala",
-    avatarIcon: "👩🏽",
+    avatarIcon: "👩",
     initialDiscovered: [
       { id: "grains", name: "Grains", emoji: "🌾" },
     ],
@@ -79,7 +79,7 @@ export const PROBING_SCENARIOS: Record<string, ProbingScenarioData> = {
   "scenario_2": {
     scenarioId: "scenario_2",
     motherName: "Sujatha",
-    avatarIcon: "👩🏽‍🦱",
+    avatarIcon: "😊",
     initialDiscovered: [
       { id: "grains", name: "Grains", emoji: "🌾" },
       { id: "pulses", name: "Pulses", emoji: "🥘" },
@@ -131,7 +131,7 @@ export const PROBING_SCENARIOS: Record<string, ProbingScenarioData> = {
   "scenario_3": {
     scenarioId: "scenario_3",
     motherName: "Lakshmi",
-    avatarIcon: "👩🏽‍🦰",
+    avatarIcon: "🙂",
     initialDiscovered: [
       { id: "grains", name: "Grains", emoji: "🌾" },
       { id: "pulses", name: "Pulses", emoji: "🥘" },
@@ -183,7 +183,7 @@ export const PROBING_SCENARIOS: Record<string, ProbingScenarioData> = {
   "scenario_4": {
     scenarioId: "scenario_4",
     motherName: "Radha",
-    avatarIcon: "👩🏽",
+    avatarIcon: "😀",
     initialDiscovered: [
       { id: "grains", name: "Grains", emoji: "🌾" },
     ],
@@ -234,7 +234,7 @@ export const PROBING_SCENARIOS: Record<string, ProbingScenarioData> = {
   "scenario_5": {
     scenarioId: "scenario_5",
     motherName: "Anjali",
-    avatarIcon: "👩🏽‍🦳",
+    avatarIcon: "👵",
     initialDiscovered: [
       { id: "grains", name: "Grains", emoji: "🌾" },
       { id: "pulses", name: "Pulses", emoji: "🥘" },
@@ -286,7 +286,7 @@ export const PROBING_SCENARIOS: Record<string, ProbingScenarioData> = {
   "scenario_6": {
     scenarioId: "scenario_6",
     motherName: "Meena",
-    avatarIcon: "👩🏽‍🦱",
+    avatarIcon: "👧",
     initialDiscovered: [
       { id: "grains", name: "Grains", emoji: "🌾" },
       { id: "meat", name: "Meat", emoji: "🥩" },
