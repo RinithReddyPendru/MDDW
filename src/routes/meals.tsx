@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/mddw/useLang";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/meals")({
 
 function MealsComponent() {
   const { lang, t } = useLang();
+  const getImgUrl = (path: string) => path.startsWith('http') ? path : `${import.meta.env.BASE_URL || '/'}${path.replace(/^\//, '')}`;
   const [activeTab, setActiveTab] = useState<MealCategory>("breakfast");
   const [expandedDish, setExpandedDish] = useState<string | null>(null);
 
@@ -83,9 +84,8 @@ function MealsComponent() {
                 className="relative w-full h-56 rounded-[2rem] overflow-hidden shadow-lg group border border-border/30 bg-muted"
               >
                 <img 
-                  src={meal.imageUrl} 
-                  alt="" 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                  src={getImgUrl(meal.imageUrl)} 
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-90" />
                 <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
@@ -133,7 +133,7 @@ function DishModal({ mealId, onClose, lang, t }: any) {
           className="bg-background rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden w-full max-w-md max-h-[90dvh] flex flex-col pointer-events-auto"
         >
           <div className="relative h-72 shrink-0">
-             <img src={meal.imageUrl} className="w-full h-full object-cover" />
+             <img src={getImgUrl(meal.imageUrl)} className="w-full h-full object-cover" />
              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/30" />
              
              <button 

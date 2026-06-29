@@ -452,7 +452,7 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap }: any) {
         <div className="absolute top-3 right-3 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-bold uppercase backdrop-blur-sm z-10">
           Real-Life Meal
         </div>
-        <img src={q.data.imagePath} alt="Meal" className="w-full h-64 object-cover object-center" />
+        <img src={`${import.meta.env.BASE_URL || '/'}${q.data.imagePath.replace(/^\//, '')}`} alt="Meal" className="w-full h-64 object-cover object-center" />
         <div className="p-4 bg-card">
           <h3 className="font-bold text-lg mb-1">What food groups can you spot?</h3>
           <p className="text-sm text-muted-foreground">Select all that apply.</p>
