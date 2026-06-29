@@ -106,11 +106,14 @@ function GamePage() {
   const { t, lang } = useLang();
   const FOOD_GROUPS = getFoodGroups(lang);
   const FOOD_GROUP_MAP = Object.fromEntries(FOOD_GROUPS.map((g) => [g.id, g])) as any;
+  const modeSequence: GameMode[] = ["standard", "counseling", "visual"];
   const [phase, setPhase] = useState<"intro" | "playing" | "result">("intro");
-  const [mode, setMode] = useState<GameMode>("standard");
+  const [currentModeIndex, setCurrentModeIndex] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [qIdx, setQIdx] = useState(0);
-  const [score, setScore] = useState(0);
+  const [standardScore, setStandardScore] = useState(0);
+  const [counselingScore, setCounselingScore] = useState(0);
+  const [visualScore, setVisualScore] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [wrong, setWrong] = useState(0);
   
@@ -119,14 +122,16 @@ function GamePage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phcName, setPhcName] = useState("");
 
-  const start = (name: string, phc: string, phone: string, selectedMode: GameMode) => {
+  const start = (name: string, phc: string, phone: string) => {
     setUserName(name);
     setPhcName(phc);
     setPhoneNumber(phone);
-    setMode(selectedMode);
-    setQuestions(buildQuestions(selectedMode, FOOD_GROUPS));
+    setCurrentModeIndex(0);
+    setQuestions(buildQuestions(modeSequence[0], FOOD_GROUPS));
     setQIdx(0);
-    setScore(0);
+    setStandardScore(0);
+    setCounselingScore(0);
+    setVisualScore(0);
     setCorrect(0);
     setWrong(0);
     setMistakes([]);
@@ -134,44 +139,60 @@ function GamePage() {
   };
 
   const handleNextQuestion = (pts: number, c: number, w: number, m: any[]) => {
-    setScore(s => s + pts);
+    const activeMode = modeSequence[currentModeIndex];
+    if (activeMode === "standard") setStandardScore(s => s + pts);
+    else if (activeMode === "counseling") setCounselingScore(s => s + pts);
+    else if (activeMode === "visual") setVisualScore(s => s + pts);
+    
     setCorrect(prev => prev + c);
     setWrong(prev => prev + w);
     setMistakes(prev => [...prev, ...m]);
     
     if (qIdx + 1 >= questions.length) {
-      const finalScore = score + pts;
-      recordResult({
-        level: 1,
-        score: finalScore,
-        correct: correct + c,
-        wrong: wrong + w,
-        groupsConsumed: 0,
-        passedMDDW: finalScore >= 60,
-        date: Date.now(),
-        userName,
-        phcName,
-        phoneNumber,
-        mistakes: [...mistakes, ...m]
-      });
-      
-      const pState = loadProgress();
-      if (pState.sheetsWebhookUrl && typeof window !== "undefined") {
-        fetch(pState.sheetsWebhookUrl, {
-          method: "POST",
-          mode: "no-cors",
-          headers: { "Content-Type": "text/plain" },
-          body: JSON.stringify({
-            name: userName,
-            phc: phcName,
-            phone: phoneNumber,
-            score: finalScore,
-            correct: correct + c,
-            total: questions.length
-          })
-        }).catch(e => console.error(e));
+      if (currentModeIndex + 1 < modeSequence.length) {
+        const nextMode = modeSequence[currentModeIndex + 1];
+        setCurrentModeIndex(currentModeIndex + 1);
+        setQuestions(buildQuestions(nextMode, FOOD_GROUPS));
+        setQIdx(0);
+      } else {
+        const finalStandard = activeMode === "standard" ? standardScore + pts : standardScore;
+        const finalCounseling = activeMode === "counseling" ? counselingScore + pts : counselingScore;
+        const finalVisual = activeMode === "visual" ? visualScore + pts : visualScore;
+        const finalScore = finalStandard + finalCounseling + finalVisual;
+
+        recordResult({
+          level: 1,
+          score: finalScore,
+          correct: correct + c,
+          wrong: wrong + w,
+          groupsConsumed: 0,
+          passedMDDW: finalScore >= 16,
+          date: Date.now(),
+          userName,
+          phcName,
+          phoneNumber,
+          mistakes: [...mistakes, ...m]
+        });
+        
+        const pState = loadProgress();
+        if (pState.sheetsWebhookUrl && typeof window !== "undefined") {
+          fetch(pState.sheetsWebhookUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain" },
+            body: JSON.stringify({
+              name: userName,
+              phc: phcName,
+              phone: phoneNumber,
+              standard_score: finalStandard,
+              counseling_score: finalCounseling,
+              visual_score: finalVisual,
+              total: 20
+            })
+          }).catch(e => console.error(e));
+        }
+        setPhase("result");
       }
-      setPhase("result");
     } else {
       setQIdx(i => i + 1);
     }
@@ -195,7 +216,7 @@ function GamePage() {
             <Play key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} foodGroupMap={FOOD_GROUP_MAP} lang={lang} t={t} />
           )}
           {phase === "result" && (
-            <Result key="res" score={Math.max(0, score)} correct={correct} wrong={wrong} total={questions.length} mistakes={mistakes} userName={userName} phcName={phcName} onAgain={() => setPhase("intro")} lang={lang} t={t} />
+            <Result key="res" standardScore={standardScore} counselingScore={counselingScore} visualScore={visualScore} correct={correct} wrong={wrong} total={20} mistakes={mistakes} userName={userName} phcName={phcName} onAgain={() => setPhase("intro")} lang={lang} t={t} />
           )}
         </AnimatePresence>
       </div>
@@ -203,11 +224,10 @@ function GamePage() {
   );
 }
 
-function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string, mode: GameMode) => void; t: (k: any) => string }) {
+function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string) => void; t: (k: any) => string }) {
   const [name, setName] = useState("");
   const [phc, setPhc] = useState("");
   const [phone, setPhone] = useState("");
-  const [mode, setMode] = useState<GameMode>("standard");
 
   const handleStart = () => {
     if (!name.trim()) return alert(t("enterNameAlert"));
@@ -217,28 +237,20 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string, 
     state.userName = name;
     state.phcName = phc;
     saveProgress(state);
-    onStart(name, phc, phone, mode);
+    onStart(name, phc, phone);
   };
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex flex-col gap-4">
       <NutriCompanion message={t("companionIntro")} />
       
-      <div className="glass rounded-2xl p-5 border-2 border-border/50 mb-4 shadow-sm">
-        <h3 className="font-bold mb-4">{t("selectQuizMode")}</h3>
-        <div className="grid grid-cols-1 gap-3">
-          <button onClick={() => setMode("standard")} className={`p-4 rounded-xl border-2 text-left transition ${mode === "standard" ? "bg-primary/10 border-primary" : "bg-card border-border"}`}>
-            <div className="font-bold text-lg">📚 Standard MCQ</div>
-            <div className="text-sm text-muted-foreground mt-1">{t("modeStandardDesc")}</div>
-          </button>
-          <button onClick={() => setMode("counseling")} className={`p-4 rounded-xl border-2 text-left transition ${mode === "counseling" ? "bg-secondary/10 border-secondary" : "bg-card border-border"}`}>
-            <div className="font-bold text-lg">🗣️ Counseling Practice</div>
-            <div className="text-sm text-muted-foreground mt-1">{t("modeCounselingDesc")}</div>
-          </button>
-          <button onClick={() => setMode("visual")} className={`p-4 rounded-xl border-2 text-left transition ${mode === "visual" ? "bg-blue-500/10 border-blue-500" : "bg-card border-border"}`}>
-            <div className="font-bold text-lg">📸 Real-Life Meals</div>
-            <div className="text-sm text-muted-foreground mt-1">{t("modeVisualDesc")}</div>
-          </button>
+      <div className="glass rounded-2xl p-5 border-2 border-border/50 mb-4 shadow-sm text-center">
+        <h3 className="font-bold text-lg mb-2">Grand Challenge</h3>
+        <p className="text-sm text-muted-foreground">Complete 3 rounds of challenges to earn your MDD-W certification.</p>
+        <div className="flex gap-2 justify-center mt-3 text-xs font-semibold">
+          <span className="bg-primary/10 text-primary px-3 py-1 rounded-full">📚 Standard</span>
+          <span className="bg-secondary/10 text-secondary px-3 py-1 rounded-full">🗣️ Counseling</span>
+          <span className="bg-blue-500/10 text-blue-500 px-3 py-1 rounded-full">📸 Real Meals</span>
         </div>
       </div>
 
@@ -311,13 +323,13 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
 
   const finish = () => {
     if (q.type === "single_food") {
-      if (isCorrect) onNext(10, 1, 0, []);
+      if (isCorrect) onNext(1, 1, 0, []);
       else onNext(0, 0, 1, [{ question: getQuizFoodName(q.food, lang), userAnswer: foodGroupMap[q.options[picked!]]?.name, correctAnswer: foodGroupMap[q.options[q.correctIndex]]?.name }]);
     } else {
       const correctSet = new Set(q.correctIndices);
       const pickedSet = new Set(multiPicked);
       const isPerfect = correctSet.size === pickedSet.size && [...correctSet].every(x => pickedSet.has(x as number));
-      if (isPerfect) onNext(10, 1, 0, []);
+      if (isPerfect) onNext(1, 1, 0, []);
       else onNext(0, 0, 1, [{ question: t(q.scenarioKey), userAnswer: multiPicked.map(i => foodGroupMap[q.options[i]]?.name).join(", "), correctAnswer: q.correctIndices.map((i:any) => foodGroupMap[q.options[i]]?.name).join(", ") }]);
     }
   };
@@ -434,7 +446,7 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap }: any) {
     const pickedSet = new Set(multiPicked);
     const isPerfect = correctSet.size === pickedSet.size && [...correctSet].every(x => pickedSet.has(x as number));
     
-    if (isPerfect) onNext(20, 1, 0, []);
+    if (isPerfect) onNext(1, 1, 0, []);
     else onNext(0, 0, 1, [{ question: q.data.dishNameKey, userAnswer: multiPicked.map(i => foodGroupMap[q.options[i]]?.name).join(", "), correctAnswer: q.correctIndices.map((i:any) => foodGroupMap[q.options[i]]?.name).join(", ") }]);
   };
 
@@ -690,7 +702,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
         )}
 
         {finished && (
-          <button onClick={() => onNext(earnedPoints, earnedPoints > 0 ? 1 : 0, wrongCount, mistakes)} className="mt-2 w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14 animate-pulse">
+          <button onClick={() => onNext(wrongCount === 0 ? 1 : 0, wrongCount === 0 ? 1 : 0, wrongCount > 0 ? 1 : 0, mistakes)} className="mt-2 w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14 animate-pulse">
             {getT('finishScenario', 'Finish Scenario ➡️')}
           </button>
         )}
@@ -726,9 +738,10 @@ function Certificate({ userName, phcName, score, pct, lang, t, isPreview = false
   );
 }
 
-function Result({ score, correct, wrong, total, mistakes, userName, phcName, onAgain, lang, t }: any) {
+function Result({ standardScore, counselingScore, visualScore, correct, wrong, total, mistakes, userName, phcName, onAgain, lang, t }: any) {
+  const score = standardScore + counselingScore + visualScore;
   const pct = Math.round((correct / total) * 100);
-  const passed = pct >= 60;
+  const passed = score >= 16;
   const certificateRef = useRef<HTMLDivElement>(null);
 
   const downloadCertificate = async () => {
@@ -754,9 +767,11 @@ function Result({ score, correct, wrong, total, mistakes, userName, phcName, onA
       </div>
 
       <div className="grid grid-cols-2 gap-3 mt-4">
-        <Stat label={t("finalScore")} value={score} accent />
+        <Stat label="Total Score" value={`${score}/20`} accent />
         <Stat label={t("accuracy")} value={`${pct}%`} accent />
-        <Stat label={t("correctAnswers")} value={`${correct}/${total}`} />
+        <Stat label="Standard" value={`${standardScore}/10`} />
+        <Stat label="Counseling" value={`${counselingScore}/5`} />
+        <Stat label="Visual Meals" value={`${visualScore}/5`} />
         <Stat label={t("wrongAnswers")} value={`${wrong}/${total}`} />
       </div>
 
