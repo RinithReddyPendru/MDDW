@@ -1,36 +1,3 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { AppHeader } from "@/components/mddw/AppHeader";
-import { useLang } from "@/lib/mddw/useLang";
-import { NutriCompanion } from "@/components/mddw/NutriCompanion";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "MDDW Master Challenge \u2013 ASHA Worker Training" },
-      { name: "description", content: "Train ASHA workers on Minimum Dietary Diversity for Women through interactive games." },
-      { name: "theme-color", content: "#D97000" },
-      { property: "og:title", content: "MDDW Master Challenge" },
-      { property: "og:description", content: "Interactive MDDW training for ASHA workers." },
-    ],
-    links: [{ rel: "manifest", href: "/manifest.webmanifest" }],
-  }),
-  component: Index,
-});
-
-function Index() {
-  const { t } = useLang();
-  const stats = [
-    { value: "10", label: t("foodGroups") },
-    { value: "\u22655", label: t("requiredDaily") },
-    { value: "3", label: t("levels") },
-  ];
-
-  return (
-    <main className="min-h-dvh flex flex-col bg-gradient-premium">
-      <AppHeader />
-      <div className="mx-auto w-full max-w-xl px-4 py-6 flex-1 flex flex-col gap-6">
-        <motion.section
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
@@ -59,36 +26,54 @@ function Index() {
         </div>
 
         <nav className="flex flex-col gap-3">
-          <Link
-            to="/learn"
-            className="rounded-2xl bg-secondary text-secondary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
-          >
-            {"📖"} {t("learnFoodGroups")}
-          </Link>
-          <Link
-            to="/plate"
-            className="rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
-          >
-            {"🍽"} {t("buildPlate")}
-          </Link>
-          <Link
-            to="/meals"
-            className="rounded-2xl bg-primary text-primary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
-          >
-            {"📸"} {t("dishDecoderTitle")}
-          </Link>
-          <Link
-            to="/game" search={{ mode: "counseling" }}
-            className="rounded-2xl bg-amber-600 hover:bg-amber-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
-          >
-            {"🗣"} {t("startTraining")}
-          </Link>
-          <Link
-            to="/progress"
-            className="rounded-2xl bg-card text-foreground border-2 border-border/50 px-5 py-4 text-lg font-bold text-center shadow-sm active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2"
-          >
-            {"📈"} {t("myProgress")}
-          </Link>
+          {!progress.hasCompletedTraining ? (
+            <div className="glass rounded-3xl p-6 shadow-sm border-2 border-border/50 flex flex-col gap-5">
+              <div className="text-center">
+                <h3 className="font-bold text-lg text-primary">Your Training Path</h3>
+                <p className="text-sm text-muted-foreground">Complete these steps to unlock the full app</p>
+              </div>
+              <div className="flex flex-col gap-2 relative">
+                <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-border z-0" />
+                <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border">
+                  <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">1</div>
+                  <div className="font-semibold text-sm flex-1">📖 Learn Food Groups</div>
+                </div>
+                <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border">
+                  <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">2</div>
+                  <div className="font-semibold text-sm flex-1">🍽 Build a Plate</div>
+                </div>
+                <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border">
+                  <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">3</div>
+                  <div className="font-semibold text-sm flex-1">📸 Dish Breakdown</div>
+                </div>
+                <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border">
+                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">4</div>
+                  <div className="font-semibold text-sm flex-1">🎖 Grand Challenge</div>
+                </div>
+              </div>
+              <Link to="/learn" className="rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition">
+                Continue Training ➡️
+              </Link>
+            </div>
+          ) : (
+            <>
+              <Link to="/learn" className="rounded-2xl bg-secondary text-secondary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2">
+                {"📖"} {t("learnFoodGroups")}
+              </Link>
+              <Link to="/plate" className="rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2">
+                {"🍽"} {t("buildPlate")}
+              </Link>
+              <Link to="/meals" className="rounded-2xl bg-primary text-primary-foreground px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2">
+                {"📸"} {t("dishDecoderTitle")}
+              </Link>
+              <Link to="/game" className="rounded-2xl bg-amber-600 hover:bg-amber-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2">
+                {"🗣"} {t("startTraining")}
+              </Link>
+              <Link to="/progress" className="rounded-2xl bg-card text-foreground border-2 border-border/50 px-5 py-4 text-lg font-bold text-center shadow-sm active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2">
+                {"📈"} {t("myProgress")}
+              </Link>
+            </>
+          )}
         </nav>
 
         <p className="text-center text-xs text-muted-foreground mt-auto pt-4">

@@ -107,9 +107,12 @@ function GamePage() {
   const FOOD_GROUPS = getFoodGroups(lang);
   const FOOD_GROUP_MAP = Object.fromEntries(FOOD_GROUPS.map((g) => [g.id, g])) as any;
   const modeSequence: GameMode[] = ["standard", "counseling", "visual"];
-  const [phase, setPhase] = useState<"intro" | "playing" | "result">("intro");
+  const [phase, setPhase] = useState<"playing" | "result">("playing");
   const [currentModeIndex, setCurrentModeIndex] = useState(0);
-  const [questions, setQuestions] = useState<Question[]>([]);
+  
+  // Initialize game state immediately
+  const [questions, setQuestions] = useState<Question[]>(() => buildQuestions(modeSequence[0], FOOD_GROUPS));
+  
   const [qIdx, setQIdx] = useState(0);
   const [standardScore, setStandardScore] = useState(0);
   const [counselingScore, setCounselingScore] = useState(0);
@@ -118,25 +121,20 @@ function GamePage() {
   const [wrong, setWrong] = useState(0);
   
   const [mistakes, setMistakes] = useState<{question: string, userAnswer: string, correctAnswer: string}[]>([]);
-  const [userName, setUserName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [phcName, setPhcName] = useState("");
-
-  const start = (name: string, phc: string, phone: string) => {
-    setUserName(name);
-    setPhcName(phc);
-    setPhoneNumber(phone);
-    setCurrentModeIndex(0);
-    setQuestions(buildQuestions(modeSequence[0], FOOD_GROUPS));
-    setQIdx(0);
-    setStandardScore(0);
-    setCounselingScore(0);
-    setVisualScore(0);
-    setCorrect(0);
-    setWrong(0);
-    setMistakes([]);
-    setPhase("playing");
-  };
+  
+  // Load user details from storage on init
+  const [userName] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return loadProgress().userName || "";
+  });
+  const [phoneNumber] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return loadProgress().phoneNumber || "";
+  });
+  const [phcName] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return loadProgress().phcName || "";
+  });
 
   const handleNextQuestion = (pts: number, c: number, w: number, m: any[]) => {
     const activeMode = modeSequence[currentModeIndex];
@@ -174,7 +172,11 @@ function GamePage() {
           mistakes: [...mistakes, ...m]
         });
         
+        // Mark training as completely finished so home screen unlocks
         const pState = loadProgress();
+        pState.hasCompletedTraining = true;
+        saveProgress(pState);
+        
         if (pState.sheetsWebhookUrl && typeof window !== "undefined") {
           fetch(pState.sheetsWebhookUrl, {
             method: "POST",
@@ -205,7 +207,6 @@ function GamePage() {
       <AppHeader showBack />
       <div className="mx-auto max-w-xl px-4 py-5">
         <AnimatePresence mode="wait">
-          {phase === "intro" && <Intro key="intro" onStart={start} t={t} />}
           {phase === "playing" && current && current.type === "probing_scenario" && (
             <PlayProbing key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} t={t} lang={lang} foodGroupMap={FOOD_GROUP_MAP} allGroups={FOOD_GROUPS} />
           )}
@@ -216,7 +217,7 @@ function GamePage() {
             <Play key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} foodGroupMap={FOOD_GROUP_MAP} lang={lang} t={t} />
           )}
           {phase === "result" && (
-            <Result key="res" standardScore={standardScore} counselingScore={counselingScore} visualScore={visualScore} correct={correct} wrong={wrong} total={20} mistakes={mistakes} userName={userName} phcName={phcName} onAgain={() => setPhase("intro")} lang={lang} t={t} />
+            <Result key="res" standardScore={standardScore} counselingScore={counselingScore} visualScore={visualScore} correct={correct} wrong={wrong} total={20} mistakes={mistakes} userName={userName} phcName={phcName} lang={lang} t={t} />
           )}
         </AnimatePresence>
       </div>
@@ -794,9 +795,10 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
         </div>
       )}
 
-      <div className="mt-5 flex flex-col gap-2">
-        <button onClick={onAgain} className="rounded-2xl bg-primary text-primary-foreground py-4 font-bold min-h-14">🔁 {t("playAgain")}</button>
-        <Link to="/" className="rounded-2xl bg-muted text-foreground py-3 font-semibold text-center min-h-12">🏠 {t("home")}</Link>
+      <div className="mt-5 flex justify-center">
+        <Link to="/" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md text-center min-h-14 flex items-center justify-center">
+          🏠 Unlocked: Return to Home Screen
+        </Link>
       </div>
     </motion.div>
   );

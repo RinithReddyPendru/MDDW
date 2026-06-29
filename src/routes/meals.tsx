@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/mddw/useLang";
@@ -96,6 +96,12 @@ function MealsComponent() {
               </motion.button>
             ))}
           </AnimatePresence>
+        </div>
+        
+        <div className="mt-4 flex justify-center">
+          <Link to="/game" className="w-full rounded-2xl bg-amber-600 hover:bg-amber-700 text-white py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14 flex items-center justify-center">
+            Next Step: Grand Challenge ➡️
+          </Link>
         </div>
       </div>
 

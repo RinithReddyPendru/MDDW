@@ -29,6 +29,7 @@ export interface ProgressState {
   phcName?: string;
   phoneNumber?: string;
   sheetsWebhookUrl?: string;
+  hasCompletedTraining?: boolean;
 }
 
 const KEY = "mddw_progress_v1";
@@ -43,6 +44,7 @@ const DEFAULT: ProgressState = {
   phcName: "",
   phoneNumber: "",
   sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbzFeaYmJCqD6XYFl-RtsqS2N33DKxHsptZqu43rIuVEGr03cj4HgnXvL44LiN53ZUKN/exec",
+  hasCompletedTraining: false,
 };
 
 export function loadProgress(): ProgressState {

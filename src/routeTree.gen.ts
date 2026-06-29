@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as PlateRouteImport } from './routes/plate'
 import { Route as MealsRouteImport } from './routes/meals'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -30,6 +31,11 @@ const PlateRoute = PlateRouteImport.update({
 const MealsRoute = MealsRouteImport.update({
   id: '/meals',
   path: '/meals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
+  '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
@@ -88,17 +97,27 @@ export interface FileRouteTypes {
     | '/admin'
     | '/game'
     | '/learn'
+    | '/login'
     | '/meals'
     | '/plate'
     | '/progress'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/game' | '/learn' | '/meals' | '/plate' | '/progress'
+  to:
+    | '/'
+    | '/admin'
+    | '/game'
+    | '/learn'
+    | '/login'
+    | '/meals'
+    | '/plate'
+    | '/progress'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/game'
     | '/learn'
+    | '/login'
     | '/meals'
     | '/plate'
     | '/progress'
@@ -109,6 +128,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   GameRoute: typeof GameRoute
   LearnRoute: typeof LearnRoute
+  LoginRoute: typeof LoginRoute
   MealsRoute: typeof MealsRoute
   PlateRoute: typeof PlateRoute
   ProgressRoute: typeof ProgressRoute
@@ -135,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/meals'
       fullPath: '/meals'
       preLoaderRoute: typeof MealsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -173,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   GameRoute: GameRoute,
   LearnRoute: LearnRoute,
+  LoginRoute: LoginRoute,
   MealsRoute: MealsRoute,
   PlateRoute: PlateRoute,
   ProgressRoute: ProgressRoute,

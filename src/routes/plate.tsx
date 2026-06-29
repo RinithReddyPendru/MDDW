@@ -287,6 +287,14 @@ function PlateSandbox() {
               🏠 {t("home")}
             </Link>
           </div>
+          
+          {isDiverse && (
+            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-4">
+              <Link to="/meals" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14 flex items-center justify-center">
+                Next Step: Dish Breakdown ➡️
+              </Link>
+            </motion.div>
+          )}
         </div>
 
       </div>
