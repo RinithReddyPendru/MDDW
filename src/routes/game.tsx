@@ -717,22 +717,15 @@ function Certificate({ userName, phcName, score, pct, lang, t, isPreview = false
   return (
     <div ref={certificateRef} className={containerClasses}>
       <div className="absolute inset-2 border-2 border-amber-500/30 pointer-events-none" />
-      <h1 className="font-serif font-extrabold text-emerald-950 tracking-wider uppercase text-center text-2xl mb-1">{t("certificateTitle")}</h1>
-      <h2 className="font-sans font-bold text-amber-700 tracking-wide text-center uppercase text-sm mb-4">{t("certificateSubtitle")}</h2>
-      <p className="italic text-gray-500 text-center text-xs mb-2">{t("certifiesText")}</p>
-      <h3 className="font-serif font-black text-gray-900 border-b-2 border-amber-400/50 pb-0.5 px-4 text-center capitalize tracking-wide text-2xl mb-2 truncate">{userName}</h3>
-      {phcName && <p className="font-semibold text-emerald-800 text-center text-sm mb-4">({phcName})</p>}
-      <p className="text-gray-600 text-center leading-relaxed text-xs max-w-xs mb-4">{t("completedText")}</p>
-      <div className="flex justify-between items-center w-full px-4 mt-2">
-        <div className="text-center flex-1">
-          <div className="font-serif font-bold text-gray-800 border-b border-gray-300 pb-0.5 text-xs">{formattedDate}</div>
-          <div className="text-gray-400 uppercase tracking-wider font-semibold text-[10px]">{t("dateLabel")}</div>
-        </div>
-        <div className="flex-1 flex justify-center"><div className="w-12 h-12 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full flex items-center justify-center text-xl">🎖️</div></div>
-        <div className="text-center flex-1">
-          <div className="font-serif italic text-emerald-800 font-semibold border-b border-gray-300 pb-0.5 text-xs">✨ Janani Mitra</div>
-          <div className="text-gray-400 uppercase tracking-wider font-semibold text-[10px]">Program Coordinator</div>
-        </div>
+      <h1 className="font-serif font-extrabold text-emerald-950 tracking-wider uppercase text-center text-2xl md:text-3xl mb-2">AIM FOUNDATION</h1>
+      <h2 className="font-sans font-bold text-amber-700 tracking-wide text-center uppercase text-sm md:text-base mb-6">JANANI MITRA PROGRAM</h2>
+      <p className="italic text-gray-500 text-center text-xs mb-3">{t("certifiesText")}</p>
+      <h3 className="font-serif font-black text-gray-900 border-b-2 border-amber-400/50 pb-1 px-4 text-center capitalize tracking-wide text-2xl md:text-3xl mb-3 truncate">{userName}</h3>
+      {phcName && <p className="font-semibold text-emerald-800 text-center text-sm mb-6">({phcName})</p>}
+      <p className="text-gray-600 text-center leading-relaxed text-sm max-w-xs mb-8">{t("completedText")}</p>
+      
+      <div className="flex justify-center items-center w-full mt-2">
+        <div className="w-16 h-16 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full flex items-center justify-center text-3xl shadow-md border-4 border-white">🎖️</div>
       </div>
     </div>
   );
