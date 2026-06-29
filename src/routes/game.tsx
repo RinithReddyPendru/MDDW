@@ -713,20 +713,18 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
 
 function Certificate({ userName, phcName, score, pct, lang, t, isPreview = false, certificateRef }: any) {
   const formattedDate = new Date().toLocaleDateString(lang === "en" ? "en-US" : lang === "hi" ? "hi-IN" : "te-IN", { year: "numeric", month: "long", day: "numeric" });
-  const containerClasses = isPreview ? "w-full max-w-lg aspect-[4/3] rounded-2xl shadow-xl border-[8px] sm:border-[12px] border-emerald-800 bg-gradient-to-br from-[#faf6eb] via-[#fdfcf7] to-[#f5edd6] p-4 flex flex-col items-center justify-center relative overflow-hidden text-black font-sans mx-auto" : "w-[800px] h-[600px] border-[16px] border-emerald-800 bg-gradient-to-br from-[#faf6eb] via-[#fdfcf7] to-[#f5edd6] p-12 flex flex-col items-center justify-center relative overflow-hidden text-black font-sans";
+  const containerClasses = isPreview ? "w-full max-w-lg aspect-[4/3] rounded-xl shadow-sm border border-gray-200 bg-white p-6 flex flex-col items-center justify-center text-black font-sans mx-auto" : "w-[800px] h-[600px] border-4 border-gray-200 bg-white p-12 flex flex-col items-center justify-center text-black font-sans";
   return (
     <div ref={certificateRef} className={containerClasses}>
-      <div className="absolute inset-2 border-2 border-amber-500/30 pointer-events-none" />
-      <h1 className="font-serif font-extrabold text-emerald-950 tracking-wider uppercase text-center text-2xl md:text-3xl mb-2">AIM FOUNDATION</h1>
-      <h2 className="font-sans font-bold text-amber-700 tracking-wide text-center uppercase text-sm md:text-base mb-6">JANANI MITRA PROGRAM</h2>
-      <p className="italic text-gray-500 text-center text-xs mb-3">{t("certifiesText")}</p>
-      <h3 className="font-serif font-black text-gray-900 border-b-2 border-amber-400/50 pb-1 px-4 text-center capitalize tracking-wide text-2xl md:text-3xl mb-3 truncate">{userName}</h3>
-      {phcName && <p className="font-semibold text-emerald-800 text-center text-sm mb-6">({phcName})</p>}
-      <p className="text-gray-600 text-center leading-relaxed text-sm max-w-xs mb-8">{t("completedText")}</p>
+      <h1 className="font-sans font-bold text-gray-900 tracking-wider uppercase text-center text-xl md:text-2xl mb-1">AIM FOUNDATION</h1>
+      <h2 className="font-sans font-medium text-gray-500 tracking-widest text-center uppercase text-xs md:text-sm mb-8">Janani Mitra Program</h2>
       
-      <div className="flex justify-center items-center w-full mt-2">
-        <div className="w-16 h-16 bg-gradient-to-br from-yellow-300 to-yellow-600 rounded-full flex items-center justify-center text-3xl shadow-md border-4 border-white">🎖️</div>
-      </div>
+      <p className="text-gray-500 text-center text-xs md:text-sm mb-3">This certifies that</p>
+      
+      <h3 className="font-sans font-bold text-gray-900 text-center capitalize text-2xl md:text-4xl mb-1">{userName}</h3>
+      {phcName && <p className="text-gray-500 text-center text-sm mb-8">{phcName}</p>}
+      
+      <p className="text-gray-500 text-center text-sm max-w-sm mb-4">Has successfully completed the required training program.</p>
     </div>
   );
 }
