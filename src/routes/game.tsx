@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import {
@@ -283,7 +283,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
       const correctSet = new Set(q.correctIndices);
       const pickedSet = new Set(multiPicked);
       const isPerfect = correctSet.size === pickedSet.size && [...correctSet].every(x => pickedSet.has(x as number));
-      companionMessage = isPerfect ? t("hint_correct") : t("hint_wrong").replace("{food}", t(q.scenarioKey)).replace("{group}", q.correctIndices.map((idx:any) => foodGroupMap[q.options[idx]]?.name).join(", "));
+      companionMessage = isPerfect ? t("hint_correct") : `${t("wrongMsg")} ${q.correctIndices.map((idx:any) => foodGroupMap[q.options[idx]]?.name).join(", ")}`;
     }
   }
 
@@ -500,21 +500,48 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
   const [stepId, setStepId] = useState(data.firstStepId);
   const [discovered, setDiscovered] = useState(data.initialDiscovered);
   const [finished, setFinished] = useState(false);
-  const [feedback, setFeedback] = useState<string|null>(null);
   
+  // Scoring
+  const [earnedPoints, setEarnedPoints] = useState(20);
+  const [wrongCount, setWrongCount] = useState(0);
+  const [mistakes, setMistakes] = useState<any[]>([]);
+
   // Suggestion Step State
   const [suggestStep, setSuggestStep] = useState(false);
   const [suggestOptions, setSuggestOptions] = useState<any[]>([]);
 
+  // Chat History
+  type ChatMessage = { id: string; sender: 'mother' | 'user'; text: string; isFeedback?: boolean };
+  const [chat, setChat] = useState<ChatMessage[]>([
+    { id: 'm0', sender: 'mother', text: t(data.steps[data.firstStepId].motherText) }
+  ]);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [chat]);
+
   const currentStep = data.steps[stepId];
 
   const handleOption = (opt: any) => {
+    // Add user's choice to chat
+    setChat(prev => [...prev, { id: 'u' + Date.now(), sender: 'user', text: t(opt.text) }]);
+
     if (opt.feedback && !opt.isCorrect) {
-      setFeedback(t(opt.feedback) !== opt.feedback ? t(opt.feedback) : opt.feedback);
       playFailure();
+      setEarnedPoints(p => Math.max(0, p - 5));
+      setWrongCount(w => w + 1);
+      setMistakes(m => [...m, { question: t(currentStep.motherText), userAnswer: t(opt.text), correctAnswer: "Explore other options" }]);
+      
+      const fbk = t(opt.feedback) !== opt.feedback ? t(opt.feedback) : opt.feedback;
+      setTimeout(() => {
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: fbk, isFeedback: true }]);
+      }, 500);
       return;
     }
-    setFeedback(null);
+    
     playSuccess();
     
     let newDiscovered = [...discovered];
@@ -525,17 +552,17 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
     
     if (opt.nextStepId) {
       setStepId(opt.nextStepId);
+      setTimeout(() => {
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.steps[opt.nextStepId].motherText) }]);
+      }, 500);
     } else if (opt.isCorrect) {
-      // Check if suggestion step is needed (less than 5 groups)
       const uniqueGroupIds = Array.from(new Set(newDiscovered.map(g => g.id)));
       if (uniqueGroupIds.length < 5) {
-        // Generate suggestion options
         const missingGroups = allGroups.filter((g:any) => !uniqueGroupIds.includes(g.id));
         const presentGroups = allGroups.filter((g:any) => uniqueGroupIds.includes(g.id));
         
         const correctOpt = missingGroups[Math.floor(Math.random() * missingGroups.length)];
-        // Pick 2 distractors from already present (if available) or random others
-        const distractors = presentGroups.sort(() => 0.5 - Math.random()).slice(0, 2);
+        const distractors = [...presentGroups].sort(() => 0.5 - Math.random()).slice(0, 2);
         if (distractors.length < 2) {
            const otherMissing = missingGroups.filter((g:any) => g.id !== correctOpt.id).sort(() => 0.5 - Math.random()).slice(0, 2 - distractors.length);
            distractors.push(...otherMissing);
@@ -549,115 +576,125 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
         
         setSuggestOptions(opts);
         setSuggestStep(true);
+        setTimeout(() => {
+          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t("suggest_prompt") !== "suggest_prompt" ? t("suggest_prompt") : "It seems the mother only ate a few foods. What additional food group could you suggest to her to improve her diet?", isFeedback: true }]);
+        }, 500);
       } else {
         setFinished(true);
+        setTimeout(() => {
+          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.finalLesson) }]);
+        }, 500);
       }
     }
   };
   
   const handleSuggestPick = (opt: any) => {
+    setChat(prev => [...prev, { id: 'u' + Date.now(), sender: 'user', text: opt.group.name }]);
+    
     if (opt.isCorrect) {
       playSuccess();
-      setFeedback(null);
       setFinished(true);
       setSuggestStep(false);
       setDiscovered([...discovered, { id: opt.group.id, name: opt.group.name, emoji: opt.group.emoji }]);
+      setTimeout(() => {
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.finalLesson) }]);
+      }, 500);
     } else {
       playFailure();
-      setFeedback(t("suggest_wrong"));
+      setEarnedPoints(p => Math.max(0, p - 5));
+      setWrongCount(w => w + 1);
+      setMistakes(m => [...m, { question: "Suggest a missing food group", userAnswer: opt.group.name, correctAnswer: "A food group she hasn't eaten yet" }]);
+      setTimeout(() => {
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t("suggest_wrong") !== "suggest_wrong" ? t("suggest_wrong") : "Not quite! Try suggesting a food group she missed.", isFeedback: true }]);
+      }, 500);
     }
   };
 
+  const getT = (key: string, fallback: string) => {
+    const val = t(key as any);
+    return val === key ? fallback : val;
+  };
+
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-      <div className="flex items-center justify-between mb-3">
-         <div className="font-bold text-purple-600 text-sm tracking-widest uppercase">Counseling Practice</div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col h-full min-h-[400px]">
+      <div className="flex items-center justify-between mb-3 shrink-0">
+         <div className="font-bold text-purple-600 text-sm tracking-widest uppercase">{getT('modeCounseling', 'Counseling Practice')}</div>
          <div className="text-muted-foreground text-sm">Q {qIdx + 1} / {total}</div>
       </div>
-      <div className="h-2 rounded-full bg-muted overflow-hidden mb-5">
+      <div className="h-2 rounded-full bg-muted overflow-hidden mb-4 shrink-0">
         <motion.div className="h-full bg-purple-600" initial={{ width: 0 }} animate={{ width: `${((qIdx + 1) / total) * 100}%` }} transition={{ duration: 0.4 }} />
       </div>
 
-      <div className="glass rounded-3xl p-6 border-2 border-border/50 mb-6 shadow-sm">
-        <div className="flex items-center gap-4 border-b-2 border-border/50 pb-4 mb-4">
-          <div className="w-14 h-14 rounded-full bg-accent flex items-center justify-center text-3xl shrink-0 shadow-inner">
-            {data.avatarIcon}
-          </div>
-          <div>
-            <div className="font-bold text-lg">{data.motherName}</div>
-            <div className="text-sm text-muted-foreground">Mother</div>
-          </div>
+      <div className="flex-1 overflow-hidden flex flex-col glass rounded-3xl border-2 border-border/50 mb-4 shadow-sm relative" style={{ minHeight: '300px' }}>
+        <div className="p-3 border-b-2 border-border/50 bg-card flex items-center justify-between shrink-0 z-10">
+           <div className="flex items-center gap-3">
+             <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-xl shadow-inner">
+               {data.avatarIcon}
+             </div>
+             <div>
+               <div className="font-bold text-sm leading-tight">{data.motherName}</div>
+               <div className="text-xs text-muted-foreground">Mother</div>
+             </div>
+           </div>
+           
+           <div className="flex items-center gap-1.5 flex-wrap justify-end max-w-[50%]">
+             <AnimatePresence>
+               {discovered.map((g: any, i: number) => {
+                 const translatedG = foodGroupMap[g.id];
+                 return (
+                   <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-card border border-border px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm flex items-center gap-1" title={translatedG?.name || g.name}>
+                     <span>{translatedG?.emoji || g.emoji}</span> <span className="hidden md:inline">{translatedG?.name || g.name}</span>
+                   </motion.div>
+                 );
+               })}
+             </AnimatePresence>
+           </div>
         </div>
 
-        {!finished && !suggestStep ? (
-          <div className="mb-6">
-            <div className="bg-purple-600/10 text-foreground p-4 rounded-2xl rounded-tl-none font-medium text-lg leading-relaxed shadow-sm">
-              {t(currentStep.motherText)}
-            </div>
-          </div>
-        ) : suggestStep ? (
-          <div className="mb-6">
-             <div className="bg-amber-500/10 text-foreground p-4 rounded-2xl rounded-tl-none font-medium text-lg leading-relaxed shadow-sm">
-                {t("suggest_prompt")}
-             </div>
-          </div>
-        ) : (
-          <div className="mb-6 bg-secondary/15 text-secondary-foreground p-4 rounded-2xl font-bold text-center">
-            {t(data.finalLesson)}
-          </div>
-        )}
-
-        <div className="flex flex-wrap gap-2 justify-center">
-          <AnimatePresence>
-            {discovered.map((g: any, i: number) => {
-              const translatedG = foodGroupMap[g.id];
-              return (
-                <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-card border-2 border-border px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-2 shadow-sm">
-                  <span>{translatedG?.emoji || g.emoji}</span> {translatedG?.name || g.name}
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
+        <div ref={chatRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 scroll-smooth">
+          {chat.map((msg, i) => (
+            <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[85%] rounded-2xl p-3 text-sm md:text-base font-medium shadow-sm ${msg.sender === 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm' : msg.isFeedback ? 'bg-destructive/15 text-destructive border border-destructive/30 rounded-tl-sm' : 'bg-purple-600/10 text-foreground border border-purple-600/20 rounded-tl-sm'}`}>
+                 {msg.text}
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
 
-      {!finished && !suggestStep && (
-        <div className="space-y-3">
-          <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">{t('askNext' as any)}</div>
-          {currentStep.options.map((opt: any, i: number) => (
-            <button key={i} onClick={() => handleOption(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-4 rounded-2xl font-medium transition active:scale-[0.98]">
-              {t(opt.text)}
-            </button>
-          ))}
-          {feedback && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-destructive/15 text-destructive p-4 rounded-xl text-sm font-bold mt-2">
-              ⚠️ {feedback}
-            </motion.div>
-          )}
-        </div>
-      )}
-      
-      {suggestStep && (
-        <div className="space-y-3">
-          <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-2">Select a food group</div>
-          {suggestOptions.map((opt: any, i: number) => (
-            <button key={i} onClick={() => handleSuggestPick(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-4 rounded-2xl font-medium transition active:scale-[0.98] flex items-center gap-3">
-              <span className="text-2xl">{opt.group.emoji}</span> <span>{opt.group.name}</span>
-            </button>
-          ))}
-          {feedback && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="bg-destructive/15 text-destructive p-4 rounded-xl text-sm font-bold mt-2">
-              ⚠️ {feedback}
-            </motion.div>
-          )}
-        </div>
-      )}
+      <div className="shrink-0 space-y-3">
+        {!finished && !suggestStep && (
+          <>
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{getT('askNext', 'What will you ask next?')}</div>
+            <div className="grid grid-cols-1 gap-2">
+              {currentStep.options.map((opt: any, i: number) => (
+                <button key={i} onClick={() => handleOption(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-3.5 rounded-2xl font-medium transition active:scale-[0.98] text-sm md:text-base">
+                  {t(opt.text)}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+        
+        {suggestStep && !finished && (
+          <>
+            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{getT('selectFoodGroup', 'Select a food group')}</div>
+            <div className="grid grid-cols-1 gap-2">
+              {suggestOptions.map((opt: any, i: number) => (
+                <button key={i} onClick={() => handleSuggestPick(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-3.5 rounded-2xl font-medium transition active:scale-[0.98] flex items-center gap-3">
+                  <span className="text-2xl">{opt.group.emoji}</span> <span>{opt.group.name}</span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
-      {finished && (
-        <button onClick={() => onNext(20, 1, 0, [])} className="mt-6 w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14">
-          Finish Scenario ➡️
-        </button>
-      )}
+        {finished && (
+          <button onClick={() => onNext(earnedPoints, earnedPoints > 0 ? 1 : 0, wrongCount, mistakes)} className="mt-2 w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14 animate-pulse">
+            {getT('finishScenario', 'Finish Scenario ➡️')}
+          </button>
+        )}
+      </div>
     </motion.div>
   );
 }
