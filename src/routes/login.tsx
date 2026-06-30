@@ -44,7 +44,7 @@ function Login() {
           className="rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-8 border-white/60 bg-white max-w-2xl w-full"
         >
           <img 
-            src="/login_hero.png" 
+            src="/login_hero.jpg" 
             alt="ASHA Worker Training" 
             className="w-full h-auto object-contain bg-primary/5"
           />
@@ -67,7 +67,7 @@ function Login() {
             {/* Mobile-only Hero Image Card */}
             <div className="md:hidden rounded-3xl overflow-hidden shadow-lg border-4 border-white/40 bg-white">
               <img 
-                src="/login_hero.png" 
+                src="/login_hero.jpg" 
                 alt="ASHA Worker Training" 
                 className="w-full h-auto object-contain bg-primary/5"
               />
