@@ -796,7 +796,7 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
       )}
 
       <div className="mt-5 flex justify-center">
-        <Link to="/" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md text-center min-h-14 flex items-center justify-center">
+        <Link to="/progress" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md text-center min-h-14 flex items-center justify-center">
           🏠 Unlocked: Return to Home Screen
         </Link>
       </div>

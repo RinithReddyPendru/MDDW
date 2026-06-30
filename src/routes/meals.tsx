@@ -5,6 +5,7 @@ import { useLang } from "@/lib/mddw/useLang";
 import { MDDW_MEALS, MealCategory } from "@/lib/mddw/mealsData";
 import { getFoodGroups } from "@/lib/mddw/foodGroups";
 import { AppHeader } from "@/components/mddw/AppHeader";
+import { loadProgress } from "@/lib/mddw/storage";
 
 export const Route = createFileRoute("/meals")({
   component: MealsComponent,
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/meals")({
 
 function MealsComponent() {
   const { lang, t } = useLang();
+  const progress = loadProgress();
   const getImgUrl = (path: string) => path.startsWith('http') ? path : `${import.meta.env.BASE_URL || '/'}${path.replace(/^\//, '')}`;
   const [activeTab, setActiveTab] = useState<MealCategory>("breakfast");
   const [expandedDish, setExpandedDish] = useState<string | null>(null);
@@ -98,11 +100,13 @@ function MealsComponent() {
           </AnimatePresence>
         </div>
         
-        <div className="mt-4 flex justify-center">
-          <Link to="/game" className="w-full rounded-2xl bg-amber-600 hover:bg-amber-700 text-white py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14 flex items-center justify-center">
-            Next Step: Grand Challenge ➡️
-          </Link>
-        </div>
+        {!progress.hasCompletedTraining && (
+            <div className="mt-4 flex justify-center">
+              <Link to="/game" className="w-full rounded-2xl bg-amber-600 hover:bg-amber-700 text-white py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14 flex items-center justify-center">
+                Next Step: Grand Challenge ➡️
+              </Link>
+            </div>
+          )}
       </div>
 
       <AnimatePresence>

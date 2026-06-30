@@ -3,6 +3,8 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { useLang } from "@/lib/mddw/useLang";
+import { LANGS, type Lang } from "@/lib/mddw/translations";
+import { loadProgress } from "@/lib/mddw/storage";
 import { getFoodGroups, QUIZ_FOODS, type QuizFood, type FoodGroupId } from "@/lib/mddw/foodGroups";
 import { playPop, playSuccess } from "@/lib/mddw/audio";
 
@@ -37,6 +39,7 @@ function getRandomSandboxFoods(): QuizFood[] {
 
 function PlateSandbox() {
   const { t, lang } = useLang();
+  const progress = loadProgress();
   const FOOD_GROUPS = getFoodGroups(lang);
 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -288,7 +291,7 @@ function PlateSandbox() {
             </Link>
           </div>
           
-          {isDiverse && (
+          {isDiverse && !progress.hasCompletedTraining && (
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-4">
               <Link to="/meals" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14 flex items-center justify-center">
                 Next Step: Dish Breakdown ➡️

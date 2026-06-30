@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { getFoodGroups, type FoodGroupId } from "@/lib/mddw/foodGroups";
 import { useLang } from "@/lib/mddw/useLang";
+import { loadProgress } from "@/lib/mddw/storage";
 
 export const Route = createFileRoute("/learn")({
   head: () => ({
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/learn")({
 
 function Learn() {
   const { t, lang } = useLang();
+  const progress = loadProgress();
   const FOOD_GROUPS = getFoodGroups(lang);
   const [open, setOpen] = useState<FoodGroupId | null>(null);
 
@@ -110,11 +112,13 @@ function Learn() {
           })}
         </div>
         
-        <div className="mt-8 flex justify-center">
-          <Link to="/plate" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14 flex items-center justify-center">
-            Next Step: Build a Plate ➡️
-          </Link>
-        </div>
+        {!progress.hasCompletedTraining && (
+          <div className="mt-8 flex justify-center">
+            <Link to="/plate" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14 flex items-center justify-center">
+              Next Step: Build a Plate ➡️
+            </Link>
+          </div>
+        )}
       </div>
     </main>
   );

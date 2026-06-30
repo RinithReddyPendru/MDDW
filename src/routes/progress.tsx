@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
@@ -18,6 +18,7 @@ export const Route = createFileRoute("/progress")({
 
 function ProgressPage() {
   const { t, lang } = useLang();
+  const navigate = useNavigate();
   const [p, setP] = useState<ProgressState | null>(null);
   const [webhookUrl, setWebhookUrl] = useState("");
   const [isSaved, setIsSaved] = useState(false);
