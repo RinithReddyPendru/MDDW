@@ -1,4 +1,4 @@
-﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
@@ -80,10 +80,47 @@ function ProgressPage() {
   const badges = getBadges(lang);
 
   return (
-    <main className="min-h-dvh pb-20 bg-gradient-premium">
-      <AppHeader showBack />
-      <div className="mx-auto max-w-xl px-4 py-5">
-        <h2 className="text-xl font-bold mb-4">{t("myProgress")}</h2>
+    <main className="min-h-dvh flex flex-col md:flex-row bg-gradient-premium">
+      {/* Desktop Split Screen: Left Side Hero Image */}
+      <div className="hidden md:flex w-1/2 relative flex-col items-center justify-center p-8 lg:p-12 border-r border-border/50 bg-white/20 backdrop-blur-sm">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          transition={{ duration: 0.5 }}
+          className="rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-8 border-white/60 bg-white max-w-2xl w-full"
+        >
+          <img 
+            src="/progress_hero.png" 
+            alt="My Progress" 
+            className="w-full h-auto object-cover bg-primary/5 aspect-[4/3]"
+          />
+          <div className="bg-primary/10 p-6 text-center border-t border-primary/20">
+            <h2 className="text-primary text-3xl font-bold leading-tight tracking-tight">Your Achievements</h2>
+            <p className="text-primary/80 text-lg font-medium mt-2">Tracking your journey to empower the community</p>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Right Side Content (Full width on mobile) */}
+      <div className="w-full md:w-1/2 flex flex-col h-dvh overflow-y-auto pb-20">
+        <div className="md:hidden">
+          <AppHeader showBack />
+        </div>
+        
+        <div className="mx-auto w-full max-w-xl px-4 py-6 md:py-10 flex-1 flex flex-col">
+          {/* Desktop Header */}
+          <div className="hidden md:flex items-center gap-4 mb-6">
+            <button onClick={() => navigate({ to: "/" })} className="w-10 h-10 rounded-full bg-white/50 hover:bg-white flex items-center justify-center shadow-sm transition-colors text-lg font-bold">
+              {"\u2190"}
+            </button>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">{t("myProgress")}</h1>
+              <p className="text-muted-foreground mt-1 text-lg">See how far you've come!</p>
+            </div>
+          </div>
+
+          {/* Mobile Header */}
+          <h2 className="md:hidden text-2xl font-bold mb-4">{t("myProgress")}</h2>
 
         {!p.hasCompletedTraining && games > 0 && (
           <div className="mb-8">
@@ -200,6 +237,7 @@ function ProgressPage() {
             >
               {isSaved ? t("saved") : t("saveWebhook")}
             </button>
+          </div>
           </div>
         </div>
       </div>

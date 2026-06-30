@@ -1,4 +1,4 @@
-﻿import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
@@ -106,36 +106,40 @@ function AdminDashboard() {
 
   if (!isAuthenticated) {
     return (
-      <main className="min-h-dvh flex flex-col bg-background pb-10">
-        <AppHeader />
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-sm glass rounded-[2rem] p-8 border border-border/50 shadow-2xl text-center"
-          >
-            <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Lock className="w-8 h-8 text-primary" />
-            </div>
-            <h1 className="text-2xl font-extrabold mb-2 text-foreground">Admin Access</h1>
-            <p className="text-muted-foreground text-sm mb-6">Enter PIN to view training analytics.</p>
-            <form onSubmit={handleLogin} className="flex flex-col gap-4">
-              <input
-                type="password"
-                placeholder="Enter PIN"
-                value={pin}
-                onChange={(e) => setPin(e.target.value)}
-                className="w-full bg-background border-2 border-border/50 rounded-xl px-4 py-3 text-center text-xl font-black tracking-[0.5em] outline-none focus:border-primary transition"
-                autoFocus
-              />
-              <button 
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3 rounded-xl transition shadow-md active:scale-95"
-              >
-                Unlock Dashboard
-              </button>
-            </form>
-          </motion.div>
+      <main 
+        className="min-h-dvh flex flex-col bg-cover bg-center relative pb-10"
+        style={{ backgroundImage: 'url("/dashboard_hero.png")' }}
+      >
+        <div className="absolute inset-0 bg-background/85 backdrop-blur-2xl z-0" />
+        <div className="relative z-10 flex flex-col h-full w-full">
+          <AppHeader />
+          <div className="flex-1 flex flex-col items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full max-w-sm bg-white/80 backdrop-blur-xl rounded-[2rem] p-8 border border-white/50 shadow-2xl text-center"
+            >
+              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Lock className="w-8 h-8 text-primary" />
+              </div>
+              <h1 className="text-2xl font-extrabold mb-2 text-foreground">Admin Access</h1>
+              <p className="text-muted-foreground mb-6 text-sm">Enter your secure PIN to view analytics</p>
+              
+              <form onSubmit={handleLogin} className="flex flex-col gap-4">
+                <input
+                  type="password"
+                  placeholder="Enter PIN (1234)"
+                  className="p-4 rounded-2xl bg-white/50 border-2 border-border focus:border-primary focus:ring-0 outline-none text-center text-xl tracking-widest transition-all"
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value)}
+                  autoFocus
+                />
+                <button type="submit" className="bg-primary text-primary-foreground font-bold p-4 rounded-2xl active:scale-[0.98] transition">
+                  Unlock Dashboard
+                </button>
+              </form>
+            </motion.div>
+          </div>
         </div>
       </main>
     );
@@ -170,10 +174,15 @@ function AdminDashboard() {
   const distData = Object.keys(dist).map(k => ({ range: k, count: dist[k as keyof typeof dist] }));
 
   return (
-    <main className="min-h-dvh flex flex-col bg-background pb-10">
-      <AppHeader />
-      
-      <div className="mx-auto w-full max-w-5xl px-4 py-6 flex flex-col gap-8">
+    <main 
+      className="min-h-dvh flex flex-col bg-cover bg-center relative pb-10"
+      style={{ backgroundImage: 'url("/dashboard_hero.png")' }}
+    >
+      <div className="absolute inset-0 bg-background/90 backdrop-blur-3xl z-0" />
+      <div className="relative z-10 flex flex-col h-full w-full">
+        <AppHeader />
+        
+        <div className="mx-auto w-full max-w-5xl px-4 py-6 flex flex-col gap-8">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-border/30 pb-6">
@@ -343,6 +352,7 @@ function AdminDashboard() {
 
           </motion.div>
         )}
+        </div>
       </div>
     </main>
   );
