@@ -421,7 +421,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
       {((q.type === "single_food" && answered) || (q.type === "scenario" && multiSubmitted)) && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-4 flex flex-col gap-3">
           <NutriCompanion message={companionMessage} compact />
-          <button onClick={finish} className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold">Next ➡️</button>
+          <button onClick={finish} className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold">{t("next")}</button>
         </motion.div>
       )}
     </motion.div>
@@ -507,7 +507,7 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap }: any) {
 
       {multiSubmitted && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mt-4 flex flex-col gap-3">
-          <button onClick={finish} className="w-full rounded-2xl bg-blue-500 text-white py-4 text-lg font-bold shadow-md">Next ➡️</button>
+          <button onClick={finish} className="w-full rounded-2xl bg-blue-500 text-white py-4 text-lg font-bold shadow-md">{t("next")}</button>
         </motion.div>
       )}
     </motion.div>

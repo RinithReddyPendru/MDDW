@@ -9,6 +9,11 @@ export const LANGS: { code: Lang; label: string }[] = [
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  next: "Next ➡️",
+  nextStepBuildPlate: "Next Step: Build a Plate ➡️",
+  nextStepDishBreakdown: "Next Step: Dish Breakdown ➡️",
+  nextStepGrandChallenge: "Next Step: Grand Challenge ➡️",
+  finishScenario: "Finish Scenario ➡️",
   selectQuizMode: "Select Quiz Mode",
   modeStandard: "Standard MCQ",
   modeStandardDesc: "10 questions on basic food groups.",
@@ -481,6 +486,11 @@ const en: Dict = {
 };
 
 const hi: Dict = {
+  next: "अगला ➡️",
+  nextStepBuildPlate: "अगला कदम: प्लेट बनाएं ➡️",
+  nextStepDishBreakdown: "अगला कदम: डिश ब्रेकडाउन ➡️",
+  nextStepGrandChallenge: "अगला कदम: ग्रैंड चैलेंज ➡️",
+  finishScenario: "परिदृश्य समाप्त करें ➡️",
   selectQuizMode: "क्विज़ मोड चुनें",
   modeStandard: "मानक प्रश्नोत्तरी",
   modeStandardDesc: "बुनियादी खाद्य समूहों पर 10 प्रश्न।",
@@ -910,6 +920,11 @@ const hi: Dict = {
 };
 
 const te: Dict = {
+  next: "తర్వాత ➡️",
+  nextStepBuildPlate: "తదుపరి దశ: ప్లేట్ నిర్మించండి ➡️",
+  nextStepDishBreakdown: "తదుపరి దశ: వంటకాల వివరాలు ➡️",
+  nextStepGrandChallenge: "తదుపరి దశ: గ్రాండ్ ఛాలెంజ్ ➡️",
+  finishScenario: "సన్నివేశాన్ని ముగించండి ➡️",
   selectQuizMode: "క్విజ్ మోడ్‌ను ఎంచుకోండి",
   modeStandard: "ప్రామాణిక క్విజ్",
   modeStandardDesc: "ప్రాథమిక ఆహార సమూహాలపై 10 ప్రశ్నలు.",

@@ -151,9 +151,7 @@ function Learn() {
           </div>
           
           <div className="mt-8 flex justify-center">
-            <Link to="/plate" className="w-full rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground py-4 text-lg font-bold shadow-xl shadow-primary/20 active:scale-[0.98] min-h-14 flex items-center justify-center transition-all">
-              Next Step: Build a Plate
-            </Link>
+            <Link to="/plate" className="w-full rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground py-4 text-lg font-bold shadow-xl shadow-primary/20 active:scale-[0.98] min-h-14 flex items-center justify-center transition-all">{t("nextStepBuildPlate")}</Link>
           </div>
         </div>
       </div>
