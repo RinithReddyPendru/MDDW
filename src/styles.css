@@ -140,7 +140,12 @@
 }
 
 @utility bg-gradient-premium {
-  background: linear-gradient(135deg, color-mix(in oklab, var(--color-background) 80%, var(--color-primary) 20%), color-mix(in oklab, var(--color-background) 80%, var(--color-secondary) 20%));
+  background: 
+    url('/bg_pattern.png'),
+    linear-gradient(135deg, color-mix(in oklab, var(--color-background) 80%, var(--color-primary) 20%), color-mix(in oklab, var(--color-background) 80%, var(--color-secondary) 20%));
+  background-repeat: repeat, no-repeat;
+  background-size: 250px, auto;
+  background-blend-mode: multiply, normal;
 }
 
 @utility text-gradient {
