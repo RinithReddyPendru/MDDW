@@ -1,1 +1,0 @@
-import puppeteer from 'puppeteer';(async () => { const browser = await puppeteer.launch(); const page = await browser.newPage(); await page.goto('http://localhost:8080/login'); await page.screenshot({ path: 'render_test.png' }); const html = await page.content(); const hasForm = html.includes('placeholder='); console.log('Has form:', hasForm); await browser.close(); })();
