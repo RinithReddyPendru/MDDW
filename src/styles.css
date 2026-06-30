@@ -1,4 +1,4 @@
-﻿@import "tailwindcss" source(none);
+@import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
 
@@ -101,6 +101,10 @@
   }
   html, body {
     background-color: var(--color-background);
+    background-image: url('/bg_pattern.png');
+    background-repeat: repeat;
+    background-size: 250px;
+    background-blend-mode: multiply;
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-tap-highlight-color: transparent;
