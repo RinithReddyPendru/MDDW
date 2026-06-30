@@ -278,7 +278,7 @@ export const QUIZ_FOODS: QuizFood[] = [
   { name: "Moong Dal", nameTe: "పెసర పప్పు", nameHi: "मूंग दाल", emoji: "🫔", group: "pulses" },
   { name: "Groundnut", nameTe: "వేరుశెనగ", nameHi: "मूंगफली", emoji: "🥜", group: "nuts" },
   { name: "Almond", nameTe: "బాదం", nameHi: "बादाम", emoji: "🌰", group: "nuts" },
-  { name: "Walnut", nameTe: "అక్రోట్", nameHi: "अखरोट", emoji: "🫕", group: "nuts" },
+  { name: "Walnut", nameTe: "అక్రోట్", nameHi: "अखरोट", emoji: "🌰", group: "nuts" },
   { name: "Milk", nameTe: "పాలు", nameHi: "दूध", emoji: "🥛", group: "dairy" },
   { name: "Curd", nameTe: "పెరుగు", nameHi: "दही", emoji: "🍶", group: "dairy" },
   { name: "Paneer", nameTe: "పనీర్", nameHi: "पनीर", emoji: "🧀", group: "dairy" },
