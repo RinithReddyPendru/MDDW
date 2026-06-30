@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loadProgress, setLang as persistLang } from "./storage";
+import { loadProgress, saveProgress, setLang as persistLang, STORAGE_KEY } from "./storage";
 import { type Lang, t as tFn } from "./translations";
 
 // Global set of listeners to sync language changes across all instances of the hook

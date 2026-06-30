@@ -29,7 +29,16 @@ export function AppHeader({ showBack }: Props) {
             ←
           </Link>
         ) : (
-          <div className="text-2xl" aria-hidden>🌿</div>
+          <button 
+            onClick={() => {
+              if(confirm("Reset all progress and log out?")) {
+                localStorage.removeItem("mddw_progress");
+                window.location.href = "/login";
+              }
+            }}
+            className="text-xl inline-flex items-center justify-center min-h-11 min-w-11 -ml-2 rounded-full hover:bg-muted" 
+            title="Reset App"
+          >↩️</button>
         )}
         <div className="flex-1 min-w-0">
           <h1 className="text-base font-bold leading-tight truncate">{t("appTitle")}</h1>
