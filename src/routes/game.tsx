@@ -203,9 +203,14 @@ function GamePage() {
   const current = questions[qIdx];
 
   return (
-    <main className="min-h-dvh bg-gradient-premium">
-      <AppHeader showBack />
-      <div className="mx-auto max-w-xl px-4 py-5">
+    <main 
+      className="min-h-dvh flex flex-col bg-cover bg-center relative"
+      style={{ backgroundImage: 'url("/game_hero.png")' }}
+    >
+      <div className="absolute inset-0 bg-background/85 backdrop-blur-2xl z-0" />
+      <div className="relative z-10 flex flex-col h-full w-full">
+        <AppHeader showBack />
+        <div className="mx-auto max-w-xl px-4 py-5 w-full">
         <AnimatePresence mode="wait">
           {phase === "playing" && current && current.type === "probing_scenario" && (
             <PlayProbing key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} t={t} lang={lang} foodGroupMap={FOOD_GROUP_MAP} allGroups={FOOD_GROUPS} />
@@ -219,7 +224,8 @@ function GamePage() {
           {phase === "result" && (
             <Result key="res" standardScore={standardScore} counselingScore={counselingScore} visualScore={visualScore} correct={correct} wrong={wrong} total={20} mistakes={mistakes} userName={userName} phcName={phcName} lang={lang} t={t} />
           )}
-        </AnimatePresence>
+          </AnimatePresence>
+        </div>
       </div>
     </main>
   );

@@ -28,9 +28,14 @@ function MealsComponent() {
   ];
 
   return (
-    <main className="min-h-dvh flex flex-col bg-background pb-10">
-      <AppHeader showBack />
-      <div className="flex-1 mx-auto w-full max-w-xl px-4 py-6 flex flex-col gap-8">
+    <main 
+      className="min-h-dvh flex flex-col bg-cover bg-center relative pb-10"
+      style={{ backgroundImage: 'url("/game_hero.png")' }}
+    >
+      <div className="absolute inset-0 bg-background/85 backdrop-blur-2xl z-0" />
+      <div className="relative z-10 flex flex-col h-full w-full">
+        <AppHeader showBack />
+        <div className="flex-1 mx-auto w-full max-w-xl px-4 py-6 flex flex-col gap-8">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -118,7 +123,8 @@ function MealsComponent() {
             t={t} 
           />
         )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
     </main>
   );
 }

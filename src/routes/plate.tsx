@@ -74,10 +74,15 @@ function PlateSandbox() {
   };
 
   return (
-    <main className="h-dvh flex flex-col bg-gradient-premium overflow-hidden">
-      <AppHeader showBack />
-      
-      {/* Responsive layout container: Row on laptop (md), Column on mobile */}
+    <main 
+      className="h-dvh flex flex-col overflow-hidden bg-cover bg-center relative"
+      style={{ backgroundImage: 'url("/game_hero.png")' }}
+    >
+      <div className="absolute inset-0 bg-background/85 backdrop-blur-2xl z-0" />
+      <div className="relative z-10 flex flex-col h-full w-full">
+        <AppHeader showBack />
+        
+        {/* Responsive layout container: Row on laptop (md), Column on mobile */}
       <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 px-4 py-3 max-w-5xl mx-auto w-full overflow-y-auto md:overflow-hidden">
         
         {/* LEFT COLUMN: Title & Plate Arena */}
@@ -300,6 +305,7 @@ function PlateSandbox() {
           )}
         </div>
 
+      </div>
       </div>
     </main>
   );
