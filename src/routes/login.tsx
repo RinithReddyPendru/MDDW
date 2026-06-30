@@ -44,7 +44,7 @@ function Login() {
           className="rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-4 md:border-8 border-white/60 bg-white max-w-2xl w-full h-full md:h-auto flex flex-col"
         >
           <img 
-            src="/login_hero.png" 
+            src="/login_hero.jpg" 
             alt="ASHA Worker Training" 
             className="w-full flex-1 object-cover md:object-contain bg-primary/5 min-h-0"
           />
