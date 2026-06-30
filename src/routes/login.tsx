@@ -33,31 +33,31 @@ function Login() {
   };
 
   return (
-    <main className="h-dvh flex flex-col md:flex-row bg-gradient-premium overflow-hidden">
+    <main className="min-h-dvh flex flex-col md:flex-row bg-gradient-premium">
       
       {/* Desktop Split Screen: Left Side Hero Image */}
-      <div className="flex w-full h-[35vh] md:h-auto shrink-0 md:w-1/2 relative flex-col items-center justify-center p-4 md:p-8 lg:p-12 border-b md:border-b-0 md:border-r border-border/50 bg-white/20 backdrop-blur-sm overflow-hidden">
+      <div className="hidden md:flex w-1/2 relative flex-col items-center justify-center p-8 lg:p-12 border-r border-border/50 bg-white/20 backdrop-blur-sm">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }} 
           animate={{ opacity: 1, scale: 1 }} 
           transition={{ duration: 0.5 }}
-          className="rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-4 md:border-8 border-white/60 bg-white max-w-2xl w-full h-full md:h-auto flex flex-col"
+          className="rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-8 border-white/60 bg-white max-w-2xl w-full"
         >
           <img 
             src="/login_hero.png" 
             alt="ASHA Worker Training" 
-            className="w-full flex-1 object-cover md:object-contain bg-primary/5 min-h-0"
+            className="w-full h-auto object-contain bg-primary/5"
           />
-          <div className="bg-primary/10 p-3 md:p-6 text-center border-t border-primary/20 shrink-0">
-            <h2 className="text-primary text-xl md:text-3xl font-bold leading-tight tracking-tight">MDD-W Master Challenge</h2>
-            <p className="text-primary/80 text-sm md:text-lg font-medium mt-1 md:mt-2">ASHA Worker Training Program</p>
+          <div className="bg-primary/10 p-6 text-center border-t border-primary/20">
+            <h2 className="text-primary text-3xl font-bold leading-tight tracking-tight">MDD-W Master Challenge</h2>
+            <p className="text-primary/80 text-lg font-medium mt-2">ASHA Worker Training Program</p>
           </div>
         </motion.div>
       </div>
 
       {/* Right Side Form (Full width on mobile) */}
-      <div className="w-full md:w-1/2 flex flex-col flex-1 overflow-y-auto">
-        <div className="md:hidden sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/20 shadow-sm">
+      <div className="w-full md:w-1/2 flex flex-col h-dvh overflow-y-auto">
+        <div className="md:hidden">
           <AppHeader />
         </div>
         
@@ -69,7 +69,7 @@ function Login() {
               <img 
                 src="/login_hero.png" 
                 alt="ASHA Worker Training" 
-                className="w-full flex-1 object-cover md:object-contain bg-primary/5 min-h-0"
+                className="w-full h-auto object-contain bg-primary/5"
               />
               <div className="bg-primary/10 p-4 text-center border-t border-primary/20">
                 <h2 className="text-primary text-xl font-bold leading-tight">MDD-W Master Challenge</h2>
