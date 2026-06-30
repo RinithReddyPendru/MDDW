@@ -38,15 +38,15 @@ function Login() {
       <div className="mx-auto w-full max-w-xl px-4 py-6 flex-1 flex flex-col gap-6 justify-center">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-5">
           
-          <div className="rounded-3xl overflow-hidden shadow-lg border-4 border-white/40 bg-white relative">
+          <div className="rounded-3xl overflow-hidden shadow-lg border-4 border-white/40 bg-white">
             <img 
               src="/login_hero.png" 
               alt="ASHA Worker Training" 
-              className="w-full h-48 object-cover opacity-90"
+              className="w-full h-48 object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-5">
-              <h2 className="text-white text-2xl font-bold leading-tight">MDD-W Master Challenge</h2>
-              <p className="text-white/90 text-sm font-medium mt-1">ASHA Worker Certification Program</p>
+            <div className="bg-primary/10 p-4 text-center border-t border-primary/20">
+              <h2 className="text-primary text-xl font-bold leading-tight">MDD-W Master Challenge</h2>
+              <p className="text-primary/80 text-sm font-medium mt-1">ASHA Worker Training Program</p>
             </div>
           </div>
 
