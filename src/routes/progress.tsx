@@ -1,10 +1,12 @@
 ﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { getBadges, loadProgress, saveProgress, type ProgressState } from "@/lib/mddw/storage";
 import { useLang } from "@/lib/mddw/useLang";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import html2canvas from "html2canvas";
+import { Certificate } from "@/components/mddw/Certificate";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
@@ -21,6 +23,32 @@ function ProgressPage() {
   const navigate = useNavigate();
   const [p, setP] = useState<ProgressState | null>(null);
   const [webhookUrl, setWebhookUrl] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const certRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadCert = async () => {
+    if (!certRef.current) return;
+    setIsGenerating(true);
+    try {
+      const canvas = await html2canvas(certRef.current, { scale: 2 });
+      const link = document.createElement("a");
+      link.download = `MDDW_Certificate_${p?.userName || "ASHA"}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    } catch (e) {
+      console.error(e);
+      alert("Failed to generate certificate.");
+    }
+    setIsGenerating(false);
+  };
+  
+  const handleUnlockApp = () => {
+    if (!p) return;
+    const newState = { ...p, hasCompletedTraining: true };
+    saveProgress(newState);
+    setP(newState);
+  };
+
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => { 
@@ -56,6 +84,49 @@ function ProgressPage() {
       <AppHeader showBack />
       <div className="mx-auto max-w-xl px-4 py-5">
         <h2 className="text-xl font-bold mb-4">{t("myProgress")}</h2>
+
+        {!p.hasCompletedTraining && games > 0 && (
+          <div className="mb-8">
+            <button
+              onClick={handleUnlockApp}
+              className="w-full rounded-2xl bg-amber-500 hover:bg-amber-600 text-white py-5 text-xl font-bold shadow-md active:scale-[0.98] transition flex items-center justify-center gap-3 animate-pulse"
+            >
+              🎉 Complete Training & Unlock App 🎉
+            </button>
+          </div>
+        )}
+
+        {p.hasCompletedTraining && (
+          <div className="mb-10">
+            <div className="glass rounded-3xl p-5 border-2 border-border/50 shadow-sm flex flex-col items-center overflow-hidden">
+              <h3 className="font-bold text-xl text-primary mb-4">Your Certificate</h3>
+              <div className="w-[600px] max-w-full overflow-hidden rounded-xl shadow-sm mb-6 flex justify-center items-center bg-white p-2">
+                <div style={{ transform: 'scale(0.5)', transformOrigin: 'top left', width: '600px', height: '450px', marginBottom: '-225px' }}>
+                  <Certificate 
+                    ref={certRef}
+                    userName={p.userName || ""}
+                    phcName={p.phcName || ""}
+                    date={new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  />
+                </div>
+              </div>
+              <button
+                onClick={handleDownloadCert}
+                disabled={isGenerating}
+                className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-sm active:scale-[0.98] transition flex items-center justify-center gap-2"
+              >
+                {isGenerating ? "Generating..." : "⬇️ Download Certificate"}
+              </button>
+              
+              <button
+                onClick={() => navigate({ to: "/" })}
+                className="w-full mt-3 rounded-2xl bg-secondary text-secondary-foreground py-3 text-sm font-bold shadow-sm active:scale-[0.98] transition"
+              >
+                Return to Dashboard
+              </button>
+            </div>
+          </div>
+        )}
 
         {games === 0 ? (
           <div className="rounded-2xl bg-card border-2 border-dashed border-border p-8 text-center text-muted-foreground">

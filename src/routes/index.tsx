@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { useLang } from "@/lib/mddw/useLang";
@@ -22,6 +22,11 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { t } = useLang();
   const progress = loadProgress();
+
+  // Redirect to login if user hasn't registered yet
+  if (!progress.userName || !progress.phoneNumber) {
+    return <Navigate to="/login" replace />;
+  }
   const stats = [
     { value: "10", label: t("foodGroups") },
     { value: "\u22655", label: t("requiredDaily") },
