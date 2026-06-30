@@ -42,7 +42,7 @@ function Login() {
             <img 
               src="/login_hero.png" 
               alt="ASHA Worker Training" 
-              className="w-full h-48 object-cover"
+              className="w-full h-auto object-contain bg-primary/5"
             />
             <div className="bg-primary/10 p-4 text-center border-t border-primary/20">
               <h2 className="text-primary text-xl font-bold leading-tight">MDD-W Master Challenge</h2>
