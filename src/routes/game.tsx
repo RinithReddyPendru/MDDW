@@ -428,7 +428,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
   );
 }
 
-function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap }: any) {
+function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t }: any) {
   const [multiPicked, setMultiPicked] = useState<number[]>([]);
   const [multiSubmitted, setMultiSubmitted] = useState(false);
   const isRight = (i: number) => q.correctIndices.includes(i);
