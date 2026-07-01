@@ -137,6 +137,8 @@ function GamePage() {
   });
 
   const handleNextQuestion = (pts: number, c: number, w: number, m: any[]) => {
+    try {
+
     const activeMode = modeSequence[currentModeIndex];
     if (activeMode === "standard") setStandardScore(s => s + pts);
     else if (activeMode === "counseling") setCounselingScore(s => s + pts);
@@ -151,6 +153,10 @@ function GamePage() {
         const nextMode = modeSequence[currentModeIndex + 1];
         setCurrentModeIndex(currentModeIndex + 1);
         setQuestions(buildQuestions(nextMode, FOOD_GROUPS));
+        if (nextMode === 'visual') {
+          alert('Transitioning to Visual Round! If you see this, the button works.');
+        }
+
         setQIdx(0);
       } else {
         const finalStandard = activeMode === "standard" ? standardScore + pts : standardScore;
@@ -236,6 +242,10 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string) 
   const [phc, setPhc] = useState("");
   const [phone, setPhone] = useState("");
 
+    } catch (e: any) {
+      alert("Error in handleNextQuestion: " + e.message);
+      console.error(e);
+    }
   const handleStart = () => {
     if (!name.trim()) return alert(t("enterNameAlert"));
     if (!phone.trim()) return alert(t("whatsappAlert"));
@@ -709,7 +719,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
         )}
 
         {finished && (
-          <button onClick={() => onNext(wrongCount === 0 ? 1 : 0, wrongCount === 0 ? 1 : 0, wrongCount > 0 ? 1 : 0, mistakes)} className="mt-2 w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14 animate-pulse">
+          <button onClick={() => onNext(wrongCount === 0 ? 1 : 0, wrongCount === 0 ? 1 : 0, wrongCount > 0 ? 1 : 0, mistakes)} className="mt-2 w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14 relative z-50 pointer-events-auto cursor-pointer" style={{ WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
             {getT('finishScenario', 'Finish Scenario ➡️')}
           </button>
         )}
