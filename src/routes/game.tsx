@@ -655,7 +655,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       </div>
 
       <div className="flex-1 overflow-hidden flex flex-col glass rounded-3xl border-2 border-border/50 mb-4 shadow-sm relative" style={{ minHeight: '300px' }}>
-        <div className="p-3 border-b-2 border-border/50 bg-card flex items-center justify-between shrink-0 z-10">
+        <div className="p-3 border-b-2 border-border/50 bg-card flex flex-col gap-3 shrink-0 z-10">
            <div className="flex items-center gap-3">
              <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-xl shadow-inner">
                {data.avatarIcon}
@@ -666,18 +666,20 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
              </div>
            </div>
            
-           <div className="flex items-center gap-1.5 flex-wrap justify-end max-w-[50%]">
-             <AnimatePresence>
-               {discovered.map((g: any, i: number) => {
-                 const translatedG = foodGroupMap[g.id];
-                 return (
-                   <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-card border border-border px-2 py-0.5 rounded-full text-[10px] font-bold shadow-sm flex items-center gap-1" title={translatedG?.name || g.name}>
-                     <span>{translatedG?.emoji || g.emoji}</span> <span className="hidden md:inline">{translatedG?.name || g.name}</span>
-                   </motion.div>
-                 );
-               })}
-             </AnimatePresence>
-           </div>
+           {discovered.length > 0 && (
+             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide w-full">
+               <AnimatePresence>
+                 {discovered.map((g: any, i: number) => {
+                   const translatedG = foodGroupMap[g.id];
+                   return (
+                     <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-card border border-border px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap" title={translatedG?.name || g.name}>
+                       <span>{translatedG?.emoji || g.emoji}</span> <span>{translatedG?.name || g.name}</span>
+                     </motion.div>
+                   );
+                 })}
+               </AnimatePresence>
+             </div>
+           )}
         </div>
 
         <div ref={chatRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 scroll-smooth">
