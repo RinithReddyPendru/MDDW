@@ -25,7 +25,8 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/idli_peanut_chutney.png",
     ingredients: [
       { nameKey: "ing_idli_with_peanut_chutney_grains", groupId: "grains" },
-      { nameKey: "ing_idli_with_peanut_chutney_nuts", groupId: "nuts" }
+      { nameKey: "ing_idli_with_peanut_chutney_nuts", groupId: "nuts" },
+      { nameKey: "ing_idli_with_peanut_chutney_veg", groupId: "other_veg" }
     ]
   },
   {
@@ -35,7 +36,9 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/pesarattu_upma.png",
     ingredients: [
       { nameKey: "ing_pesarattu_with_upma_pulses", groupId: "pulses" },
-      { nameKey: "ing_pesarattu_with_upma_grains", groupId: "grains" }
+      { nameKey: "ing_pesarattu_with_upma_grains", groupId: "grains" },
+      { nameKey: "ing_pesarattu_with_upma_nuts", groupId: "nuts" },
+      { nameKey: "ing_pesarattu_with_upma_veg", groupId: "other_veg" }
     ]
   },
   {
@@ -45,7 +48,9 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/uggani_bajji.png",
     ingredients: [
       { nameKey: "ing_uggani_with_bajji_grains", groupId: "grains" },
-      { nameKey: "ing_uggani_with_bajji_veg", groupId: "other_veg" }
+      { nameKey: "ing_uggani_with_bajji_veg", groupId: "other_veg" },
+      { nameKey: "ing_uggani_with_bajji_nuts", groupId: "nuts" },
+      { nameKey: "ing_uggani_with_bajji_pulses", groupId: "pulses" }
     ]
   },
   {
@@ -65,7 +70,9 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/pongal.png",
     ingredients: [
       { nameKey: "ing_pongal_grains", groupId: "grains" },
-      { nameKey: "ing_pongal_pulses", groupId: "pulses" }
+      { nameKey: "ing_pongal_pulses", groupId: "pulses" },
+      { nameKey: "ing_pongal_nuts", groupId: "nuts" },
+      { nameKey: "ing_pongal_veg", groupId: "other_veg" }
     ]
   },
   {
@@ -75,7 +82,8 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/puri_potato_curry.png",
     ingredients: [
       { nameKey: "ing_puri_with_potato_curry_grains", groupId: "grains" },
-      { nameKey: "ing_puri_with_potato_curry_roots", groupId: "roots" }
+      { nameKey: "ing_puri_with_potato_curry_roots", groupId: "roots" },
+      { nameKey: "ing_puri_with_potato_curry_veg", groupId: "other_veg" }
     ]
   },
   {
@@ -85,7 +93,10 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/masala_dosa.png",
     ingredients: [
       { nameKey: "ing_masala_dosa_grains", groupId: "grains" },
-      { nameKey: "ing_masala_dosa_roots", groupId: "roots" }
+      { nameKey: "ing_masala_dosa_roots", groupId: "roots" },
+      { nameKey: "ing_masala_dosa_nuts", groupId: "nuts" },
+      { nameKey: "ing_masala_dosa_pulses", groupId: "pulses" },
+      { nameKey: "ing_masala_dosa_veg", groupId: "other_veg" }
     ]
   },
 
@@ -118,7 +129,8 @@ export const MDDW_MEALS: Meal[] = [
     ingredients: [
       { nameKey: "ing_rice_with_sambar_and_cabbage_poriyal_grains", groupId: "grains" },
       { nameKey: "ing_rice_with_sambar_and_cabbage_poriyal_pulses", groupId: "pulses" },
-      { nameKey: "ing_rice_with_sambar_and_cabbage_poriyal_veg", groupId: "other_veg" }
+      { nameKey: "ing_rice_with_sambar_and_cabbage_poriyal_veg", groupId: "other_veg" },
+      { nameKey: "ing_rice_with_sambar_and_cabbage_poriyal_nuts", groupId: "nuts" }
     ]
   },
   {
@@ -140,7 +152,8 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/fish_curry.png",
     ingredients: [
       { nameKey: "ing_fish_curry_with_rice_grains", groupId: "grains" },
-      { nameKey: "ing_fish_curry_with_rice_meat", groupId: "meat" }
+      { nameKey: "ing_fish_curry_with_rice_meat", groupId: "meat" },
+      { nameKey: "ing_fish_curry_with_rice_veg", groupId: "other_veg" }
     ]
   },
   {
@@ -150,7 +163,8 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/egg_curry.png",
     ingredients: [
       { nameKey: "ing_egg_curry_with_rice_grains", groupId: "grains" },
-      { nameKey: "ing_egg_curry_with_rice_eggs", groupId: "eggs" }
+      { nameKey: "ing_egg_curry_with_rice_eggs", groupId: "eggs" },
+      { nameKey: "ing_egg_curry_with_rice_veg", groupId: "other_veg" }
     ]
   },
 
@@ -161,7 +175,9 @@ export const MDDW_MEALS: Meal[] = [
     category: "snack",
     imageUrl: "/images/meals/mirchi_bajji.png",
     ingredients: [
-      { nameKey: "ing_mirchi_bajji_veg", groupId: "other_veg" }
+      { nameKey: "ing_mirchi_bajji_veg", groupId: "other_veg" },
+      { nameKey: "ing_mirchi_bajji_pulses", groupId: "pulses" },
+      { nameKey: "ing_mirchi_bajji_leafy", groupId: "leafy_greens" }
     ]
   },
   {
@@ -172,7 +188,8 @@ export const MDDW_MEALS: Meal[] = [
     ingredients: [
       { nameKey: "ing_bobbatlu_grains", groupId: "grains" },
       { nameKey: "ing_bobbatlu_pulses", groupId: "pulses" },
-      { nameKey: "ing_bobbatlu_dairy", groupId: "dairy" }
+      { nameKey: "ing_bobbatlu_dairy", groupId: "dairy" },
+      { nameKey: "ing_bobbatlu_nuts", groupId: "nuts" }
     ]
   },
   {
@@ -182,7 +199,8 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/punugulu_coconut.png",
     ingredients: [
       { nameKey: "ing_punugulu_with_coconut_chutney_grains", groupId: "grains" },
-      { nameKey: "ing_punugulu_with_coconut_chutney_nuts", groupId: "nuts" }
+      { nameKey: "ing_punugulu_with_coconut_chutney_nuts", groupId: "nuts" },
+      { nameKey: "ing_punugulu_with_coconut_chutney_leafy", groupId: "leafy_greens" }
     ]
   },
   {
@@ -192,7 +210,9 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/dibba_rotti.png",
     ingredients: [
       { nameKey: "ing_dibba_rotti_grains", groupId: "grains" },
-      { nameKey: "ing_dibba_rotti_pulses", groupId: "pulses" }
+      { nameKey: "ing_dibba_rotti_pulses", groupId: "pulses" },
+      { nameKey: "ing_dibba_rotti_nuts", groupId: "nuts" },
+      { nameKey: "ing_dibba_rotti_veg", groupId: "other_veg" }
     ]
   },
   {
@@ -224,7 +244,8 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/ragi_sangati_chutney.png",
     ingredients: [
       { nameKey: "ing_ragi_sangati_with_groundnut_chutney_grains", groupId: "grains" },
-      { nameKey: "ing_ragi_sangati_with_groundnut_chutney_nuts", groupId: "nuts" }
+      { nameKey: "ing_ragi_sangati_with_groundnut_chutney_nuts", groupId: "nuts" },
+      { nameKey: "ing_ragi_sangati_with_groundnut_chutney_pulses", groupId: "pulses" }
     ]
   },
   {
