@@ -148,7 +148,7 @@ function Index() {
           <footer className="mt-8 mb-4 text-center">
             <div className="glass inline-block px-4 py-2 rounded-full shadow-sm border border-white/20">
               <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
-                Developed for ASHAs
+                Developed for ASHA's
               </p>
             </div>
           </footer>
