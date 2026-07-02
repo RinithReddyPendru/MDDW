@@ -204,6 +204,10 @@ function GamePage() {
     } else {
       setQIdx(i => i + 1);
     }
+    } catch (e: any) {
+      alert("Error transitioning: " + e.message);
+      console.error(e);
+    }
   };
 
   const current = questions[qIdx];
@@ -242,10 +246,7 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string) 
   const [phc, setPhc] = useState("");
   const [phone, setPhone] = useState("");
 
-    } catch (e: any) {
-      alert("Error in handleNextQuestion: " + e.message);
-      console.error(e);
-    }
+
   const handleStart = () => {
     if (!name.trim()) return alert(t("enterNameAlert"));
     if (!phone.trim()) return alert(t("whatsappAlert"));
@@ -363,7 +364,11 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
 
       {q.type === "single_food" ? (
         <div className="rounded-3xl glass border-2 border-border/50 p-6 text-center shadow-lg">
-          <div className="text-7xl mb-3" aria-hidden>{q.food.emoji}</div>
+          {q.food.imagePath ? (
+            <img src={`${import.meta.env.BASE_URL || '/'}${q.food.imagePath.replace(/^\//, '')}`} alt={getQuizFoodName(q.food, lang)} className="w-32 h-32 object-cover rounded-full mx-auto mb-3 shadow-md border-4 border-white bg-white" />
+          ) : (
+            <div className="text-7xl mb-3" aria-hidden>{q.food.emoji}</div>
+          )}
           <div className="text-xs uppercase font-bold text-muted-foreground">{t("whichFoodGroup")}</div>
           <div className="text-2xl font-bold mt-1">{getQuizFoodName(q.food, lang)}</div>
         </div>
@@ -373,7 +378,11 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
           <div className="flex justify-center gap-6 mb-6">
             {q.foods.map((f:any) => (
               <div key={f.name} className="flex flex-col items-center gap-2">
-                <span className="text-5xl" aria-hidden>{f.emoji}</span>
+                {f.imagePath ? (
+                  <img src={`${import.meta.env.BASE_URL || '/'}${f.imagePath.replace(/^\//, '')}`} alt={getQuizFoodName(f, lang)} className="w-20 h-20 object-cover rounded-full shadow-sm border-2 border-white bg-white" />
+                ) : (
+                  <span className="text-5xl" aria-hidden>{f.emoji}</span>
+                )}
                 <span className="text-xs font-bold text-muted-foreground uppercase">{getQuizFoodName(f, lang)}</span>
               </div>
             ))}
