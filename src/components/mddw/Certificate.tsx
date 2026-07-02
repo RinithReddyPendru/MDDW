@@ -27,7 +27,7 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(({
         <div className="mt-2 mb-6">
           <p className="italic text-slate-500 mb-2">This is to certify that</p>
           <p className="text-3xl font-bold text-slate-800 underline decoration-[#D97000] decoration-2 underline-offset-4 mb-2">
-            {userName || "ASHA Worker"}
+            {userName || "ASHA"}
           </p>
           <p className="text-sm text-slate-600 mb-6">from <span className="font-semibold text-slate-800">{phcName || "their PHC"}</span></p>
           

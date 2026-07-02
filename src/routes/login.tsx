@@ -45,12 +45,12 @@ function Login() {
         >
           <img 
             src="/login_hero.jpg" 
-            alt="ASHA Worker Training" 
+            alt="ASHA Training" 
             className="w-full h-auto object-contain bg-primary/5"
           />
           <div className="bg-primary/10 p-6 text-center border-t border-primary/20">
             <h2 className="text-primary text-3xl font-bold leading-tight tracking-tight">MDD-W Master Challenge</h2>
-            <p className="text-primary/80 text-lg font-medium mt-2">ASHA Worker Training Program</p>
+            <p className="text-primary/80 text-lg font-medium mt-2">ASHA Training Program</p>
           </div>
         </motion.div>
       </div>
@@ -68,12 +68,12 @@ function Login() {
             <div className="md:hidden rounded-3xl overflow-hidden shadow-lg border-4 border-white/40 bg-white">
               <img 
                 src="/login_hero.jpg" 
-                alt="ASHA Worker Training" 
+                alt="ASHA Training" 
                 className="w-full h-auto object-contain bg-primary/5"
               />
               <div className="bg-primary/10 p-4 text-center border-t border-primary/20">
                 <h2 className="text-primary text-xl font-bold leading-tight">MDD-W Master Challenge</h2>
-                <p className="text-primary/80 text-sm font-medium mt-1">ASHA Worker Training Program</p>
+                <p className="text-primary/80 text-sm font-medium mt-1">ASHA Training Program</p>
               </div>
             </div>
 

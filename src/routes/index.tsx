@@ -8,11 +8,11 @@ import { loadProgress } from "@/lib/mddw/storage";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MDDW Master Challenge \u2013 ASHA Worker Training" },
-      { name: "description", content: "Train ASHA workers on Minimum Dietary Diversity for Women through interactive games." },
+      { title: "MDDW Master Challenge \u2013 ASHA Training" },
+      { name: "description", content: "Train ASHAs on Minimum Dietary Diversity for Women through interactive games." },
       { name: "theme-color", content: "#D97000" },
       { property: "og:title", content: "MDDW Master Challenge" },
-      { property: "og:description", content: "Interactive MDDW training for ASHA workers." },
+      { property: "og:description", content: "Interactive MDDW training for ASHAs." },
     ],
     links: [{ rel: "manifest", href: "/manifest.webmanifest" }],
   }),
@@ -148,7 +148,7 @@ function Index() {
           <footer className="mt-8 mb-4 text-center">
             <div className="glass inline-block px-4 py-2 rounded-full shadow-sm border border-white/20">
               <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
-                Developed for ASHA Workers
+                Developed for ASHAs
               </p>
             </div>
           </footer>
