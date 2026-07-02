@@ -128,7 +128,9 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/lemon_rice.png",
     ingredients: [
       { nameKey: "ing_lemon_rice_with_curd_grains", groupId: "grains" },
-      { nameKey: "ing_lemon_rice_with_curd_dairy", groupId: "dairy" }
+      { nameKey: "ing_lemon_rice_with_curd_dairy", groupId: "dairy" },
+      { nameKey: "ing_lemon_rice_with_curd_pulses", groupId: "pulses" },
+      { nameKey: "ing_lemon_rice_with_curd_nuts", groupId: "nuts" }
     ]
   },
   {
@@ -200,7 +202,8 @@ export const MDDW_MEALS: Meal[] = [
     imageUrl: "/images/meals/atukulu_chana.png",
     ingredients: [
       { nameKey: "ing_atukulu_with_roasted_chana_grains", groupId: "grains" },
-      { nameKey: "ing_atukulu_with_roasted_chana_pulses", groupId: "pulses" }
+      { nameKey: "ing_atukulu_with_roasted_chana_pulses", groupId: "pulses" },
+      { nameKey: "ing_atukulu_with_roasted_chana_nuts", groupId: "nuts" }
     ]
   },
   {
