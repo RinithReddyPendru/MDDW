@@ -17,6 +17,22 @@ import { NutriCompanion } from "@/components/mddw/NutriCompanion";
 import { PROBING_SCENARIOS, type ProbingScenarioData } from "@/lib/mddw/probingScenarios";
 import { IMAGE_SCENARIOS, type ImageScenarioData } from "@/lib/mddw/imageScenarios";
 
+
+function FallbackImage({ src, alt, className, fallbackEmoji, fallbackClassName }: { src: string, alt: string, className: string, fallbackEmoji: string, fallbackClassName: string }) {
+  const [error, setError] = useState(false);
+  if (error || !src) {
+    return <div className={fallbackClassName} aria-hidden>{fallbackEmoji}</div>;
+  }
+  return (
+    <img 
+      src={src} 
+      alt={alt} 
+      className={className}
+      onError={() => setError(true)}
+    />
+  );
+}
+
 export const Route = createFileRoute("/game")({
   head: () => ({
     meta: [
@@ -365,7 +381,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
       {q.type === "single_food" ? (
         <div className="rounded-3xl glass border-2 border-border/50 p-6 text-center shadow-lg">
           {q.food.imagePath ? (
-            <img src={`${import.meta.env.BASE_URL || '/'}${q.food.imagePath.replace(/^\//, '')}`} alt={getQuizFoodName(q.food, lang)} className="w-32 h-32 object-cover rounded-full mx-auto mb-3 shadow-md border-4 border-white bg-white" />
+            <FallbackImage src={`${import.meta.env.BASE_URL || '/'}${q.food.imagePath.replace(/^\//, '')}`} alt={getQuizFoodName(q.food, lang)} className="w-32 h-32 object-cover rounded-full mx-auto mb-3 shadow-md border-4 border-white bg-white" fallbackEmoji={q.food.emoji} fallbackClassName="text-7xl mb-3" />
           ) : (
             <div className="text-7xl mb-3" aria-hidden>{q.food.emoji}</div>
           )}
@@ -379,7 +395,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
             {q.foods.map((f:any) => (
               <div key={f.name} className="flex flex-col items-center gap-2">
                 {f.imagePath ? (
-                  <img src={`${import.meta.env.BASE_URL || '/'}${f.imagePath.replace(/^\//, '')}`} alt={getQuizFoodName(f, lang)} className="w-20 h-20 object-cover rounded-full shadow-sm border-2 border-white bg-white" />
+                  <FallbackImage src={`${import.meta.env.BASE_URL || '/'}${f.imagePath.replace(/^\//, '')}`} alt={getQuizFoodName(f, lang)} className="w-20 h-20 object-cover rounded-full shadow-sm border-2 border-white bg-white" fallbackEmoji={f.emoji} fallbackClassName="text-5xl" />
                 ) : (
                   <span className="text-5xl" aria-hidden>{f.emoji}</span>
                 )}
