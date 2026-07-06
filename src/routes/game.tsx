@@ -450,7 +450,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
       </div>
 
       {q.type === "scenario" && !multiSubmitted && multiPicked.length > 0 && (
-        <button onClick={submitMulti} className="mt-6 w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold">Submit Answer</button>
+        <button onClick={submitMulti} className="mt-6 w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold">{t("submitAnswer")}</button>
       )}
 
       {((q.type === "single_food" && answered) || (q.type === "scenario" && multiSubmitted)) && (
@@ -537,7 +537,7 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t }: any) {
       </div>
 
       {!multiSubmitted && multiPicked.length > 0 && (
-        <button onClick={submitMulti} className="mt-6 w-full rounded-2xl bg-blue-500 text-white py-4 text-lg font-bold shadow-md">Submit Answer</button>
+        <button onClick={submitMulti} className="mt-6 w-full rounded-2xl bg-blue-500 text-white py-4 text-lg font-bold shadow-md">{t("submitAnswer")}</button>
       )}
 
       {multiSubmitted && (
