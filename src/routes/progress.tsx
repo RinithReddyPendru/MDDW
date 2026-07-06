@@ -30,7 +30,7 @@ function ProgressPage() {
     if (!certRef.current) return;
     setIsGenerating(true);
     try {
-      const canvas = await html2canvas(certRef.current, { scale: 2, useCORS: true, allowTaint: true });
+      const canvas = await html2canvas(certRef.current, { scale: 2 });
       const link = document.createElement("a");
       link.download = `MDDW_Certificate_${p?.userName || "ASHA"}.png`;
       link.href = canvas.toDataURL("image/png");
