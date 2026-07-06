@@ -793,7 +793,7 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
   const downloadCertificate = async () => {
     if (!certificateRef.current) return;
     try {
-      const canvas = await html2canvas(certificateRef.current, { scale: 2 });
+      const canvas = await html2canvas(certificateRef.current, { scale: 2, useCORS: true, allowTaint: true });
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = `MDDW_Certificate_${userName.replace(/\s+/g, "_")}.png`;
@@ -853,7 +853,7 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
 
       <div className="mt-5 flex justify-center">
         <Link to="/progress" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md text-center min-h-14 flex items-center justify-center">
-          🏠 Unlocked: Return to Home Screen
+          🏠 {t("unlockedReturnHome") || "Unlocked: Return to Home Screen"}
         </Link>
       </div>
     </motion.div>

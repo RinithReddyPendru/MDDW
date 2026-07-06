@@ -30,7 +30,7 @@ function ProgressPage() {
     if (!certRef.current) return;
     setIsGenerating(true);
     try {
-      const canvas = await html2canvas(certRef.current, { scale: 2 });
+      const canvas = await html2canvas(certRef.current, { scale: 2, useCORS: true, allowTaint: true });
       const link = document.createElement("a");
       link.download = `MDDW_Certificate_${p?.userName || "ASHA"}.png`;
       link.href = canvas.toDataURL("image/png");
@@ -166,7 +166,7 @@ function ProgressPage() {
                 onClick={() => navigate({ to: "/" })}
                 className="w-full mt-3 rounded-2xl bg-secondary text-secondary-foreground py-3 text-sm font-bold shadow-sm active:scale-[0.98] transition"
               >
-                Return to Dashboard
+                {t("returnToDashboard") || "Return to Dashboard"}
               </button>
             </div>
           </div>

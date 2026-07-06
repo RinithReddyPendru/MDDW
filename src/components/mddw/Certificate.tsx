@@ -16,20 +16,20 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
       { year: "numeric", month: "long", day: "numeric" }
     );
 
+    // Using #cb1155 to match the certificate's pinkish red
     if (isPreview) {
-      // Preview version — shown inline on the results page and progress page
       return (
-        <div ref={ref} className="w-full max-w-lg rounded-xl shadow-sm border border-gray-200 bg-white mx-auto relative overflow-hidden">
-          <img src="/certificate_template.jpg" alt="Certificate" className="w-full h-auto block" />
+        <div ref={ref} className="w-full max-w-lg rounded-xl shadow-sm border border-gray-200 bg-white mx-auto relative overflow-hidden" style={{ aspectRatio: '1200/848' }}>
+          <img src="/certificate_template.jpg" alt="Certificate" crossOrigin="anonymous" className="absolute inset-0 w-full h-full object-cover block" />
           {/* Name overlay */}
-          <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: '33%' }}>
-            <span className="font-bold text-gray-900 capitalize text-center px-4" style={{ fontSize: 'clamp(12px, 3.5vw, 24px)', fontFamily: 'Georgia, serif', letterSpacing: '0.05em' }}>
+          <div className="absolute left-0 right-0 flex flex-col items-center justify-center" style={{ top: '44%', height: '10%' }}>
+            <span className="font-bold capitalize text-center px-4" style={{ color: '#cb1155', fontSize: 'clamp(16px, 4.5vw, 32px)', fontFamily: 'Georgia, serif', letterSpacing: '0.05em' }}>
               {userName || "ASHA"}
             </span>
           </div>
           {/* Date overlay */}
-          <div className="absolute" style={{ bottom: '7.5%', left: '13%' }}>
-            <span className="text-gray-700 font-medium" style={{ fontSize: 'clamp(6px, 1.5vw, 11px)' }}>
+          <div className="absolute" style={{ bottom: '8.5%', left: '16%' }}>
+            <span className="font-semibold" style={{ color: '#cb1155', fontSize: 'clamp(8px, 2vw, 14px)' }}>
               {formattedDate}
             </span>
           </div>
@@ -37,19 +37,18 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
       );
     }
 
-    // Full-size version — used for html2canvas download (offscreen)
     return (
       <div ref={ref} className="relative bg-white" style={{ width: '1200px', height: '848px', overflow: 'hidden' }}>
-        <img src="/certificate_template.jpg" alt="Certificate" style={{ width: '1200px', height: '848px', display: 'block' }} />
+        <img src="/certificate_template.jpg" alt="Certificate" crossOrigin="anonymous" style={{ width: '1200px', height: '848px', display: 'block' }} />
         {/* Name overlay */}
-        <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: '33%' }}>
-          <span style={{ fontSize: '36px', fontWeight: 'bold', fontFamily: 'Georgia, serif', color: '#1a1a1a', letterSpacing: '0.05em', textTransform: 'capitalize' }}>
+        <div className="absolute left-0 right-0 flex flex-col items-center justify-center" style={{ top: '44%', height: '10%' }}>
+          <span style={{ fontSize: '48px', fontWeight: 'bold', fontFamily: 'Georgia, serif', color: '#cb1155', letterSpacing: '0.05em', textTransform: 'capitalize' }}>
             {userName || "ASHA"}
           </span>
         </div>
         {/* Date overlay */}
-        <div className="absolute" style={{ bottom: '7.5%', left: '13%' }}>
-          <span style={{ fontSize: '14px', fontWeight: 500, color: '#374151' }}>
+        <div className="absolute" style={{ bottom: '8.5%', left: '16%' }}>
+          <span style={{ fontSize: '18px', fontWeight: 600, color: '#cb1155' }}>
             {formattedDate}
           </span>
         </div>
