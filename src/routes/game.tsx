@@ -783,18 +783,44 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
 
 function Certificate({ userName, phcName, score, pct, lang, t, isPreview = false, certificateRef }: any) {
   const formattedDate = new Date().toLocaleDateString(lang === "en" ? "en-US" : lang === "hi" ? "hi-IN" : "te-IN", { year: "numeric", month: "long", day: "numeric" });
-  const containerClasses = isPreview ? "w-full max-w-lg aspect-[4/3] rounded-xl shadow-sm border border-gray-200 bg-white p-6 flex flex-col items-center justify-center text-black font-sans mx-auto" : "w-[800px] h-[600px] border-4 border-gray-200 bg-white p-12 flex flex-col items-center justify-center text-black font-sans";
+  
+  if (isPreview) {
+    // Preview version — shown inline on the results page
+    return (
+      <div ref={certificateRef} className="w-full max-w-lg rounded-xl shadow-sm border border-gray-200 bg-white mx-auto relative overflow-hidden">
+        <img src="/certificate_template.jpg" alt="Certificate" className="w-full h-auto block" />
+        {/* Name overlay — positioned over the "PROUDLY PRESENTED TO" area */}
+        <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: '33%' }}>
+          <span className="font-bold text-gray-900 capitalize text-center px-4" style={{ fontSize: 'clamp(12px, 3.5vw, 24px)', fontFamily: 'Georgia, serif', letterSpacing: '0.05em' }}>
+            {userName}
+          </span>
+        </div>
+        {/* Date overlay — positioned over the Date field at bottom left */}
+        <div className="absolute" style={{ bottom: '7.5%', left: '13%' }}>
+          <span className="text-gray-700 font-medium" style={{ fontSize: 'clamp(6px, 1.5vw, 11px)' }}>
+            {formattedDate}
+          </span>
+        </div>
+      </div>
+    );
+  }
+  
+  // Full-size version — used for html2canvas download (offscreen)
   return (
-    <div ref={certificateRef} className={containerClasses}>
-      <h1 className="font-sans font-bold text-gray-900 tracking-wider uppercase text-center text-xl md:text-2xl mb-1">AIM FOUNDATION</h1>
-      <h2 className="font-sans font-medium text-gray-500 tracking-widest text-center uppercase text-xs md:text-sm mb-8">Janani Mitra Program</h2>
-      
-      <p className="text-gray-500 text-center text-xs md:text-sm mb-3">This certifies that</p>
-      
-      <h3 className="font-sans font-bold text-gray-900 text-center capitalize text-2xl md:text-4xl mb-1">{userName}</h3>
-      {phcName && <p className="text-gray-500 text-center text-sm mb-8">{phcName}</p>}
-      
-      <p className="text-gray-500 text-center text-sm max-w-sm mb-4">Has successfully completed the required training program.</p>
+    <div ref={certificateRef} className="relative" style={{ width: '1200px', height: '848px' }}>
+      <img src="/certificate_template.jpg" alt="Certificate" style={{ width: '1200px', height: '848px', display: 'block' }} />
+      {/* Name overlay */}
+      <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: '33%' }}>
+        <span style={{ fontSize: '36px', fontWeight: 'bold', fontFamily: 'Georgia, serif', color: '#1a1a1a', letterSpacing: '0.05em', textTransform: 'capitalize' }}>
+          {userName}
+        </span>
+      </div>
+      {/* Date overlay */}
+      <div className="absolute" style={{ bottom: '7.5%', left: '13%' }}>
+        <span style={{ fontSize: '14px', fontWeight: 500, color: '#374151' }}>
+          {formattedDate}
+        </span>
+      </div>
     </div>
   );
 }
