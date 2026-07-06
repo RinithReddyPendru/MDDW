@@ -816,7 +816,9 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
           <div className="space-y-3">
             {mistakes.map((m:any, i:number) => (
               <div key={i} className="bg-card border-2 border-border rounded-xl p-3 text-sm">
-                <div className="font-semibold text-base mb-1">{m.question}</div>
+                <div className="font-semibold text-base mb-1">
+                  {t(m.question as any) === m.question ? m.question.replace(/^(dish_|ing_)/, '').replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : t(m.question as any)}
+                </div>
                 <div className="text-destructive mb-0.5">❌ {t("youAnswered")} {m.userAnswer}</div>
                 <div className="text-secondary">✅ {t("correctAnswer")} {m.correctAnswer}</div>
               </div>

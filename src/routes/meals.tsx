@@ -97,7 +97,7 @@ function MealsComponent() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-90" />
                 <div className="absolute bottom-0 left-0 right-0 p-5 text-left">
                   <h3 className="text-white font-extrabold text-2xl leading-tight drop-shadow-xl">
-                    {t(meal.nameKey)}
+                    {t(meal.nameKey as any) === meal.nameKey ? meal.nameKey.replace(/^dish_/, '').replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : t(meal.nameKey as any)}
                   </h3>
                 </div>
               </motion.button>
@@ -158,7 +158,7 @@ function DishModal({ mealId, onClose, lang, t }: any) {
              </button>
 
              <h2 className="absolute bottom-5 left-6 text-3xl font-black text-foreground drop-shadow-md">
-               {t(meal.nameKey)}
+               {t(meal.nameKey as any) === meal.nameKey ? meal.nameKey.replace(/^dish_/, '').replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : t(meal.nameKey as any)}
              </h2>
           </div>
           
@@ -170,6 +170,8 @@ function DishModal({ mealId, onClose, lang, t }: any) {
               {meal.ingredients.map((ing: any, i: number) => {
                  const group = foodGroups.find((g: any) => g.id === ing.groupId);
                  if (!group) return null;
+                 const tName = t(ing.nameKey as any);
+                 const displayName = tName === ing.nameKey ? group.name : tName;
                  return (
                    <motion.div 
                      initial={{ opacity: 0, y: 10 }}
@@ -179,7 +181,7 @@ function DishModal({ mealId, onClose, lang, t }: any) {
                      className="flex items-center justify-between bg-muted/40 p-4 rounded-2xl border border-border/50"
                    >
                       <div className="flex flex-col pr-3">
-                        <span className="font-bold text-base text-foreground">{t(ing.nameKey)}</span>
+                        <span className="font-bold text-base text-foreground">{displayName}</span>
                         <span className="text-xs font-medium text-muted-foreground mt-0.5 line-clamp-2">
                           {group.name} • {group.examples.join(", ")}
                         </span>
