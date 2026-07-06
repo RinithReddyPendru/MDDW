@@ -30,6 +30,14 @@ export interface ProgressState {
   phoneNumber?: string;
   sheetsWebhookUrl?: string;
   hasCompletedTraining?: boolean;
+  /** Saved game round so ASHAs can resume from where they left off */
+  savedRoundIndex?: number;
+  savedStandardScore?: number;
+  savedCounselingScore?: number;
+  savedVisualScore?: number;
+  savedCorrect?: number;
+  savedWrong?: number;
+  savedMistakes?: { question: string; userAnswer: string; correctAnswer: string }[];
 }
 
 const KEY = "mddw_progress_v1";

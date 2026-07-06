@@ -123,20 +123,25 @@ function GamePage() {
   const FOOD_GROUPS = getFoodGroups(lang);
   const FOOD_GROUP_MAP = Object.fromEntries(FOOD_GROUPS.map((g) => [g.id, g])) as any;
   const modeSequence: GameMode[] = ["standard", "counseling", "visual"];
-  const [phase, setPhase] = useState<"playing" | "result">("playing");
-  const [currentModeIndex, setCurrentModeIndex] = useState(0);
   
-  // Initialize game state immediately
-  const [questions, setQuestions] = useState<Question[]>(() => buildQuestions(modeSequence[0], FOOD_GROUPS));
+  // Load saved round progress (so ASHAs can resume from where they left off)
+  const savedProgress = typeof window !== "undefined" ? loadProgress() : null;
+  const resumeIndex = savedProgress?.savedRoundIndex ?? 0;
+  
+  const [phase, setPhase] = useState<"playing" | "result">("playing");
+  const [currentModeIndex, setCurrentModeIndex] = useState(resumeIndex);
+  
+  // Initialize game state — resume from saved round if available
+  const [questions, setQuestions] = useState<Question[]>(() => buildQuestions(modeSequence[resumeIndex] || "standard", FOOD_GROUPS));
   
   const [qIdx, setQIdx] = useState(0);
-  const [standardScore, setStandardScore] = useState(0);
-  const [counselingScore, setCounselingScore] = useState(0);
-  const [visualScore, setVisualScore] = useState(0);
-  const [correct, setCorrect] = useState(0);
-  const [wrong, setWrong] = useState(0);
+  const [standardScore, setStandardScore] = useState(savedProgress?.savedStandardScore ?? 0);
+  const [counselingScore, setCounselingScore] = useState(savedProgress?.savedCounselingScore ?? 0);
+  const [visualScore, setVisualScore] = useState(savedProgress?.savedVisualScore ?? 0);
+  const [correct, setCorrect] = useState(savedProgress?.savedCorrect ?? 0);
+  const [wrong, setWrong] = useState(savedProgress?.savedWrong ?? 0);
   
-  const [mistakes, setMistakes] = useState<{question: string, userAnswer: string, correctAnswer: string}[]>([]);
+  const [mistakes, setMistakes] = useState<{question: string, userAnswer: string, correctAnswer: string}[]>(savedProgress?.savedMistakes ?? []);
   
   // Load user details from storage on init
   const [userName] = useState(() => {
@@ -166,14 +171,22 @@ function GamePage() {
     
     if (qIdx + 1 >= questions.length) {
       if (currentModeIndex + 1 < modeSequence.length) {
-        const nextMode = modeSequence[currentModeIndex + 1];
-        setCurrentModeIndex(currentModeIndex + 1);
+        const nextModeIdx = currentModeIndex + 1;
+        const nextMode = modeSequence[nextModeIdx];
+        setCurrentModeIndex(nextModeIdx);
         setQuestions(buildQuestions(nextMode, FOOD_GROUPS));
-        if (nextMode === 'visual') {
-          alert('Transitioning to Visual Round! If you see this, the button works.');
-        }
-
         setQIdx(0);
+        
+        // Save round progress so ASHAs can resume if they close the app
+        const pState = loadProgress();
+        pState.savedRoundIndex = nextModeIdx;
+        pState.savedStandardScore = activeMode === "standard" ? standardScore + pts : standardScore;
+        pState.savedCounselingScore = activeMode === "counseling" ? counselingScore + pts : counselingScore;
+        pState.savedVisualScore = activeMode === "visual" ? visualScore + pts : visualScore;
+        pState.savedCorrect = correct + c;
+        pState.savedWrong = wrong + w;
+        pState.savedMistakes = [...mistakes, ...m];
+        saveProgress(pState);
       } else {
         const finalStandard = activeMode === "standard" ? standardScore + pts : standardScore;
         const finalCounseling = activeMode === "counseling" ? counselingScore + pts : counselingScore;
@@ -194,9 +207,16 @@ function GamePage() {
           mistakes: [...mistakes, ...m]
         });
         
-        // Mark training as completely finished so home screen unlocks
+        // Mark training as completely finished and clear saved round
         const pState = loadProgress();
         pState.hasCompletedTraining = true;
+        pState.savedRoundIndex = undefined;
+        pState.savedStandardScore = undefined;
+        pState.savedCounselingScore = undefined;
+        pState.savedVisualScore = undefined;
+        pState.savedCorrect = undefined;
+        pState.savedWrong = undefined;
+        pState.savedMistakes = undefined;
         saveProgress(pState);
         
         if (pState.sheetsWebhookUrl && typeof window !== "undefined") {
@@ -238,6 +258,12 @@ function GamePage() {
         <AppHeader showBack />
         <div className="mx-auto max-w-xl px-4 py-5 w-full">
         <AnimatePresence mode="wait">
+          {phase === "playing" && !current && (
+            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-20 gap-4">
+              <div className="text-5xl animate-bounce">🍽️</div>
+              <p className="text-muted-foreground font-medium">{t("loading") || "Loading questions..."}</p>
+            </motion.div>
+          )}
           {phase === "playing" && current && current.type === "probing_scenario" && (
             <PlayProbing key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} t={t} lang={lang} foodGroupMap={FOOD_GROUP_MAP} allGroups={FOOD_GROUPS} />
           )}
