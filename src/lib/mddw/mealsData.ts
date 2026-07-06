@@ -203,18 +203,7 @@ export const MDDW_MEALS: Meal[] = [
       { nameKey: "ing_punugulu_with_coconut_chutney_leafy", groupId: "dglv" }
     ]
   },
-  {
-    id: "meal_s_4",
-    nameKey: "dish_dibba_rotti",
-    category: "snack",
-    imageUrl: "/images/meals/dibba_rotti.png",
-    ingredients: [
-      { nameKey: "ing_dibba_rotti_grains", groupId: "grains" },
-      { nameKey: "ing_dibba_rotti_pulses", groupId: "pulses" },
-      { nameKey: "ing_dibba_rotti_nuts", groupId: "nuts" },
-      { nameKey: "ing_dibba_rotti_veg", groupId: "otherVeg" }
-    ]
-  },
+
   {
     id: "meal_s_5",
     nameKey: "dish_atukulu_with_roasted_chana",
