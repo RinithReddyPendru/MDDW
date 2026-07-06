@@ -534,7 +534,8 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t }: any) {
           Real-Life Meal
         </div>
         <img src={`${import.meta.env.BASE_URL || '/'}${q.data.imagePath.replace(/^\//, '')}`} alt="Meal" className="w-full h-64 object-cover object-center" />
-        <div className="p-4 bg-card">
+        <div className="p-4 bg-card text-center">
+          <h2 className="font-bold text-2xl mb-1 text-primary">{t(q.data.dishNameKey as any) === q.data.dishNameKey ? q.data.dishNameKey.replace(/^dish_/, '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : t(q.data.dishNameKey as any)}</h2>
           <h3 className="font-bold text-lg mb-1">What food groups can you spot?</h3>
           <p className="text-sm text-muted-foreground">Select all that apply.</p>
         </div>
