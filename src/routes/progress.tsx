@@ -137,15 +137,22 @@ function ProgressPage() {
           <div className="mb-10">
             <div className="glass rounded-3xl p-5 border-2 border-border/50 shadow-sm flex flex-col items-center overflow-hidden">
               <h3 className="font-bold text-xl text-primary mb-4">Your Certificate</h3>
-              <div className="w-[600px] max-w-full overflow-hidden rounded-xl shadow-sm mb-6 flex justify-center items-center bg-white p-2">
-                <div style={{ transform: 'scale(0.5)', transformOrigin: 'top left', width: '600px', height: '450px', marginBottom: '-225px' }}>
-                  <Certificate 
-                    ref={certRef}
-                    userName={p.userName || ""}
-                    phcName={p.phcName || ""}
-                    date={new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  />
-                </div>
+              <div className="w-full max-w-full mb-6">
+                <Certificate 
+                  userName={p.userName || ""}
+                  phcName={p.phcName || ""}
+                  date={new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  isPreview={true}
+                />
+              </div>
+              <div className="absolute top-[-9999px] left-[-9999px] pointer-events-none">
+                <Certificate 
+                  ref={certRef}
+                  userName={p.userName || ""}
+                  phcName={p.phcName || ""}
+                  date={new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  isPreview={false}
+                />
               </div>
               <button
                 onClick={handleDownloadCert}

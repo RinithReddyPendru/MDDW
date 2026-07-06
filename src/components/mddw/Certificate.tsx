@@ -2,60 +2,60 @@ import React from "react";
 
 interface CertificateProps {
   userName: string;
-  phcName: string;
-  date: string;
+  phcName?: string;
+  date?: string;
+  lang?: string;
+  isPreview?: boolean;
 }
 
-export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(({ userName, phcName, date }, ref) => {
-  return (
-    <div
-      ref={ref}
-      className="relative bg-white text-slate-800 p-8 w-[600px] h-[450px] mx-auto overflow-hidden shadow-2xl flex flex-col justify-center items-center text-center font-sans"
-      style={{ border: "20px solid #D97000", boxSizing: "border-box" }}
-    >
-      {/* Decorative inner border */}
-      <div className="absolute inset-2 border-4 border-[#059669] opacity-50 z-0"></div>
+export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
+  ({ userName, phcName, date, lang = "en", isPreview = false }, ref) => {
+    
+    const formattedDate = date || new Date().toLocaleDateString(
+      lang === "en" ? "en-US" : lang === "hi" ? "hi-IN" : "te-IN", 
+      { year: "numeric", month: "long", day: "numeric" }
+    );
 
-      <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
-        {/* Certificate Header */}
-        <div className="mb-4 mt-2">
-          <h1 className="text-4xl font-serif font-bold text-[#059669] mb-1 tracking-widest uppercase">Certificate</h1>
-          <h2 className="text-sm font-semibold tracking-[0.2em] text-[#D97000] uppercase">of Completion</h2>
+    if (isPreview) {
+      // Preview version — shown inline on the results page and progress page
+      return (
+        <div ref={ref} className="w-full max-w-lg rounded-xl shadow-sm border border-gray-200 bg-white mx-auto relative overflow-hidden">
+          <img src="/certificate_template.jpg" alt="Certificate" className="w-full h-auto block" />
+          {/* Name overlay */}
+          <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: '33%' }}>
+            <span className="font-bold text-gray-900 capitalize text-center px-4" style={{ fontSize: 'clamp(12px, 3.5vw, 24px)', fontFamily: 'Georgia, serif', letterSpacing: '0.05em' }}>
+              {userName || "ASHA"}
+            </span>
+          </div>
+          {/* Date overlay */}
+          <div className="absolute" style={{ bottom: '7.5%', left: '13%' }}>
+            <span className="text-gray-700 font-medium" style={{ fontSize: 'clamp(6px, 1.5vw, 11px)' }}>
+              {formattedDate}
+            </span>
+          </div>
         </div>
+      );
+    }
 
-        {/* Certificate Body */}
-        <div className="mt-2 mb-6">
-          <p className="italic text-slate-500 mb-2">This is to certify that</p>
-          <p className="text-3xl font-bold text-slate-800 underline decoration-[#D97000] decoration-2 underline-offset-4 mb-2">
+    // Full-size version — used for html2canvas download (offscreen)
+    return (
+      <div ref={ref} className="relative bg-white" style={{ width: '1200px', height: '848px', overflow: 'hidden' }}>
+        <img src="/certificate_template.jpg" alt="Certificate" style={{ width: '1200px', height: '848px', display: 'block' }} />
+        {/* Name overlay */}
+        <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: '33%' }}>
+          <span style={{ fontSize: '36px', fontWeight: 'bold', fontFamily: 'Georgia, serif', color: '#1a1a1a', letterSpacing: '0.05em', textTransform: 'capitalize' }}>
             {userName || "ASHA"}
-          </p>
-          <p className="text-sm text-slate-600 mb-6">from <span className="font-semibold text-slate-800">{phcName || "their PHC"}</span></p>
-          
-          <p className="text-sm px-10 leading-relaxed font-medium">
-            has successfully completed the <strong className="text-[#059669]">MDDW Master Challenge</strong> training program, demonstrating exceptional knowledge in Minimum Dietary Diversity for Women.
-          </p>
+          </span>
         </div>
-
-        {/* Certificate Footer */}
-        <div className="flex w-full justify-between items-end px-8 mt-auto pb-2">
-          <div className="text-center w-[120px]">
-            <div className="border-b border-slate-400 pb-1 mb-1 font-semibold text-sm">{date}</div>
-            <div className="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Date Awarded</div>
-          </div>
-
-          <div className="flex flex-col items-center justify-center -mb-2">
-            <div className="text-5xl drop-shadow-md mb-1">🎖️</div>
-            <div className="text-[9px] font-bold text-[#D97000] uppercase tracking-widest">Official Record</div>
-          </div>
-
-          <div className="text-center w-[120px]">
-            <div className="border-b border-slate-400 pb-1 mb-1 font-serif italic font-bold text-lg text-slate-800">MDDW</div>
-            <div className="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Authorized By</div>
-          </div>
+        {/* Date overlay */}
+        <div className="absolute" style={{ bottom: '7.5%', left: '13%' }}>
+          <span style={{ fontSize: '14px', fontWeight: 500, color: '#374151' }}>
+            {formattedDate}
+          </span>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 
 Certificate.displayName = "Certificate";

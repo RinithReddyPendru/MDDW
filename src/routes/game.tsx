@@ -14,6 +14,7 @@ import { playPop, playSuccess, playFailure } from "@/lib/mddw/audio";
 import { useLang } from "@/lib/mddw/useLang";
 import html2canvas from "html2canvas";
 import { NutriCompanion } from "@/components/mddw/NutriCompanion";
+import { Certificate } from "@/components/mddw/Certificate";
 import { PROBING_SCENARIOS, type ProbingScenarioData } from "@/lib/mddw/probingScenarios";
 import { IMAGE_SCENARIOS, type ImageScenarioData } from "@/lib/mddw/imageScenarios";
 
@@ -781,49 +782,6 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
   );
 }
 
-function Certificate({ userName, phcName, score, pct, lang, t, isPreview = false, certificateRef }: any) {
-  const formattedDate = new Date().toLocaleDateString(lang === "en" ? "en-US" : lang === "hi" ? "hi-IN" : "te-IN", { year: "numeric", month: "long", day: "numeric" });
-  
-  if (isPreview) {
-    // Preview version — shown inline on the results page
-    return (
-      <div ref={certificateRef} className="w-full max-w-lg rounded-xl shadow-sm border border-gray-200 bg-white mx-auto relative overflow-hidden">
-        <img src="/certificate_template.jpg" alt="Certificate" className="w-full h-auto block" />
-        {/* Name overlay — positioned over the "PROUDLY PRESENTED TO" area */}
-        <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: '33%' }}>
-          <span className="font-bold text-gray-900 capitalize text-center px-4" style={{ fontSize: 'clamp(12px, 3.5vw, 24px)', fontFamily: 'Georgia, serif', letterSpacing: '0.05em' }}>
-            {userName}
-          </span>
-        </div>
-        {/* Date overlay — positioned over the Date field at bottom left */}
-        <div className="absolute" style={{ bottom: '7.5%', left: '13%' }}>
-          <span className="text-gray-700 font-medium" style={{ fontSize: 'clamp(6px, 1.5vw, 11px)' }}>
-            {formattedDate}
-          </span>
-        </div>
-      </div>
-    );
-  }
-  
-  // Full-size version — used for html2canvas download (offscreen)
-  return (
-    <div ref={certificateRef} className="relative" style={{ width: '1200px', height: '848px' }}>
-      <img src="/certificate_template.jpg" alt="Certificate" style={{ width: '1200px', height: '848px', display: 'block' }} />
-      {/* Name overlay */}
-      <div className="absolute left-0 right-0 flex flex-col items-center" style={{ top: '33%' }}>
-        <span style={{ fontSize: '36px', fontWeight: 'bold', fontFamily: 'Georgia, serif', color: '#1a1a1a', letterSpacing: '0.05em', textTransform: 'capitalize' }}>
-          {userName}
-        </span>
-      </div>
-      {/* Date overlay */}
-      <div className="absolute" style={{ bottom: '7.5%', left: '13%' }}>
-        <span style={{ fontSize: '14px', fontWeight: 500, color: '#374151' }}>
-          {formattedDate}
-        </span>
-      </div>
-    </div>
-  );
-}
 
 function Result({ standardScore, counselingScore, visualScore, correct, wrong, total, mistakes, userName, phcName, onAgain, lang, t }: any) {
   const score = standardScore + counselingScore + visualScore;
