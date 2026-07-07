@@ -584,7 +584,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
   const [finished, setFinished] = useState(false);
   
   // Scoring
-  const [earnedPoints, setEarnedPoints] = useState(20);
+  const [earnedPoints, setEarnedPoints] = useState(1);
   const [wrongCount, setWrongCount] = useState(0);
   const [mistakes, setMistakes] = useState<any[]>([]);
 
@@ -613,7 +613,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
 
     if (opt.feedback && !opt.isCorrect) {
       playFailure();
-      setEarnedPoints(p => Math.max(0, p - 5));
+      setEarnedPoints(0);
       setWrongCount(w => w + 1);
       setMistakes(m => [...m, { question: t(currentStep.motherText), userAnswer: t(opt.text), correctAnswer: "Explore other options" }]);
       
@@ -683,7 +683,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       }, 500);
     } else {
       playFailure();
-      setEarnedPoints(p => Math.max(0, p - 5));
+      setEarnedPoints(0);
       setWrongCount(w => w + 1);
       setMistakes(m => [...m, { question: "Suggest a missing food group", userAnswer: opt.group.name, correctAnswer: "A food group she hasn't eaten yet" }]);
       setTimeout(() => {
