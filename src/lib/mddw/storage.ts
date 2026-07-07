@@ -51,7 +51,7 @@ const DEFAULT: ProgressState = {
   userName: "",
   phcName: "",
   phoneNumber: "",
-  sheetsWebhookUrl: "",
+  sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbzFeaYmJCqD6XYFl-RtsqS2N33DKxHsptZqu43rIuVEGr03cj4HgnXvL44LiN53ZUKN/exec",
   hasCompletedTraining: false,
 };
 
@@ -62,6 +62,12 @@ export function loadProgress(): ProgressState {
     if (!raw) return DEFAULT;
     const parsed = JSON.parse(raw);
     const state = { ...DEFAULT, ...parsed };
+    
+    // Auto-migrate old webhook URL to the new working one
+    const oldUrl = "https://script.google.com/macros/s/AKfycbw7H7aBhQsG5_P8g6xZISmsE4QnHh5pSvl24t7Q6Bba5cXQ2PuGfahU0l63FpROXLbo/exec";
+    if (!state.sheetsWebhookUrl || state.sheetsWebhookUrl === oldUrl || state.sheetsWebhookUrl === "") {
+      state.sheetsWebhookUrl = DEFAULT.sheetsWebhookUrl;
+    }
     
     return state;
   } catch {
