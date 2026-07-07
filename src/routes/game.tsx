@@ -12,7 +12,8 @@ import {
 import { recordResult, loadProgress, saveProgress } from "@/lib/mddw/storage";
 import { playPop, playSuccess, playFailure } from "@/lib/mddw/audio";
 import { useLang } from "@/lib/mddw/useLang";
-import html2canvas from "html2canvas";
+import { PlateResults } from "@/components/mddw/PlateResults";
+import { generateNativeCertificate } from "@/lib/mddw/certificateGenerator";
 import { NutriCompanion } from "@/components/mddw/NutriCompanion";
 import { Certificate } from "@/components/mddw/Certificate";
 import { PROBING_SCENARIOS, type ProbingScenarioData } from "@/lib/mddw/probingScenarios";
@@ -793,14 +794,15 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
   const downloadCertificate = async () => {
     if (!certificateRef.current) return;
     try {
-      const canvas = await html2canvas(certificateRef.current, { scale: 2 });
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = `MDDW_Certificate_${userName.replace(/\s+/g, "_")}.png`;
-      link.click();
-    } catch (e) {
+      const formattedDate = new Date().toLocaleDateString(
+        lang === "en" ? "en-US" : lang === "hi" ? "hi-IN" : "te-IN", 
+        { year: "numeric", month: "long", day: "numeric" }
+      );
+      const fileName = `MDDW_Certificate_${userName.replace(/\s+/g, "_")}.png`;
+      await generateNativeCertificate(userName || "ASHA", formattedDate, fileName);
+    } catch (e: any) {
       console.error(e);
-      alert("Could not generate certificate. Please try again.");
+      alert("Failed to generate certificate: " + (e?.message || "Unknown error"));
     }
   };
 

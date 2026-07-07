@@ -5,8 +5,8 @@ import { AppHeader } from "@/components/mddw/AppHeader";
 import { getBadges, loadProgress, saveProgress, type ProgressState } from "@/lib/mddw/storage";
 import { useLang } from "@/lib/mddw/useLang";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import html2canvas from "html2canvas";
 import { Certificate } from "@/components/mddw/Certificate";
+import { generateNativeCertificate } from "@/lib/mddw/certificateGenerator";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
@@ -30,14 +30,12 @@ function ProgressPage() {
     if (!certRef.current) return;
     setIsGenerating(true);
     try {
-      const canvas = await html2canvas(certRef.current, { scale: 2 });
-      const link = document.createElement("a");
-      link.download = `MDDW_Certificate_${p?.userName || "ASHA"}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
-    } catch (e) {
+      const formattedDate = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+      const fileName = `MDDW_Certificate_${p?.userName || "ASHA"}.png`;
+      await generateNativeCertificate(p?.userName || "ASHA", formattedDate, fileName);
+    } catch (e: any) {
       console.error(e);
-      alert("Failed to generate certificate.");
+      alert("Failed to generate certificate: " + (e?.message || "Unknown error"));
     }
     setIsGenerating(false);
   };
