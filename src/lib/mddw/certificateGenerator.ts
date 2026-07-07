@@ -25,7 +25,7 @@ export const generateNativeCertificate = async (
         // Name text
         ctx.fillStyle = "#cb1155";
         ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
+        ctx.textBaseline = "alphabetic";
         ctx.font = "bold 96px Georgia, serif";
         
         // Handle letter-spacing if supported
@@ -33,8 +33,8 @@ export const generateNativeCertificate = async (
           (ctx as any).letterSpacing = "0.05em";
         }
         
-        // Name Y position: lowered to 47.5% to place it perfectly in the center of the whitespace below the ribbon
-        const nameY = 1696 * 0.475;
+        // Name Y position: lowered to exactly 43.2% with alphabetic baseline to rest on the grey line
+        const nameY = 1696 * 0.432;
         ctx.fillText(userName || "ASHA", 1200, nameY);
 
         // Date text
@@ -45,10 +45,10 @@ export const generateNativeCertificate = async (
           (ctx as any).letterSpacing = "0px";
         }
         
-        // Date X: Moved right to 20% to avoid overlapping "Date: " text
-        // Date Y: Moved down to 92.5% to rest perfectly on the underline
-        const dateX = 2400 * 0.20;
-        const dateY = 1696 * 0.925;
+        // Date X: Moved right to 17% to avoid overlapping "Date: " text
+        // Date Y: Moved down to 91% to rest perfectly on the underline
+        const dateX = 2400 * 0.17;
+        const dateY = 1696 * 0.91;
         ctx.fillText(formattedDate, dateX, dateY);
 
         // Trigger download
