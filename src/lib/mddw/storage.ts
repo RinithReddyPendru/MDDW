@@ -51,7 +51,7 @@ const DEFAULT: ProgressState = {
   userName: "",
   phcName: "",
   phoneNumber: "",
-  sheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbzFeaYmJCqD6XYFl-RtsqS2N33DKxHsptZqu43rIuVEGr03cj4HgnXvL44LiN53ZUKN/exec",
+  sheetsWebhookUrl: "",
   hasCompletedTraining: false,
 };
 
@@ -62,12 +62,6 @@ export function loadProgress(): ProgressState {
     if (!raw) return DEFAULT;
     const parsed = JSON.parse(raw);
     const state = { ...DEFAULT, ...parsed };
-    
-    // Auto-migrate old webhook URL to the new working one
-    const oldUrl = "https://script.google.com/macros/s/AKfycbw7H7aBhQsG5_P8g6xZISmsE4QnHh5pSvl24t7Q6Bba5cXQ2PuGfahU0l63FpROXLbo/exec";
-    if (!state.sheetsWebhookUrl || state.sheetsWebhookUrl === oldUrl) {
-      state.sheetsWebhookUrl = DEFAULT.sheetsWebhookUrl;
-    }
     
     return state;
   } catch {
@@ -131,3 +125,33 @@ export function getBadges(lang: Lang): { id: string; name: string; emoji: string
 
 // Backward compat export (English badges)
 export const BADGES = getBadges("en");
+
+export interface AdminRow {
+  date: string;
+  name: string;
+  phc: string;
+  phone: string;
+  score: number;
+  level: number;
+  passed: boolean;
+}
+
+const ADMIN_DB_KEY = "mddw_admin_db";
+
+export function loadAdminDatabase(): AdminRow[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(ADMIN_DB_KEY);
+    if (!raw) return [];
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
+}
+
+export function saveToAdminDatabase(row: AdminRow) {
+  if (typeof window === "undefined") return;
+  const db = loadAdminDatabase();
+  db.push(row);
+  localStorage.setItem(ADMIN_DB_KEY, JSON.stringify(db));
+}

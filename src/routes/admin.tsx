@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
-import { loadProgress, saveProgress } from "@/lib/mddw/storage";
+import { loadProgress, saveProgress, loadAdminDatabase, type AdminRow } from "@/lib/mddw/storage";
 import {
   BarChart,
   Bar,
@@ -21,19 +21,10 @@ export const Route = createFileRoute("/admin")({
   component: AdminDashboard,
 });
 
-// Real data type from Sheet
-interface SheetRow {
-  date: string;
-  name: string;
-  phc: string;
-  phone: string;
-  score: number;
-  level: number;
-  passed: boolean;
-}
+// We don't need SheetRow here anymore since it's exactly AdminRow
 
-// Mock Data for Fallback
-const MOCK_DATA: SheetRow[] = [
+// Mock Data for Fallback/Seed
+const MOCK_DATA: AdminRow[] = [
   { date: new Date(Date.now() - 86400000 * 1).toISOString(), name: "Lakshmi M.", phc: "Rampur PHC", phone: "9876543210", score: 90, level: 3, passed: true },
   { date: new Date(Date.now() - 86400000 * 2).toISOString(), name: "Sujata Devi", phc: "Guntur PHC", phone: "9876543211", score: 80, level: 2, passed: true },
   { date: new Date(Date.now() - 86400000 * 2).toISOString(), name: "Kamala R.", phc: "Rampur PHC", phone: "9876543212", score: 60, level: 1, passed: true },
@@ -50,7 +41,7 @@ const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6"];
 function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
-  const [data, setData] = useState<SheetRow[]>([]);
+  const [data, setData] = useState<AdminRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMock, setIsMock] = useState(false);
 
@@ -73,15 +64,21 @@ function AdminDashboard() {
     }
   };
 
-  // Fetch from Google Sheets
+  // Fetch from Google Sheets or Local DB
   const fetchData = async () => {
     setLoading(true);
     const p = loadProgress();
     const url = p.sheetsWebhookUrl;
 
     if (!url) {
-      setData(MOCK_DATA);
-      setIsMock(true);
+      let localDb = loadAdminDatabase();
+      if (localDb.length === 0) {
+        localDb = MOCK_DATA;
+        localStorage.setItem("mddw_admin_db", JSON.stringify(MOCK_DATA));
+      }
+      // Show newest first
+      setData([...localDb].reverse());
+      setIsMock(false); // It's real local data now!
       setLoading(false);
       return;
     }
@@ -99,14 +96,18 @@ function AdminDashboard() {
           throw new Error("Invalid format");
         }
       } catch (e) {
-        console.warn("Could not parse JSON. The Apps Script likely misses a doGet() function. Falling back to Mock Data.");
-        setData(MOCK_DATA);
-        setIsMock(true);
+        console.warn("Could not parse JSON. Falling back to local data.");
+        let localDb = loadAdminDatabase();
+        if (localDb.length === 0) localDb = MOCK_DATA;
+        setData([...localDb].reverse());
+        setIsMock(false);
       }
     } catch (error) {
       console.error("Fetch failed", error);
-      setData(MOCK_DATA);
-      setIsMock(true);
+      let localDb = loadAdminDatabase();
+      if (localDb.length === 0) localDb = MOCK_DATA;
+      setData([...localDb].reverse());
+      setIsMock(false);
     } finally {
       setLoading(false);
     }
@@ -214,15 +215,6 @@ function AdminDashboard() {
               Real-time analytics and performance monitoring
             </p>
           </div>
-          {isMock && (
-            <div className="bg-amber-500/10 text-amber-500 font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2 border border-amber-500/20">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
-              </span>
-              Displaying Demo Mock Data
-            </div>
-          )}
         </div>
 
         {loading ? (

@@ -10,7 +10,7 @@ import {
   type FoodGroupId,
   type QuizFood,
 } from "@/lib/mddw/foodGroups";
-import { recordResult, loadProgress, saveProgress } from "@/lib/mddw/storage";
+import { recordResult, loadProgress, saveProgress, saveToAdminDatabase } from "@/lib/mddw/storage";
 import { playPop, playSuccess, playFailure, speakText } from "@/lib/mddw/audio";
 import { useLang } from "@/lib/mddw/useLang";
 import { PlateResults } from "@/components/mddw/PlateResults";
@@ -221,6 +221,16 @@ function GamePage() {
         pState.savedWrong = undefined;
         pState.savedMistakes = undefined;
         saveProgress(pState);
+
+        saveToAdminDatabase({
+          date: new Date().toISOString(),
+          name: userName,
+          phc: phcName,
+          phone: phoneNumber,
+          score: Math.round((finalScore / 20) * 100),
+          level: 3,
+          passed: finalScore >= 16
+        });
         
         if (pState.sheetsWebhookUrl && typeof window !== "undefined") {
           fetch(pState.sheetsWebhookUrl, {
