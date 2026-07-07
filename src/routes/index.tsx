@@ -133,7 +133,7 @@ function Index() {
                   {"📸"} {t("dishDecoderTitle")}
                 </Link>
                 <Link to="/game" className="rounded-2xl bg-amber-600/90 backdrop-blur-md hover:bg-amber-700 text-white px-5 py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2">
-                  {"🗣"} {progress.savedRoundIndex !== undefined ? "Resume Challenge" : t("startTraining")}
+                  {"🗣"} {progress.savedRoundIndex !== undefined ? t("resumeChallenge" as any) || "Resume Challenge" : t("startTraining")}
                 </Link>
                 <Link to="/progress" className="rounded-2xl glass text-foreground border-2 border-border/50 px-5 py-4 text-lg font-bold text-center shadow-sm active:scale-[0.98] transition min-h-14 flex items-center justify-center gap-2">
                   {"📈"} {t("myProgress")}
