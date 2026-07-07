@@ -95,7 +95,7 @@ function Login() {
                   <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-muted-foreground">{t("whatsappLabel")}</label>
                   <div className="relative flex items-center">
                     <Phone className="absolute left-3 w-5 h-5 text-muted-foreground" />
-                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} maxLength={10} className="w-full bg-background border-2 border-border rounded-xl pl-10 pr-4 py-3.5 outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition font-medium" placeholder={t("whatsappPlaceholder") as string} />
+                    <input type="text" inputMode="numeric" pattern="[0-9]*" value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, ''))} maxLength={10} className="w-full bg-background border-2 border-border rounded-xl pl-10 pr-4 py-3.5 outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition font-medium" placeholder={t("whatsappPlaceholder") as string} />
                   </div>
                 </div>
                 <div className="relative">
