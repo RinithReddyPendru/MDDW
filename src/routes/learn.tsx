@@ -46,7 +46,7 @@ function Learn() {
 
       {/* Right Side Content (Full width on mobile) */}
       <div className="w-full md:w-1/2 flex flex-col flex-1 overflow-y-auto pb-10">
-        <div className="md:hidden sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/20 shadow-sm">
+        <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/20 shadow-sm">
           <AppHeader showBack />
         </div>
         

@@ -57,7 +57,7 @@ function Login() {
 
       {/* Right Side Form (Full width on mobile) */}
       <div className="w-full md:w-1/2 flex flex-col h-dvh overflow-y-auto">
-        <div className="md:hidden">
+        <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/20 shadow-sm">
           <AppHeader />
         </div>
         

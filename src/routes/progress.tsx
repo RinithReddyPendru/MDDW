@@ -103,24 +103,15 @@ function ProgressPage() {
 
       {/* Right Side Content (Full width on mobile) */}
       <div className="w-full md:w-1/2 flex flex-col flex-1 overflow-y-auto pb-20">
-        <div className="md:hidden sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/20 shadow-sm">
+        <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/20 shadow-sm">
           <AppHeader showBack />
         </div>
         
         <div className="mx-auto w-full max-w-xl px-4 py-6 md:py-10 flex-1 flex flex-col">
-          {/* Desktop Header */}
-          <div className="hidden md:flex items-center gap-4 mb-6">
-            <button onClick={() => navigate({ to: "/" })} className="w-10 h-10 rounded-full bg-white/50 hover:bg-white flex items-center justify-center shadow-sm transition-colors text-lg font-bold">
-              {"\u2190"}
-            </button>
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">{t("myProgress")}</h1>
-              <p className="text-muted-foreground mt-1 text-lg">See how far you've come!</p>
-            </div>
+          <div className="mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t("myProgress")}</h1>
+            <p className="text-muted-foreground mt-1 text-base md:text-lg">See how far you've come!</p>
           </div>
-
-          {/* Mobile Header */}
-          <h2 className="md:hidden text-2xl font-bold mb-4">{t("myProgress")}</h2>
 
         {!p.hasCompletedTraining && games > 0 && (
           <div className="mb-8">
