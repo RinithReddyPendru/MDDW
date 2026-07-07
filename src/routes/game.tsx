@@ -845,8 +845,8 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
           <button onClick={downloadCertificate} className="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white py-4 font-bold min-h-14 shadow-md flex items-center justify-center gap-2">
             <span className="text-xl">📥</span> {t("downloadCertificate")}
           </button>
-          <div className="absolute top-[-9999px] left-[-9999px] pointer-events-none">
-            <Certificate userName={userName} phcName={phcName} score={score} pct={pct} lang={lang} t={t} isPreview={false} ref={certificateRef} />
+          <div className="fixed inset-0 opacity-0 -z-10 pointer-events-none overflow-hidden">
+            <Certificate ref={certificateRef} userName={userName} phcName={phcName} score={score} pct={pct} lang={lang} t={t} isPreview={false} />
           </div>
         </div>
       )}

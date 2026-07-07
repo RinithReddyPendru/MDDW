@@ -136,7 +136,7 @@ function ProgressPage() {
                   isPreview={true}
                 />
               </div>
-              <div className="absolute top-[-9999px] left-[-9999px] pointer-events-none">
+              <div className="fixed inset-0 opacity-0 -z-10 pointer-events-none overflow-hidden">
                 <Certificate 
                   ref={certRef}
                   userName={p.userName || ""}
