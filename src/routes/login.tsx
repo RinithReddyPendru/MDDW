@@ -20,7 +20,7 @@ function Login() {
 
   const handleStart = () => {
     if (!name.trim()) return alert(t("enterNameAlert") || "Please enter your name");
-    if (!phone.trim()) return alert(t("whatsappAlert") || "Please enter your WhatsApp number");
+    if (!phone.trim() || phone.length !== 10) return alert(t("whatsappAlert") || "Please enter a valid 10-digit WhatsApp number");
     
     const state = loadProgress();
     state.userName = name;
@@ -95,7 +95,7 @@ function Login() {
                   <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-muted-foreground">{t("whatsappLabel")}</label>
                   <div className="relative flex items-center">
                     <Phone className="absolute left-3 w-5 h-5 text-muted-foreground" />
-                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-background border-2 border-border rounded-xl pl-10 pr-4 py-3.5 outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition font-medium" placeholder={t("whatsappPlaceholder") as string} />
+                    <input type="tel" value={phone} onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} maxLength={10} className="w-full bg-background border-2 border-border rounded-xl pl-10 pr-4 py-3.5 outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition font-medium" placeholder={t("whatsappPlaceholder") as string} />
                   </div>
                 </div>
                 <div className="relative">
