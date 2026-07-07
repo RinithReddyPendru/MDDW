@@ -11,7 +11,7 @@ import {
   type QuizFood,
 } from "@/lib/mddw/foodGroups";
 import { recordResult, loadProgress, saveProgress } from "@/lib/mddw/storage";
-import { playPop, playSuccess, playFailure } from "@/lib/mddw/audio";
+import { playPop, playSuccess, playFailure, speakText } from "@/lib/mddw/audio";
 import { useLang } from "@/lib/mddw/useLang";
 import { PlateResults } from "@/components/mddw/PlateResults";
 import { generateNativeCertificate } from "@/lib/mddw/certificateGenerator";
@@ -372,6 +372,9 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
   }
 
   const handlePick = (i: number) => {
+    const g = foodGroupMap[q.options[i]];
+    if (g) speakText(g.name, lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-US");
+
     if (q.type === "scenario") {
       if (multiSubmitted) return;
       playPop();
@@ -513,6 +516,8 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t }: any) {
   const handlePick = (i: number) => {
     if (multiSubmitted) return;
     playPop();
+    const g = foodGroupMap[q.options[i]];
+    if (g) speakText(g.name, lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-US");
     setMultiPicked(prev => prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]);
   };
   

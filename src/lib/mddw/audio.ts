@@ -26,7 +26,25 @@ function getAudioContext(): AudioContext | null {
   return sharedCtx;
 }
 
+export function triggerHaptic(type: 'pop' | 'success' | 'failure') {
+  if (typeof navigator !== 'undefined' && navigator.vibrate) {
+    if (type === 'pop') navigator.vibrate(15);
+    else if (type === 'success') navigator.vibrate([30, 50, 30, 50, 50]);
+    else navigator.vibrate([50, 100, 50]);
+  }
+}
+
+export function speakText(text: string, langCode: string = 'te-IN') {
+  if (muted || typeof window === 'undefined' || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = langCode;
+  utterance.rate = 0.9;
+  window.speechSynthesis.speak(utterance);
+}
+
 export function playPop() {
+  triggerHaptic('pop');
   if (muted) return;
   const ctx = getAudioContext();
   if (!ctx) return;
@@ -50,6 +68,7 @@ export function playPop() {
 }
 
 export function playSuccess() {
+  triggerHaptic('success');
   if (muted) return;
   const ctx = getAudioContext();
   if (!ctx) return;
@@ -78,6 +97,7 @@ export function playSuccess() {
 }
 
 export function playFailure() {
+  triggerHaptic('failure');
   if (muted) return;
   const ctx = getAudioContext();
   if (!ctx) return;

@@ -6,7 +6,7 @@ import { useLang } from "@/lib/mddw/useLang";
 import { LANGS, type Lang } from "@/lib/mddw/translations";
 import { loadProgress } from "@/lib/mddw/storage";
 import { getFoodGroups, QUIZ_FOODS, type QuizFood, type FoodGroupId } from "@/lib/mddw/foodGroups";
-import { playPop, playSuccess } from "@/lib/mddw/audio";
+import { playPop, playSuccess, speakText } from "@/lib/mddw/audio";
 
 export const Route = createFileRoute("/plate")({
   head: () => ({
@@ -62,6 +62,13 @@ function PlateSandbox() {
 
   const toggleFood = (name: string) => {
     playPop();
+    const food = sandboxFoods.find(f => f.name === name);
+    if (food) {
+      const label = lang === "te" ? food.nameTe : lang === "hi" ? food.nameHi : food.name;
+      const langCode = lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-US";
+      speakText(label, langCode);
+    }
+    
     setSelectedIds(prev =>
       prev.includes(name) ? prev.filter(x => x !== name) : [...prev, name]
     );
