@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
-import { loadProgress } from "@/lib/mddw/storage";
+import { loadProgress, saveProgress } from "@/lib/mddw/storage";
 import {
   BarChart,
   Bar,
@@ -54,10 +54,18 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [isMock, setIsMock] = useState(false);
 
+  const [webhookUrl, setWebhookUrl] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return loadProgress().sheetsWebhookUrl || "";
+  });
+
   // Authenticate
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (pin === "1234") {
+      const p = loadProgress();
+      p.sheetsWebhookUrl = webhookUrl;
+      saveProgress(p);
       setIsAuthenticated(true);
       fetchData();
     } else {
@@ -126,15 +134,27 @@ function AdminDashboard() {
               <p className="text-muted-foreground mb-6 text-sm">Enter your secure PIN to view analytics</p>
               
               <form onSubmit={handleLogin} className="flex flex-col gap-4">
-                <input
-                  type="password"
-                  placeholder="Enter PIN (1234)"
-                  className="p-4 rounded-2xl bg-white/50 border-2 border-border focus:border-primary focus:ring-0 outline-none text-center text-xl tracking-widest transition-all"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  autoFocus
-                />
-                <button type="submit" className="bg-primary text-primary-foreground font-bold p-4 rounded-2xl active:scale-[0.98] transition">
+                <div className="flex flex-col gap-2">
+                  <input
+                    type="password"
+                    placeholder="Enter PIN (1234)"
+                    className="p-4 rounded-2xl bg-white/50 border-2 border-border focus:border-primary focus:ring-0 outline-none text-center text-xl tracking-widest transition-all"
+                    value={pin}
+                    onChange={(e) => setPin(e.target.value)}
+                    autoFocus
+                  />
+                  <div className="text-left mt-2">
+                    <label className="text-xs font-bold text-muted-foreground uppercase ml-2">Google Sheets Webhook (Optional)</label>
+                    <input
+                      type="url"
+                      placeholder="https://script.google.com/macros/s/..."
+                      className="w-full p-3 mt-1 rounded-xl bg-white/50 border-2 border-border focus:border-primary focus:ring-0 outline-none text-sm transition-all"
+                      value={webhookUrl}
+                      onChange={(e) => setWebhookUrl(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <button type="submit" className="bg-primary text-primary-foreground font-bold p-4 rounded-2xl active:scale-[0.98] transition mt-2">
                   Unlock Dashboard
                 </button>
               </form>
