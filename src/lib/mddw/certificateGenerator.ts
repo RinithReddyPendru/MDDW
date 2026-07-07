@@ -33,8 +33,8 @@ export const generateNativeCertificate = async (
           (ctx as any).letterSpacing = "0.05em";
         }
         
-        // Name Y position: lowered to 43.5% to place it below the ribbon
-        const nameY = 1696 * 0.435;
+        // Name Y position: lowered to 47.5% to place it perfectly in the center of the whitespace below the ribbon
+        const nameY = 1696 * 0.475;
         ctx.fillText(userName || "ASHA", 1200, nameY);
 
         // Date text
