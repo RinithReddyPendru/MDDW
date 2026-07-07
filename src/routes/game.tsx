@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState, useRef, useEffect } from "react";
+import confetti from "canvas-confetti";
 import { AnimatePresence, motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import {
@@ -251,11 +252,15 @@ function GamePage() {
   const current = questions[qIdx];
 
   return (
-    <main 
+    <motion.main 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 1.05 }}
+      transition={{ duration: 0.4 }}
       className="min-h-dvh flex flex-col bg-cover bg-center relative"
       style={{ backgroundImage: 'url("/game_hero.png")' }}
     >
-      <div className="absolute inset-0 bg-background/85 backdrop-blur-2xl z-0" />
+      <div className="absolute inset-0 bg-background/85 backdrop-blur-3xl z-0" />
       <div className="relative z-10 flex flex-col h-full w-full">
         <AppHeader showBack />
         <div className="mx-auto max-w-xl px-4 py-5 w-full">
@@ -281,7 +286,7 @@ function GamePage() {
           </AnimatePresence>
         </div>
       </div>
-    </main>
+    </motion.main>
   );
 }
 
@@ -334,9 +339,14 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string) 
         </div>
       </div>
 
-      <button onClick={handleStart} className="mt-3 w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14">
+      <motion.button 
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={handleStart} 
+        className="mt-3 w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md min-h-14"
+      >
         🚀 Start Training
-      </button>
+      </motion.button>
     </motion.div>
   );
 }
@@ -466,12 +476,16 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
               else stateClass = "bg-card border-border opacity-60";
             }
             return (
-              <button key={opt} onClick={() => handlePick(i)} disabled={answered} className={`rounded-2xl border-2 p-4 text-left flex items-center gap-3 transition ${stateClass}`}>
+              <motion.button 
+                whileHover={{ scale: answered ? 1 : 1.02, y: answered ? 0 : -2 }}
+                whileTap={{ scale: answered ? 1 : 0.98 }}
+                key={opt} onClick={() => handlePick(i)} disabled={answered} className={`rounded-2xl border-2 p-4 text-left flex items-center gap-3 transition ${stateClass}`}
+              >
                 <span className="text-2xl" aria-hidden>{g.emoji}</span>
                 <span className="flex-1 font-bold">{g.name}</span>
                 {answered && isRight && <span className="text-secondary text-xl">✅</span>}
                 {answered && isPicked && !isRight && <span className="text-destructive text-xl">❌</span>}
-              </button>
+              </motion.button>
             );
           }
         })}
@@ -557,10 +571,14 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t }: any) {
           } else if (isPicked) stateClass = "bg-blue-500/10 border-blue-500 border-2 text-foreground";
           
           return (
-            <button key={opt} onClick={() => handlePick(i)} disabled={multiSubmitted} className={`rounded-2xl border-2 p-3 text-left flex items-center gap-2 transition ${stateClass}`}>
+            <motion.button 
+              whileHover={{ scale: multiSubmitted ? 1 : 1.03 }}
+              whileTap={{ scale: multiSubmitted ? 1 : 0.95 }}
+              key={opt} onClick={() => handlePick(i)} disabled={multiSubmitted} className={`rounded-2xl border-2 p-3 text-left flex items-center gap-2 transition shadow-sm ${stateClass}`}
+            >
               <span className="text-xl" aria-hidden>{g.emoji}</span>
               <span className="flex-1 font-bold text-xs leading-tight">{g.name}</span>
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -790,6 +808,30 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
   const pct = Math.round((correct / total) * 100);
   const passed = score >= 16;
   const certificateRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (passed) {
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 10000 };
+
+      const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+      const interval: any = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+      }, 250);
+      
+      return () => clearInterval(interval);
+    }
+  }, [passed]);
 
   const downloadCertificate = async () => {
     if (!certificateRef.current) return;

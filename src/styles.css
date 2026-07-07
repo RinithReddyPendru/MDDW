@@ -133,19 +133,31 @@
 @utility animate-shake { animation: shake 0.3s ease-in-out; }
 
 @utility glass {
-  background: color-mix(in oklab, var(--color-card) 70%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid color-mix(in oklab, var(--color-border) 40%, transparent);
+  background: color-mix(in oklab, var(--color-card) 60%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in oklab, var(--color-card) 80%, transparent);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+@utility glass-heavy {
+  background: color-mix(in oklab, var(--color-card) 85%, transparent);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid color-mix(in oklab, var(--color-card) 90%, transparent);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 @utility bg-gradient-premium {
   background: 
     url('/bg_pattern.png'),
-    linear-gradient(135deg, color-mix(in oklab, var(--color-background) 80%, var(--color-primary) 20%), color-mix(in oklab, var(--color-background) 80%, var(--color-secondary) 20%));
-  background-repeat: repeat, no-repeat;
-  background-size: 250px, auto;
-  background-blend-mode: multiply, normal;
+    radial-gradient(circle at top left, color-mix(in oklab, var(--color-background) 85%, var(--color-primary) 15%), transparent 60%),
+    radial-gradient(circle at bottom right, color-mix(in oklab, var(--color-background) 85%, var(--color-secondary) 15%), transparent 60%),
+    linear-gradient(135deg, var(--color-background) 0%, color-mix(in oklab, var(--color-background) 95%, var(--color-accent) 5%) 100%);
+  background-repeat: repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 250px, 100% 100%, 100% 100%, 100% 100%;
+  background-blend-mode: multiply, normal, normal, normal;
+  background-attachment: fixed;
 }
 
 @utility text-gradient {

@@ -78,14 +78,20 @@ function ProgressPage() {
   const badges = getBadges(lang);
 
   return (
-    <main className="h-dvh flex flex-col md:flex-row bg-gradient-premium overflow-hidden">
+    <motion.main 
+      initial={{ opacity: 0, y: 20 }} 
+      animate={{ opacity: 1, y: 0 }} 
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4 }}
+      className="h-dvh flex flex-col md:flex-row bg-gradient-premium overflow-hidden"
+    >
       {/* Desktop Split Screen: Left Side Hero Image */}
       <div className="flex w-full h-[35vh] md:h-auto shrink-0 md:w-1/2 relative flex-col items-center justify-center p-4 md:p-8 lg:p-12 border-b md:border-b-0 md:border-r border-border/50 bg-white/20 backdrop-blur-sm overflow-hidden">
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }} 
+          initial={{ opacity: 0, scale: 0.9 }} 
           animate={{ opacity: 1, scale: 1 }} 
-          transition={{ duration: 0.5 }}
-          className="rounded-3xl overflow-hidden shadow-2xl shadow-primary/10 border-4 md:border-8 border-white/60 bg-white max-w-2xl w-full h-full md:h-auto flex flex-col"
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="rounded-3xl overflow-hidden shadow-2xl shadow-primary/20 border-4 md:border-8 border-white/80 bg-white max-w-2xl w-full h-full md:h-auto flex flex-col"
         >
           <img 
             src="/progress_hero.png" 
@@ -113,12 +119,14 @@ function ProgressPage() {
 
         {!p.hasCompletedTraining && games > 0 && (
           <div className="mb-8">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={handleUnlockApp}
-              className="w-full rounded-2xl bg-amber-500 hover:bg-amber-600 text-white py-5 text-xl font-bold shadow-md active:scale-[0.98] transition flex items-center justify-center gap-3 animate-pulse"
+              className="w-full rounded-2xl bg-amber-500 hover:bg-amber-600 text-white py-5 text-xl font-bold shadow-md flex items-center justify-center gap-3 animate-pulse"
             >
               🎉 Complete Training & Unlock App 🎉
-            </button>
+            </motion.button>
           </div>
         )}
 
@@ -237,7 +245,7 @@ function ProgressPage() {
           </div>
         </div>
       </div>
-    </main>
+    </motion.main>
   );
 }
 
