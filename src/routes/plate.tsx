@@ -83,10 +83,10 @@ function PlateSandbox() {
         <AppHeader showBack />
         
         {/* Responsive layout container: Row on laptop (md), Column on mobile */}
-      <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 px-4 py-3 max-w-5xl mx-auto w-full overflow-y-auto md:overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 px-4 py-6 max-w-7xl mx-auto w-full overflow-y-auto lg:overflow-hidden items-center">
         
         {/* LEFT COLUMN: Title & Plate Arena */}
-        <div className="flex-1 flex flex-col items-center justify-center gap-4 w-full md:w-1/2 h-auto">
+        <div className="lg:col-span-6 flex flex-col items-center justify-center gap-6 w-full h-auto">
           {/* Header Details */}
           <div className="text-center md:mb-2">
             <h2 className="text-lg md:text-2xl font-bold text-foreground leading-tight">{t("plateTitle")}</h2>
@@ -94,7 +94,7 @@ function PlateSandbox() {
           </div>
 
           {/* Visual Plate Arena */}
-          <div className="relative aspect-square w-full max-w-[250px] sm:max-w-[280px] md:max-w-[340px] mx-auto rounded-full bg-gradient-to-br from-card/85 to-card/35 backdrop-blur-md border-[6px] border-primary/15 shadow-xl flex items-center justify-center transition-all duration-300">
+          <div className="relative aspect-square w-full max-w-[280px] md:max-w-[400px] lg:max-w-[480px] mx-auto rounded-full bg-gradient-to-br from-card/85 to-card/35 backdrop-blur-md border-[8px] border-primary/20 shadow-2xl flex items-center justify-center transition-all duration-300">
             {/* Outer dotted rim */}
             <div className="absolute inset-2.5 rounded-full border border-dashed border-muted-foreground/35 flex items-center justify-center">
               {/* Inner plate well */}
@@ -109,7 +109,8 @@ function PlateSandbox() {
                       {sandboxFoods.filter(f => selectedIds.includes(f.name)).map((f, idx, arr) => {
                         const total = arr.length;
                         const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-                        const radius = isMobile ? 78 : 108; // circular placement radius
+                        const isLarge = typeof window !== "undefined" && window.innerWidth >= 1024;
+                        const radius = isLarge ? 160 : isMobile ? 85 : 120; // circular placement radius
                         const angle = (idx * 2 * Math.PI) / total;
                         const x = radius * Math.cos(angle);
                         const y = radius * Math.sin(angle);
@@ -121,7 +122,7 @@ function PlateSandbox() {
                             animate={{ scale: 1.25, x: x, y: y }}
                             exit={{ scale: 0, opacity: 0 }}
                             transition={{ type: "spring", stiffness: 150 }}
-                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-3xl md:text-4xl select-none filter drop-shadow-md cursor-pointer hover:scale-135 transition-transform"
+                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-4xl md:text-5xl lg:text-6xl select-none filter drop-shadow-lg cursor-pointer hover:scale-135 transition-transform"
                             onClick={() => toggleFood(f.name)}
                           >
                             {f.emoji}
@@ -134,7 +135,7 @@ function PlateSandbox() {
               </div>
             </div>
             {/* Plate bottom score badge */}
-            <div className="absolute -bottom-3 z-10 bg-primary text-primary-foreground font-bold px-3 py-1 rounded-full text-xs md:text-sm shadow-md border border-primary-foreground/20">
+            <div className="absolute -bottom-4 z-10 bg-primary text-primary-foreground font-bold px-4 py-2 rounded-full text-sm md:text-lg shadow-xl border-2 border-primary-foreground/20">
               {score} / 10 Groups
             </div>
           </div>
@@ -147,9 +148,9 @@ function PlateSandbox() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-secondary text-secondary-foreground rounded-xl px-4 py-1.5 text-center font-bold text-xs shadow-sm border border-secondary-foreground/10"
+                  className="bg-secondary text-secondary-foreground rounded-2xl px-6 py-2.5 text-center font-bold text-sm md:text-base shadow-lg border border-secondary-foreground/10"
                 >
-                  {t("diversityAchieved")} 🥦🥛🍳
+                  🎉 {t("diversityAchieved")} 🥦🥛🍳 🎉
                 </motion.div>
               )}
             </AnimatePresence>
@@ -157,10 +158,10 @@ function PlateSandbox() {
 
           {/* Selected Ingredients list dynamically updated */}
           <div className="w-full max-w-sm mt-1 flex flex-col items-center gap-1">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
+            <span className="text-xs md:text-sm font-bold uppercase tracking-widest text-muted-foreground/80 mb-1">
               {t("selectedIngredients")}
             </span>
-            <div className="flex flex-wrap justify-center gap-1.5 min-h-[36px] w-full py-1.5 px-2 rounded-xl bg-card/45 border border-border/20 backdrop-blur-sm">
+            <div className="flex flex-wrap justify-center gap-2 min-h-[44px] w-full py-2 px-3 rounded-2xl glass-heavy shadow-inner">
               {sandboxFoods.filter(f => selectedIds.includes(f.name)).length === 0 ? (
                 <span className="text-[10px] text-muted-foreground/50 italic py-0.5">
                   {t("emptyPlate")}
@@ -176,7 +177,7 @@ function PlateSandbox() {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                         layout
-                        className="flex items-center gap-1 bg-primary/10 border border-primary/20 text-foreground px-2 py-0.5 rounded-full text-[10px] font-semibold shadow-sm"
+                        className="flex items-center gap-1.5 bg-primary/10 border-2 border-primary/20 text-foreground px-3 py-1 rounded-full text-xs md:text-sm font-bold shadow-sm"
                       >
                         <span>{f.emoji}</span>
                         <span>{label}</span>
@@ -196,24 +197,24 @@ function PlateSandbox() {
         </div>
 
         {/* RIGHT COLUMN: Badges & Food Grid Selection */}
-        <div className="flex-1 flex flex-col justify-center gap-4 w-full md:w-1/2 h-auto md:border-l md:border-border/30 md:pl-8">
+        <div className="lg:col-span-6 flex flex-col justify-center gap-6 w-full h-auto lg:border-l lg:border-border/30 lg:pl-10">
           
           {/* Active Group Badges Card */}
-          <div className="glass rounded-xl p-3 border border-border/50 shadow-sm">
-            <h3 className="font-bold text-[10px] md:text-xs mb-2 uppercase tracking-wider text-muted-foreground text-center">
+          <div className="glass-heavy rounded-2xl p-4 shadow-md">
+            <h3 className="font-bold text-xs md:text-sm mb-3 uppercase tracking-wider text-muted-foreground text-center">
               {t("groupsOnPlate")}
             </h3>
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className="flex flex-wrap justify-center gap-2.5">
               {FOOD_GROUPS.map(g => {
                 const active = activeGroups.has(g.id);
                 return (
                   <div
                     key={g.id}
                     title={g.name}
-                    className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center text-lg md:text-xl transition border ${
+                    className={`w-9 h-9 md:w-12 md:h-12 rounded-full flex items-center justify-center text-xl md:text-2xl transition-all border-2 ${
                       active
-                        ? "bg-primary/20 border-primary shadow-sm scale-110"
-                        : "bg-muted/40 border-transparent opacity-40"
+                        ? "bg-primary/20 border-primary shadow-md scale-110"
+                        : "bg-muted/40 border-transparent opacity-40 grayscale"
                     }`}
                   >
                     {g.emoji}
@@ -237,14 +238,14 @@ function PlateSandbox() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.02 }}
                     onClick={() => toggleFood(f.name)}
-                    className={`flex-shrink-0 snap-center flex flex-col items-center gap-1 p-2 w-[72px] rounded-xl border transition active:scale-95 ${
+                    className={`flex-shrink-0 snap-center flex flex-col items-center gap-2 p-3 w-[84px] rounded-2xl border-2 transition active:scale-95 ${
                       active
-                        ? "bg-primary/20 border-primary shadow-sm"
-                        : "bg-card border-border hover:bg-muted"
+                        ? "bg-primary/20 border-primary shadow-md"
+                        : "glass hover:bg-white/40 border-transparent"
                     }`}
                   >
-                    <span className="text-2xl">{f.emoji}</span>
-                    <span className="text-[10px] font-bold truncate max-w-full text-center leading-none text-muted-foreground">
+                    <span className="text-3xl drop-shadow-sm">{f.emoji}</span>
+                    <span className="text-xs font-bold truncate max-w-full text-center leading-tight text-foreground">
                       {label}
                     </span>
                   </motion.button>
@@ -253,7 +254,7 @@ function PlateSandbox() {
             </div>
 
             {/* Laptop/Desktop (5x2 clean grid for easy mouse-clicks) */}
-            <div className="hidden md:grid grid-cols-5 gap-2.5">
+            <div className="hidden md:grid grid-cols-4 lg:grid-cols-5 gap-3 lg:gap-4">
               {sandboxFoods.map((f, idx) => {
                 const active = selectedIds.includes(f.name);
                 const label = lang === "te" ? f.nameTe : lang === "hi" ? f.nameHi : f.name;
@@ -264,14 +265,16 @@ function PlateSandbox() {
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: idx * 0.02, type: "spring", stiffness: 150 }}
                     onClick={() => toggleFood(f.name)}
-                    className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition active:scale-95 ${
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`flex flex-col items-center justify-center gap-2 p-3 lg:p-4 rounded-2xl border-2 transition-colors cursor-pointer ${
                       active
-                        ? "bg-primary/20 border-primary shadow-sm"
-                        : "bg-card border-border hover:bg-muted"
+                        ? "bg-primary/20 border-primary shadow-md"
+                        : "glass-heavy hover:bg-white/60 border-transparent"
                     }`}
                   >
-                    <span className="text-2xl">{f.emoji}</span>
-                    <span className="text-[10px] font-bold truncate max-w-full text-center leading-none text-muted-foreground">
+                    <span className="text-3xl lg:text-4xl drop-shadow-sm">{f.emoji}</span>
+                    <span className="text-xs lg:text-sm font-bold truncate max-w-full text-center leading-tight text-foreground">
                       {label}
                     </span>
                   </motion.button>
@@ -297,8 +300,10 @@ function PlateSandbox() {
           </div>
           
           {isDiverse && (
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-4">
-              <Link to="/meals" className="w-full rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold shadow-md active:scale-[0.98] min-h-14 flex items-center justify-center">{t("nextStepDishBreakdown")}</Link>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", stiffness: 300, damping: 20 }} className="mt-4">
+              <Link to="/meals" className="w-full rounded-2xl bg-gradient-to-r from-primary to-amber-500 hover:from-primary/90 hover:to-amber-500/90 text-primary-foreground py-5 text-xl font-bold shadow-xl shadow-primary/20 active:scale-[0.98] min-h-[64px] flex items-center justify-center transition-all animate-pulse border-2 border-white/20">
+                🚀 {t("nextStepDishBreakdown")} 🚀
+              </Link>
             </motion.div>
           )}
         </div>
