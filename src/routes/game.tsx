@@ -793,7 +793,7 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
   const downloadCertificate = async () => {
     if (!certificateRef.current) return;
     try {
-      const canvas = await html2canvas(certificateRef.current, { scale: 2 });
+      const canvas = await html2canvas(certificateRef.current, { scale: 2, useCORS: true, allowTaint: true });
       const link = document.createElement("a");
       link.href = canvas.toDataURL("image/png");
       link.download = `MDDW_Certificate_${userName.replace(/\s+/g, "_")}.png`;
