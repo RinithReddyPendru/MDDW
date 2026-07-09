@@ -118,8 +118,8 @@ function Index() {
                     <div className="font-semibold text-sm flex-1">🎖 Grand Challenge</div>
                   </div>
                 </div>
-                <Link to="/learn" className="rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition">
-                  Continue Training ➡️
+                <Link to={progress.savedRoundIndex !== undefined ? "/game" : "/learn"} className="rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition">
+                  {progress.savedRoundIndex !== undefined ? (t("resumeChallenge" as any) || "Resume Challenge ➡️") : "Continue Training ➡️"}
                 </Link>
               </div>
             ) : (
