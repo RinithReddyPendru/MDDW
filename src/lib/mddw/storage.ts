@@ -32,6 +32,7 @@ export interface ProgressState {
   hasCompletedTraining?: boolean;
   /** Saved game round so ASHAs can resume from where they left off */
   savedRoundIndex?: number;
+  savedQIdx?: number;
   savedStandardScore?: number;
   savedCounselingScore?: number;
   savedVisualScore?: number;

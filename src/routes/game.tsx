@@ -130,6 +130,7 @@ function GamePage() {
   // Load saved round progress (so ASHAs can resume from where they left off)
   const savedProgress = typeof window !== "undefined" ? loadProgress() : null;
   const resumeIndex = savedProgress?.savedRoundIndex ?? 0;
+  const resumeQIdx = savedProgress?.savedQIdx ?? 0;
   
   const [phase, setPhase] = useState<"playing" | "result">("playing");
   const [currentModeIndex, setCurrentModeIndex] = useState(resumeIndex);
@@ -137,7 +138,7 @@ function GamePage() {
   // Initialize game state — resume from saved round if available
   const [questions, setQuestions] = useState<Question[]>(() => buildQuestions(modeSequence[resumeIndex] || "standard", FOOD_GROUPS));
   
-  const [qIdx, setQIdx] = useState(0);
+  const [qIdx, setQIdx] = useState(resumeQIdx);
   const [standardScore, setStandardScore] = useState(savedProgress?.savedStandardScore ?? 0);
   const [counselingScore, setCounselingScore] = useState(savedProgress?.savedCounselingScore ?? 0);
   const [visualScore, setVisualScore] = useState(savedProgress?.savedVisualScore ?? 0);
@@ -183,6 +184,7 @@ function GamePage() {
         // Save round progress so ASHAs can resume if they close the app
         const pState = loadProgress();
         pState.savedRoundIndex = nextModeIdx;
+        pState.savedQIdx = 0;
         pState.savedStandardScore = activeMode === "standard" ? standardScore + pts : standardScore;
         pState.savedCounselingScore = activeMode === "counseling" ? counselingScore + pts : counselingScore;
         pState.savedVisualScore = activeMode === "visual" ? visualScore + pts : visualScore;
@@ -214,6 +216,7 @@ function GamePage() {
         const pState = loadProgress();
         pState.hasCompletedTraining = true;
         pState.savedRoundIndex = undefined;
+        pState.savedQIdx = undefined;
         pState.savedStandardScore = undefined;
         pState.savedCounselingScore = undefined;
         pState.savedVisualScore = undefined;
@@ -252,6 +255,17 @@ function GamePage() {
       }
     } else {
       setQIdx(i => i + 1);
+      
+      const pState = loadProgress();
+      pState.savedRoundIndex = currentModeIndex;
+      pState.savedQIdx = qIdx + 1;
+      pState.savedStandardScore = activeMode === "standard" ? standardScore + pts : standardScore;
+      pState.savedCounselingScore = activeMode === "counseling" ? counselingScore + pts : counselingScore;
+      pState.savedVisualScore = activeMode === "visual" ? visualScore + pts : visualScore;
+      pState.savedCorrect = correct + c;
+      pState.savedWrong = wrong + w;
+      pState.savedMistakes = [...mistakes, ...m];
+      saveProgress(pState);
     }
     } catch (e: any) {
       alert("Error transitioning: " + e.message);
@@ -285,7 +299,7 @@ function GamePage() {
             <PlayProbing key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} t={t} lang={lang} foodGroupMap={FOOD_GROUP_MAP} allGroups={FOOD_GROUPS} />
           )}
           {phase === "playing" && current && current.type === "image_dish" && (
-            <PlayImageDish key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} foodGroupMap={FOOD_GROUP_MAP} t={t} />
+            <PlayImageDish key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} foodGroupMap={FOOD_GROUP_MAP} t={t} lang={lang} />
           )}
           {phase === "playing" && current && (current.type === "single_food" || current.type === "scenario") && (
             <Play key={"p" + qIdx} q={current as any} qIdx={qIdx} total={questions.length} onNext={handleNextQuestion} foodGroupMap={FOOD_GROUP_MAP} lang={lang} t={t} />
@@ -518,7 +532,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
   );
 }
 
-function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t }: any) {
+function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t, lang }: any) {
   const [multiPicked, setMultiPicked] = useState<number[]>([]);
   const [multiSubmitted, setMultiSubmitted] = useState(false);
   const isRight = (i: number) => q.correctIndices.includes(i);
