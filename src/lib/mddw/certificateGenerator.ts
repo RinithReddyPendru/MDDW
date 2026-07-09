@@ -35,8 +35,8 @@ export const generateNativeCertificate = async (
           (ctx as any).letterSpacing = "0.05em";
         }
         
-        // Name Y position: exactly 49% with alphabetic baseline
-        const nameY = 1364 * 0.49;
+        // Name Y position: 54% to sit below "PROUDLY PRESENTED TO"
+        const nameY = 1364 * 0.54;
         ctx.fillText(userName || "ASHA", 1024, nameY);
 
         // Date text

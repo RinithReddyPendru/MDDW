@@ -566,7 +566,7 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t, lang }: any) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <div className="flex items-center justify-between mb-3">
-         <div className="font-bold text-blue-500 text-sm tracking-widest uppercase">Visual Round</div>
+         <div className="font-bold text-blue-500 text-sm tracking-widest uppercase">{t("modeVisual" as any)}</div>
          <div className="text-muted-foreground text-sm">Q {qIdx + 1} / {total}</div>
       </div>
       <div className="h-2 rounded-full bg-muted overflow-hidden mb-5">
@@ -579,7 +579,7 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t, lang }: any) {
         </div>
         <img src={`${import.meta.env.BASE_URL || '/'}${q.data.imagePath.replace(/^\//, '')}`} alt="Meal" className="w-full h-64 object-cover object-center" />
         <div className="p-4 bg-card text-center">
-          <h2 className="font-bold text-2xl mb-1 text-primary">{t(q.data.dishNameKey as any) === q.data.dishNameKey ? q.data.dishNameKey.replace(/^dish_/, '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : t(q.data.dishNameKey as any)}</h2>
+          <h2 className="font-bold text-2xl mb-1 text-primary">{t(q.data.dishNameKey as any)}</h2>
           <h3 className="font-bold text-lg mb-1">{t("whatFoodGroupsSpot" as any) || "What food groups can you spot?"}</h3>
           <p className="text-sm text-muted-foreground">{t("selectAllApply" as any) || "Select all that apply."}</p>
         </div>

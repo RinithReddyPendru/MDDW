@@ -23,7 +23,7 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
         <div ref={ref} className="w-full max-w-lg rounded-xl shadow-sm border border-gray-200 bg-white mx-auto relative overflow-hidden" style={{ aspectRatio: '1024/682' }}>
           <img src={certBgBase64} alt="Certificate" className="absolute inset-0 w-full h-full object-cover block" />
           {/* Name overlay */}
-          <div className="absolute left-0 right-0 flex flex-col items-center justify-end" style={{ top: 0, bottom: '50.5%' }}>
+          <div className="absolute left-0 right-0 flex flex-col items-center justify-end" style={{ top: 0, bottom: '45%' }}>
             <span className="font-bold capitalize text-center px-4" style={{ color: '#cb1155', fontSize: 'clamp(16px, 4.5vw, 32px)', fontFamily: '"Times New Roman", Times, serif', letterSpacing: '0.05em' }}>
               {userName || "ASHA"}
             </span>
@@ -42,7 +42,7 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
       <div ref={ref} className="relative bg-white" style={{ width: '1024px', height: '682px', overflow: 'hidden' }}>
         <img src={certBgBase64} alt="Certificate" style={{ width: '1024px', height: '682px', display: 'block' }} />
         {/* Name overlay */}
-        <div className="absolute left-0 right-0 flex flex-col items-center justify-end" style={{ top: 0, bottom: '50.5%' }}>
+        <div className="absolute left-0 right-0 flex flex-col items-center justify-end" style={{ top: 0, bottom: '45%' }}>
           <span style={{ fontSize: '42px', fontWeight: 'bold', fontFamily: '"Times New Roman", Times, serif', color: '#cb1155', letterSpacing: '0.05em', textTransform: 'capitalize' }}>
             {userName || "ASHA"}
           </span>
