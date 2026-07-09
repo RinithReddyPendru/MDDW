@@ -9,6 +9,7 @@ export const generateNativeCertificate = async (
     try {
       // We use 2048x1364 to perfectly match the 1.5 aspect ratio of the 1024x682 background image, 
       // preventing any blurriness or stretching from happening on the canvas.
+      const canvas = document.createElement("canvas");
       canvas.width = 2048;
       canvas.height = 1364;
       const ctx = canvas.getContext("2d");
@@ -21,7 +22,7 @@ export const generateNativeCertificate = async (
       img.src = certBgBase64;
       img.onload = () => {
         // Draw background
-        ctx.drawImage(img, 0, 0, 2400, 1696);
+        ctx.drawImage(img, 0, 0, 2048, 1364);
 
         // Name text
         ctx.fillStyle = "#cb1155";
@@ -34,8 +35,8 @@ export const generateNativeCertificate = async (
           (ctx as any).letterSpacing = "0.05em";
         }
         
-        // Name Y position: exactly 43.5% with alphabetic baseline to rest on the grey line
-        const nameY = 1364 * 0.435;
+        // Name Y position: exactly 49% with alphabetic baseline
+        const nameY = 1364 * 0.49;
         ctx.fillText(userName || "ASHA", 1024, nameY);
 
         // Date text
@@ -49,7 +50,7 @@ export const generateNativeCertificate = async (
         // Date X: Moved right to 19% to avoid overlapping "Date: " text
         // Date Y: Moved down to 93% to rest perfectly on the underline
         const dateX = 2048 * 0.19;
-        const dateY = 1364 * 0.93;
+        const dateY = 1364 * 0.90;
         ctx.fillText(formattedDate, dateX, dateY);
 
         // Trigger download
