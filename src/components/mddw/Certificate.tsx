@@ -54,12 +54,12 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
         {/* Date overlay */}
         <div 
           className="absolute flex flex-col justify-end"
-          style={{ top: '88%', left: '18.5%' }}
+          style={{ top: `${dateTop}%`, left: '18.5%', transform: 'translateY(-100%)' }}
         >
           <span 
-            className="font-semibold"
+            className="font-normal"
             style={{ 
-              color: '#cb1155', 
+              color: '#333333', // Use a dark gray/black to match the "Date:" label instead of pink
               fontSize: isPreview ? 'clamp(8px, 2vw, 14px)' : '20px' 
             }}
           >

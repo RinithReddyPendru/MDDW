@@ -43,16 +43,17 @@ export const generateNativeCertificate = async (
         ctx.fillText(userName || "ASHA", 1024, nameY);
 
         // 2. Draw the Date
+        ctx.fillStyle = "#333333"; // Use dark gray instead of pink to match label
         ctx.textAlign = "left";
-        ctx.font = "600 40px sans-serif";
+        ctx.font = "400 28px sans-serif"; // Smaller and regular weight
         if ('letterSpacing' in ctx) {
           (ctx as any).letterSpacing = "0px";
         }
         
         // Date X: 18.5% -> 2048 * 0.185 = 378
-        // Date Y: 88.0% -> 1364 * 0.880 = 1200
+        // Date Y: 93.1% -> 1364 * 0.931 = 1270 (line is exactly here)
         const dateX = 2048 * 0.185;
-        const dateY = 1364 * 0.880;
+        const dateY = (1364 * 0.931) - 2; // subtract 2px padding to sit on the line
         ctx.fillText(formattedDate, dateX, dateY);
 
         // Trigger download

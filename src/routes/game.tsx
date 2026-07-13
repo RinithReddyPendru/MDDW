@@ -914,7 +914,7 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
       {true && (
         <div className="mt-6 border-t-2 border-border pt-6">
           <h3 className="font-bold text-lg mb-4 text-center text-primary">🏅 Your Certificate</h3>
-          <div className="mb-4"><Certificate userName={userName} phcName={phcName} score={score} pct={pct} lang={lang} t={t} isPreview={true} nameTop={43.7} dateTop={88} /></div>
+          <div className="mb-4"><Certificate userName={userName} phcName={phcName} score={score} pct={pct} lang={lang} t={t} isPreview={true} nameTop={43.7} dateTop={93.1} /></div>
           <button onClick={downloadCertificate} className="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white py-4 font-bold min-h-14 shadow-md flex items-center justify-center gap-2">
             <span className="text-xl">📥</span> {t("downloadCertificate")}
           </button>
