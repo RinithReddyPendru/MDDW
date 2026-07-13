@@ -870,7 +870,7 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
         { year: "numeric", month: "long", day: "numeric" }
       );
       const fileName = `MDDW_Certificate_${userName.replace(/\s+/g, "_")}.png`;
-      await generateNativeCertificate(userName || "ASHA", formattedDate, fileName);
+      await generateNativeCertificate(userName || "ASHA", formattedDate, fileName, certificateRef.current);
     } catch (e: any) {
       console.error(e);
       alert("Failed to generate certificate: " + (e?.message || "Unknown error"));
