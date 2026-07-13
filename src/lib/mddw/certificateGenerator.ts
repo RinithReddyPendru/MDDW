@@ -30,7 +30,7 @@ export const generateNativeCertificate = async (
         
         // alphabetic baseline means the *bottom* of the letters (not counting tails like 'y') will sit on the coordinate
         ctx.textBaseline = "alphabetic";
-        ctx.font = "bold 96px 'Times New Roman', Times, serif";
+        ctx.font = "bold 76px 'Times New Roman', Times, serif";
         
         if ('letterSpacing' in ctx) {
           (ctx as any).letterSpacing = "0.05em";
