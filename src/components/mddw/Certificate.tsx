@@ -36,7 +36,7 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
         {/* Name overlay - perfectly positioned in the blank space below the ribbon */}
         <div 
           className="absolute left-0 right-0 flex justify-center items-center"
-          style={{ top: '52.8%' }}
+          style={{ top: '46.5%', transform: 'translateY(-50%)' }}
         >
           <span 
             className="font-bold capitalize text-center px-4"
