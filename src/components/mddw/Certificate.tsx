@@ -41,7 +41,7 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
             className="font-bold capitalize text-center px-4"
             style={{ 
               color: '#cb1155', 
-              fontSize: isPreview ? 'clamp(14px, 3.5vw, 26px)' : '38px', 
+              fontSize: isPreview ? 'clamp(12px, 3vw, 20px)' : '28px', 
               fontFamily: '"Times New Roman", Times, serif', 
               letterSpacing: '0.05em',
               lineHeight: 1
