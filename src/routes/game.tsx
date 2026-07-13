@@ -837,10 +837,6 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
   const pct = Math.round((correct / total) * 100);
   const passed = score >= 16;
   const certificateRef = useRef<HTMLDivElement>(null);
-  
-  // Tuning state for certificate
-  const [nameTop, setNameTop] = useState(41.5);
-  const [dateTop, setDateTop] = useState(88);
 
   useEffect(() => {
     if (passed) {
@@ -918,24 +914,10 @@ function Result({ standardScore, counselingScore, visualScore, correct, wrong, t
       {true && (
         <div className="mt-6 border-t-2 border-border pt-6">
           <h3 className="font-bold text-lg mb-4 text-center text-primary">🏅 Your Certificate</h3>
-          
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-4">
-            <h4 className="font-bold text-blue-800 text-sm mb-2">🔧 Certificate Layout Tuner</h4>
-            <label className="block text-xs font-bold text-blue-700 mb-1">Name Vertical Position: {nameTop}%</label>
-            <input type="range" min="30" max="60" step="0.1" value={nameTop} onChange={e => setNameTop(Number(e.target.value))} className="w-full mb-3" />
-            
-            <label className="block text-xs font-bold text-blue-700 mb-1">Date Vertical Position: {dateTop}%</label>
-            <input type="range" min="80" max="95" step="0.1" value={dateTop} onChange={e => setDateTop(Number(e.target.value))} className="w-full" />
-            <p className="text-xs text-blue-600 mt-2 italic">Drag these sliders to perfectly align the text on your screen, then tell the developer the numbers!</p>
-          </div>
-
-          <div className="mb-4"><Certificate userName={userName} phcName={phcName} score={score} pct={pct} lang={lang} t={t} isPreview={true} nameTop={nameTop} dateTop={dateTop} /></div>
+          <div className="mb-4"><Certificate userName={userName} phcName={phcName} score={score} pct={pct} lang={lang} t={t} isPreview={true} nameTop={43.7} dateTop={88} /></div>
           <button onClick={downloadCertificate} className="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white py-4 font-bold min-h-14 shadow-md flex items-center justify-center gap-2">
             <span className="text-xl">📥</span> {t("downloadCertificate")}
           </button>
-          <div className="fixed inset-0 opacity-0 -z-10 pointer-events-none overflow-hidden">
-            <Certificate ref={certificateRef} userName={userName} phcName={phcName} score={score} pct={pct} lang={lang} t={t} isPreview={false} nameTop={nameTop} dateTop={dateTop} />
-          </div>
         </div>
       )}
 
