@@ -10,10 +10,12 @@ interface CertificateProps {
   score?: number;
   pct?: number;
   t?: (key: string) => string;
+  nameTop?: number;
+  dateTop?: number;
 }
 
 export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
-  ({ userName, phcName, date, lang = "en", isPreview = false }, ref) => {
+  ({ userName, phcName, date, lang = "en", isPreview = false, nameTop = 41.5, dateTop = 88 }, ref) => {
     
     const formattedDate = date || new Date().toLocaleDateString(
       lang === "en" ? "en-US" : lang === "hi" ? "hi-IN" : "te-IN", 
@@ -21,9 +23,6 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
     );
 
     // We use responsive percentages so it perfectly scales down for preview
-    // Top: 360px / 682px = 52.8%
-    // Date Top: 600px / 682px = 88%
-    // Date Left: 190px / 1024px = 18.5%
     const content = (
       <>
         {/* The beautiful original background image */}
@@ -33,10 +32,10 @@ export const Certificate = React.forwardRef<HTMLDivElement, CertificateProps>(
           className="absolute inset-0 w-full h-full object-cover block"
         />
         
-        {/* Name overlay - perfectly positioned in the blank space below the ribbon */}
+        {/* Name overlay */}
         <div 
           className="absolute left-0 right-0 flex justify-center items-center"
-          style={{ top: '41.5%', transform: 'translateY(-50%)' }}
+          style={{ top: `${nameTop}%`, transform: 'translateY(-50%)' }}
         >
           <span 
             className="font-bold capitalize text-center px-4"
