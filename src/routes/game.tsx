@@ -397,7 +397,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
 
   const handlePick = (i: number) => {
     const g = foodGroupMap[q.options[i]];
-    if (g) speakText(g.name, lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-US");
+    if (g) speakText(g.name, lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-US", g.id);
 
     if (q.type === "scenario") {
       if (multiSubmitted) return;
@@ -541,7 +541,7 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t, lang }: any) {
     if (multiSubmitted) return;
     playPop();
     const g = foodGroupMap[q.options[i]];
-    if (g) speakText(g.name, lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-US");
+    if (g) speakText(g.name, lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-US", g.id);
     setMultiPicked(prev => prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]);
   };
   
@@ -667,7 +667,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       
       const fbk = t(opt.feedback) !== opt.feedback ? t(opt.feedback) : opt.feedback;
       setTimeout(() => {
-        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: fbk, isFeedback: true }]);
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: fbk, isFeedback: true, isWrong: true }]);
       }, 500);
       return;
     }
@@ -707,12 +707,12 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
         setSuggestOptions(opts);
         setSuggestStep(true);
         setTimeout(() => {
-          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t("suggest_prompt") !== "suggest_prompt" ? t("suggest_prompt") : "It seems the mother only ate a few foods. What additional food group could you suggest to her to improve her diet?", isFeedback: true }]);
+          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t("suggest_prompt") !== "suggest_prompt" ? t("suggest_prompt") : "It seems the mother only ate a few foods. What additional food group could you suggest to her to improve her diet?", isFeedback: true, isConfused: true }]);
         }, 500);
       } else {
         setFinished(true);
         setTimeout(() => {
-          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.finalLesson) }]);
+          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.finalLesson), isSuccess: true }]);
         }, 500);
       }
     }
@@ -727,7 +727,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       setSuggestStep(false);
       setDiscovered([...discovered, { id: opt.group.id, name: opt.group.name, emoji: opt.group.emoji }]);
       setTimeout(() => {
-        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.finalLesson) }]);
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.finalLesson), isSuccess: true }]);
       }, 500);
     } else {
       playFailure();
@@ -735,7 +735,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       setWrongCount(w => w + 1);
       setMistakes(m => [...m, { question: "Suggest a missing food group", userAnswer: opt.group.name, correctAnswer: "A food group she hasn't eaten yet" }]);
       setTimeout(() => {
-        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t("suggest_wrong") !== "suggest_wrong" ? t("suggest_wrong") : "Not quite! Try suggesting a food group she missed.", isFeedback: true }]);
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t("suggest_wrong") !== "suggest_wrong" ? t("suggest_wrong") : "Not quite! Try suggesting a food group she missed.", isFeedback: true, isWrong: true }]);
       }, 500);
     }
   };
@@ -758,8 +758,12 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       <div className="flex-1 overflow-hidden flex flex-col glass rounded-3xl border-2 border-border/50 mb-4 shadow-sm relative" style={{ minHeight: '300px' }}>
         <div className="p-3 border-b-2 border-border/50 bg-card flex flex-col gap-3 shrink-0 z-10">
            <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-xl shadow-inner">
-               {data.avatarIcon}
+             <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-border/50 shadow-inner bg-card flex items-center justify-center">
+               <img src={`${import.meta.env.BASE_URL || '/'}images/avatars/${
+                 chat[chat.length - 1]?.isWrong || chat[chat.length - 1]?.isConfused ? 'mother_confused.png' :
+                 chat[chat.length - 1]?.isSuccess ? 'mother_happy.png' :
+                 'mother_neutral.png'
+               }`} alt="Mother Avatar" className="w-full h-full object-cover" />
              </div>
              <div>
                <div className="font-bold text-sm leading-tight">{data.motherName}</div>

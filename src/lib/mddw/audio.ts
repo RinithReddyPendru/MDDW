@@ -34,13 +34,28 @@ export function triggerHaptic(type: 'pop' | 'success' | 'failure') {
   }
 }
 
-export function speakText(text: string, langCode: string = 'te-IN') {
-  if (muted || typeof window === 'undefined' || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = langCode;
-  utterance.rate = 0.9;
-  window.speechSynthesis.speak(utterance);
+export function speakText(text: string, langCode: string = 'te-IN', audioId?: string) {
+  if (muted || typeof window === 'undefined') return;
+
+  const playFallback = () => {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = langCode;
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  if (audioId) {
+    const audio = new Audio(`${import.meta.env.BASE_URL || '/'}audio/${langCode}_${audioId}.mp3`);
+    audio.play().catch(err => {
+      console.warn("Failed to play MP3, falling back to TTS:", err);
+      playFallback();
+    });
+    return;
+  }
+
+  playFallback();
 }
 
 export function playPop() {
