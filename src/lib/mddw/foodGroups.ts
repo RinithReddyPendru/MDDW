@@ -62,7 +62,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
   },
   {
     id: "pulses",
-    emoji: "🫘",
+    emoji: "🌱",
     colorVar: "group-pulses",
     name: {
       en: "Pulses & Beans",
@@ -82,7 +82,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
   },
   {
     id: "nuts",
-    emoji: "🥜",
+    emoji: "🌰",
     colorVar: "group-nuts",
     name: {
       en: "Nuts & Seeds",
@@ -102,7 +102,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
   },
   {
     id: "dairy",
-    emoji: "🥛",
+    emoji: "🧀",
     colorVar: "group-dairy",
     name: {
       en: "Dairy",
@@ -182,8 +182,8 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
   },
   {
     id: "vitaminA",
-    emoji: "🥕",
-    colorVar: "group-vitamin-a",
+    emoji: "🎃",
+    colorVar: "group-vita",
     name: {
       en: "Vitamin A Rich",
       hi: "विटामिन A से भरपूर",
@@ -202,7 +202,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
   },
   {
     id: "otherVeg",
-    emoji: "🍆",
+    emoji: "🥦",
     colorVar: "group-other-veg",
     name: {
       en: "Other Vegetables",
@@ -222,7 +222,7 @@ const FOOD_GROUPS_RAW: LocalizedFoodGroup[] = [
   },
   {
     id: "otherFruit",
-    emoji: "🍎",
+    emoji: "🍇",
     colorVar: "group-other-fruit",
     name: {
       en: "Other Fruits",

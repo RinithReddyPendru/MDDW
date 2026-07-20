@@ -487,6 +487,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
             } else if (isPicked) stateClass = "bg-primary/10 border-primary border-2";
             return (
               <button key={opt} onClick={() => handlePick(i)} disabled={multiSubmitted} className={`rounded-2xl border-2 p-4 text-left flex items-center gap-3 transition ${stateClass}`}>
+                <span className="text-2xl" aria-hidden>{g.emoji}</span>
                 <span className="flex-1 font-bold">{g.name}</span>
                 {multiSubmitted && isRight && isPicked && <span className="text-secondary text-xl">✅</span>}
                 {multiSubmitted && !isRight && isPicked && <span className="text-destructive text-xl">❌</span>}
@@ -507,6 +508,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
                 whileTap={{ scale: answered ? 1 : 0.98 }}
                 key={opt} onClick={() => handlePick(i)} disabled={answered} className={`rounded-2xl border-2 p-4 text-left flex items-center gap-3 transition ${stateClass}`}
               >
+                <span className="text-2xl" aria-hidden>{g.emoji}</span>
                 <span className="flex-1 font-bold">{g.name}</span>
                 {answered && isRight && <span className="text-secondary text-xl">✅</span>}
                 {answered && isPicked && !isRight && <span className="text-destructive text-xl">❌</span>}
@@ -603,7 +605,8 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t, lang }: any) {
               whileTap={{ scale: multiSubmitted ? 1 : 0.95 }}
               key={opt} onClick={() => handlePick(i)} disabled={multiSubmitted} className={`rounded-2xl border-2 p-3 text-left flex items-center gap-2 transition shadow-sm ${stateClass}`}
             >
-              <span className="flex-1 font-bold text-sm leading-tight text-center">{g.name}</span>
+              <span className="text-xl" aria-hidden>{g.emoji}</span>
+              <span className="flex-1 font-bold text-xs leading-tight">{g.name}</span>
             </motion.button>
           );
         })}
