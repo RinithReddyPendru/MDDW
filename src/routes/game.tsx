@@ -230,8 +230,7 @@ function GamePage() {
           name: userName,
           phc: phcName,
           phone: phoneNumber,
-          score: Math.round((finalScore / 20) * 100),
-          passed: finalScore >= 16
+          score: Math.round((finalScore / 20) * 100)
         });
         
         setPhase("result");

@@ -139,7 +139,6 @@ export interface AdminRow {
   phc: string;
   phone: string;
   score: number;
-  passed: boolean;
 }
 
 const ADMIN_DB_KEY = "mddw_admin_db";
