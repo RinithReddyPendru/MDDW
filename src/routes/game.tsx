@@ -231,26 +231,9 @@ function GamePage() {
           phc: phcName,
           phone: phoneNumber,
           score: Math.round((finalScore / 20) * 100),
-          level: 3,
           passed: finalScore >= 16
         });
         
-        if (pState.sheetsWebhookUrl && typeof window !== "undefined") {
-          fetch(pState.sheetsWebhookUrl, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain" },
-            body: JSON.stringify({
-              name: userName,
-              phc: phcName,
-              phone: phoneNumber,
-              standard_score: finalStandard,
-              counseling_score: finalCounseling,
-              visual_score: finalVisual,
-              total: 20
-            })
-          }).catch(e => console.error(e));
-        }
         setPhase("result");
       }
     } else {

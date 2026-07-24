@@ -139,7 +139,6 @@ export interface AdminRow {
   phc: string;
   phone: string;
   score: number;
-  level: number;
   passed: boolean;
 }
 
