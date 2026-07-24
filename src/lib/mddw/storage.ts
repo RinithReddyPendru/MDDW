@@ -156,9 +156,29 @@ export function loadAdminDatabase(): AdminRow[] {
   }
 }
 
-export function saveToAdminDatabase(row: AdminRow) {
+export async function saveToAdminDatabase(row: AdminRow) {
   if (typeof window === "undefined") return;
+  
+  // 1. Save locally as backup
   const db = loadAdminDatabase();
   db.push(row);
   localStorage.setItem(ADMIN_DB_KEY, JSON.stringify(db));
+
+  // 2. Send to Google Sheets Webhook
+  const state = loadProgress();
+  if (state.sheetsWebhookUrl && state.sheetsWebhookUrl.startsWith("http")) {
+    try {
+      await fetch(state.sheetsWebhookUrl, {
+        method: 'POST',
+        mode: 'no-cors', // Prevents CORS errors from blocking the request
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(row)
+      });
+      console.log("Data successfully sent to Google Sheets");
+    } catch (e) {
+      console.error("Failed to send data to Google Sheets", e);
+    }
+  }
 }
