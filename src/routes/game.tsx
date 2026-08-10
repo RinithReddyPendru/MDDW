@@ -317,7 +317,7 @@ function Intro({ onStart, t }: { onStart: (n: string, p: string, phone: string) 
       <NutriCompanion message={t("companionIntro")} />
       
       <div className="glass rounded-2xl p-5 border-2 border-border/50 mb-4 shadow-sm text-center">
-        <h3 className="font-bold text-lg mb-2">Grand Challenge</h3>
+        <h3 className="font-bold text-lg mb-2">{t("grandChallenge")}</h3>
         <p className="text-sm text-muted-foreground">Complete 3 rounds of challenges to earn your MDD-W certification.</p>
         <div className="flex gap-2 justify-center mt-3 text-xs font-semibold">
           <span className="bg-primary/10 text-primary px-3 py-1 rounded-full">📚 Standard</span>
@@ -417,7 +417,7 @@ function Play({ q, qIdx, total, onNext, foodGroupMap, lang, t }: any) {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <div className="flex items-center justify-between mb-3">
-         <div className="font-bold text-primary text-sm tracking-widest uppercase">Standard Round</div>
+         <div className="font-bold text-primary text-sm tracking-widest uppercase">{t("standardRound")}</div>
          <div className="text-muted-foreground text-sm">Q {qIdx + 1} / {total}</div>
       </div>
       <div className="h-2 rounded-full bg-muted overflow-hidden mb-5">
@@ -773,7 +773,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
              </div>
              <div>
                <div className="font-bold text-sm leading-tight">{data.motherName}</div>
-               <div className="text-xs text-muted-foreground">Mother</div>
+               <div className="text-xs text-muted-foreground">{t("motherRole")}</div>
              </div>
            </div>
            

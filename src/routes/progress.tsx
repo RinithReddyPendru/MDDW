@@ -104,8 +104,8 @@ function ProgressPage() {
             className="w-full flex-1 object-cover md:object-cover bg-primary/5 min-h-0 aspect-[4/3] md:aspect-auto"
           />
           <div className="bg-primary/10 p-3 md:p-6 text-center border-t border-primary/20 shrink-0">
-            <h2 className="text-primary text-xl md:text-3xl font-bold leading-tight tracking-tight">Your Achievements</h2>
-            <p className="text-primary/80 text-sm md:text-lg font-medium mt-1 md:mt-2">Tracking your journey to empower the community</p>
+            <h2 className="text-primary text-xl md:text-3xl font-bold leading-tight tracking-tight">{t("yourAchievements")}</h2>
+            <p className="text-primary/80 text-sm md:text-lg font-medium mt-1 md:mt-2">{t("achievementsDesc")}</p>
           </div>
         </motion.div>
       </div>
@@ -119,7 +119,7 @@ function ProgressPage() {
         <div className="mx-auto w-full max-w-xl px-4 py-6 md:py-10 flex-1 flex flex-col">
           <div className="mb-6">
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">{t("myProgress")}</h1>
-            <p className="text-muted-foreground mt-1 text-base md:text-lg">See how far you've come!</p>
+            <p className="text-muted-foreground mt-1 text-base md:text-lg">{t("seeHowFar")}</p>
           </div>
 
         {!p.hasCompletedTraining && games > 0 && (
@@ -138,7 +138,7 @@ function ProgressPage() {
         {p.hasCompletedTraining && (
           <div className="mb-10">
             <div className="glass rounded-3xl p-5 border-2 border-border/50 shadow-sm flex flex-col items-center overflow-hidden">
-              <h3 className="font-bold text-xl text-primary mb-4">Your Certificate</h3>
+              <h3 className="font-bold text-xl text-primary mb-4">{t("yourCertificate")}</h3>
               <div className="w-full max-w-full mb-6">
                 <Certificate 
                   userName={p.userName || ""}

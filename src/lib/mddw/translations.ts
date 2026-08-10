@@ -551,6 +551,28 @@ const en: Dict = {
   // --- logout / reset ---
   resetConfirm: "Reset all progress and log out?",
   resetApp: "Reset App",
+
+  // --- UI chrome (previously hardcoded English in JSX) ---
+  dashboard: "Dashboard",
+  welcomeBackName: "Welcome back, {name}!",
+  yourTrainingPath: "Your Training Path",
+  trainingPathDesc: "Complete these steps to unlock the full app",
+  grandChallenge: "Grand Challenge",
+  standardRound: "Standard Round",
+  yourAchievements: "Your Achievements",
+  achievementsDesc: "Tracking your journey to empower the community",
+  seeHowFar: "See how far you've come!",
+  yourCertificate: "Your Certificate",
+  nutritionEducation: "Nutrition Education",
+  nutritionEducationDesc: "Empowering communities with dietary knowledge",
+  loginWelcomeTitle: "Welcome Back!",
+  loginWelcomeDesc: "Please enter your details to continue",
+  appNameFull: "MDD-W Master Challenge",
+  ashaTrainingProgram: "ASHA Training Program",
+  tapFoodsToAdd: "Tap foods to add them to your plate",
+  ingredientsAndGroups: "Ingredients & Groups",
+  motherRole: "Mother",
+  developedForAshas: "Developed for ASHAs",
 };
 
 const hi: Dict = {
@@ -1139,6 +1161,28 @@ const hi: Dict = {
   // --- logout / reset ---
   resetConfirm: "सारी प्रगति मिटाकर लॉग आउट करें?",
   resetApp: "ऐप रीसेट करें",
+
+  // --- UI chrome (previously hardcoded English in JSX) ---
+  dashboard: "डैशबोर्ड",
+  welcomeBackName: "वापसी पर स्वागत है, {name}!",
+  yourTrainingPath: "आपका प्रशिक्षण पथ",
+  trainingPathDesc: "पूरा ऐप अनलॉक करने के लिए ये चरण पूरे करें",
+  grandChallenge: "ग्रैंड चैलेंज",
+  standardRound: "मानक राउंड",
+  yourAchievements: "आपकी उपलब्धियाँ",
+  achievementsDesc: "समुदाय को सशक्त बनाने की आपकी यात्रा पर नज़र",
+  seeHowFar: "देखिए आप कितना आगे आ चुकी हैं!",
+  yourCertificate: "आपका प्रमाणपत्र",
+  nutritionEducation: "पोषण शिक्षा",
+  nutritionEducationDesc: "आहार ज्ञान से समुदायों को सशक्त बनाना",
+  loginWelcomeTitle: "वापसी पर स्वागत है!",
+  loginWelcomeDesc: "जारी रखने के लिए कृपया अपना विवरण दर्ज करें",
+  appNameFull: "MDD-W मास्टर चैलेंज",
+  ashaTrainingProgram: "आशा प्रशिक्षण कार्यक्रम",
+  tapFoodsToAdd: "अपनी थाली में जोड़ने के लिए खाद्य पदार्थों पर टैप करें",
+  ingredientsAndGroups: "सामग्री और समूह",
+  motherRole: "माँ",
+  developedForAshas: "आशा कार्यकर्ताओं के लिए विकसित",
 };
 
 const te: Dict = {
@@ -1729,6 +1773,28 @@ const te: Dict = {
   // --- logout / reset ---
   resetConfirm: "మొత్తం పురోగతిని తొలగించి లాగ్ అవుట్ చేయాలా?",
   resetApp: "యాప్‌ను రీసెట్ చేయండి",
+
+  // --- UI chrome (previously hardcoded English in JSX) ---
+  dashboard: "డాష్‌బోర్డ్",
+  welcomeBackName: "మళ్ళీ స్వాగతం, {name}!",
+  yourTrainingPath: "మీ శిక్షణ మార్గం",
+  trainingPathDesc: "పూర్తి యాప్‌ను అన్‌లాక్ చేయడానికి ఈ దశలను పూర్తి చేయండి",
+  grandChallenge: "గ్రాండ్ ఛాలెంజ్",
+  standardRound: "ప్రామాణిక రౌండ్",
+  yourAchievements: "మీ విజయాలు",
+  achievementsDesc: "సమాజాన్ని బలోపేతం చేసే మీ ప్రయాణాన్ని ట్రాక్ చేస్తోంది",
+  seeHowFar: "మీరు ఎంత దూరం వచ్చారో చూడండి!",
+  yourCertificate: "మీ ధృవీకరణ పత్రం",
+  nutritionEducation: "పోషకాహార విద్య",
+  nutritionEducationDesc: "ఆహార జ్ఞానంతో సమాజాలను బలోపేతం చేయడం",
+  loginWelcomeTitle: "మళ్ళీ స్వాగతం!",
+  loginWelcomeDesc: "కొనసాగించడానికి దయచేసి మీ వివరాలను నమోదు చేయండి",
+  appNameFull: "MDD-W మాస్టర్ ఛాలెంజ్",
+  ashaTrainingProgram: "ఆశా శిక్షణ కార్యక్రమం",
+  tapFoodsToAdd: "మీ పళ్ళెంలో చేర్చడానికి ఆహారాలను తాకండి",
+  ingredientsAndGroups: "పదార్థాలు & సమూహాలు",
+  motherRole: "తల్లి",
+  developedForAshas: "ఆశా కార్యకర్తల కోసం రూపొందించబడింది",
 };
 
 const DICTS: Record<Lang, Dict> = { en, hi, te };

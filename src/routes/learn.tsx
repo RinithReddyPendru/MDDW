@@ -54,8 +54,8 @@ function Learn() {
             className="w-full flex-1 object-cover md:object-cover bg-primary/5 min-h-0 aspect-[4/3] md:aspect-auto"
           />
           <div className="bg-primary/10 p-3 md:p-6 text-center border-t border-primary/20 shrink-0">
-            <h2 className="text-primary text-xl md:text-3xl font-bold leading-tight tracking-tight">Nutrition Education</h2>
-            <p className="text-primary/80 text-sm md:text-lg font-medium mt-1 md:mt-2">Empowering communities with dietary knowledge</p>
+            <h2 className="text-primary text-xl md:text-3xl font-bold leading-tight tracking-tight">{t("nutritionEducation")}</h2>
+            <p className="text-primary/80 text-sm md:text-lg font-medium mt-1 md:mt-2">{t("nutritionEducationDesc")}</p>
           </div>
         </motion.div>
       </div>

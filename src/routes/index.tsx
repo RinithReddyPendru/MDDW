@@ -66,8 +66,8 @@ function Index() {
         
         <div className="mx-auto w-full max-w-xl px-4 py-6 md:py-10 flex-1 flex flex-col gap-6">
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4 }} className="hidden md:block mb-1">
-            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-muted-foreground mt-1 text-lg">Welcome back, {progress.userName}!</p>
+            <h1 className="text-3xl font-bold text-foreground">{t("dashboard")}</h1>
+            <p className="text-muted-foreground mt-1 text-lg">{t("welcomeBackName").replace("{name}", progress.userName ?? "")}</p>
           </motion.div>
 
           <motion.section
@@ -103,26 +103,26 @@ function Index() {
             {!progress.hasCompletedTraining ? (
               <div className="glass rounded-3xl p-6 shadow-sm border-2 border-border/50 flex flex-col gap-5">
                 <div className="text-center">
-                  <h3 className="font-bold text-lg text-primary">Your Training Path</h3>
-                  <p className="text-sm text-muted-foreground">Complete these steps to unlock the full app</p>
+                  <h3 className="font-bold text-lg text-primary">{t("yourTrainingPath")}</h3>
+                  <p className="text-sm text-muted-foreground">{t("trainingPathDesc")}</p>
                 </div>
                 <div className="flex flex-col gap-2 relative">
                   <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-border z-0" />
                   <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">1</div>
-                    <div className="font-semibold text-sm flex-1">📖 Learn Food Groups</div>
+                    <div className="font-semibold text-sm flex-1">📖 {t("learnFoodGroups")}</div>
                   </div>
                   <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">2</div>
-                    <div className="font-semibold text-sm flex-1">🍽 Build a Plate</div>
+                    <div className="font-semibold text-sm flex-1">🍽 {t("buildPlate")}</div>
                   </div>
                   <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">3</div>
-                    <div className="font-semibold text-sm flex-1">📸 Dish Breakdown</div>
+                    <div className="font-semibold text-sm flex-1">📸 {t("dishDecoderTitle")}</div>
                   </div>
                   <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
                     <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">4</div>
-                    <div className="font-semibold text-sm flex-1">🎖 Grand Challenge</div>
+                    <div className="font-semibold text-sm flex-1">🎖 {t("grandChallenge")}</div>
                   </div>
                 </div>
                 <Link to={progress.savedRoundIndex !== undefined ? "/game" : "/learn"} className="rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition">
@@ -166,7 +166,7 @@ function Index() {
           <footer className="mt-8 mb-4 text-center">
             <div className="glass inline-block px-4 py-2 rounded-full shadow-sm border border-white/20">
               <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
-                Developed for ASHA's
+                {t("developedForAshas")}
               </p>
             </div>
           </footer>

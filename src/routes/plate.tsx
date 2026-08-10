@@ -113,7 +113,7 @@ function PlateSandbox() {
               <div className="absolute inset-2.5 rounded-full bg-gradient-to-br from-background/35 to-background/10 shadow-inner flex items-center justify-center">
                 {selectedIds.length === 0 ? (
                   <span className="text-[11px] md:text-xs font-semibold text-muted-foreground/60 select-none text-center px-5 leading-relaxed">
-                    🍽️ Tap foods to add them to your plate
+                    🍽️ {t("tapFoodsToAdd")}
                   </span>
                 ) : (
                   <div className="relative w-full h-full">
@@ -148,7 +148,7 @@ function PlateSandbox() {
             </div>
             {/* Plate bottom score badge */}
             <div className="absolute -bottom-4 z-10 bg-primary text-primary-foreground font-bold px-4 py-2 rounded-full text-sm md:text-lg shadow-xl border-2 border-primary-foreground/20">
-              {score} / 10 Groups
+              {score} / 10 {t("groupsText")}
             </div>
           </div>
 

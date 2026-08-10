@@ -48,10 +48,10 @@ function MealsComponent() {
           className="text-center"
         >
           <h1 className="text-4xl font-extrabold text-foreground mb-3 tracking-tight">
-            Dish Decoder
+            {t("dishDecoderTitle")}
           </h1>
           <p className="text-muted-foreground font-medium text-lg">
-            Tap a dish to discover its food groups
+            {t("dishDecoderDesc")}
           </p>
         </motion.div>
 
@@ -170,7 +170,7 @@ function DishModal({ mealId, onClose, lang, t }: any) {
           
           <div className="p-6 overflow-y-auto flex flex-col gap-4">
             <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
-              Ingredients & Groups
+              {t("ingredientsAndGroups")}
             </h3>
             <div className="flex flex-col gap-3">
               {meal.ingredients.map((ing: any, i: number) => {

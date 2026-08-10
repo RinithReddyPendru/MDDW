@@ -49,8 +49,8 @@ function Login() {
             className="w-full h-auto object-contain bg-primary/5"
           />
           <div className="bg-primary/10 p-6 text-center border-t border-primary/20">
-            <h2 className="text-primary text-3xl font-bold leading-tight tracking-tight">MDD-W Master Challenge</h2>
-            <p className="text-primary/80 text-lg font-medium mt-2">ASHA Training Program</p>
+            <h2 className="text-primary text-3xl font-bold leading-tight tracking-tight">{t("appNameFull")}</h2>
+            <p className="text-primary/80 text-lg font-medium mt-2">{t("ashaTrainingProgram")}</p>
           </div>
         </motion.div>
       </div>
@@ -72,14 +72,14 @@ function Login() {
                 className="w-full h-auto object-contain bg-primary/5"
               />
               <div className="bg-primary/10 p-4 text-center border-t border-primary/20">
-                <h2 className="text-primary text-xl font-bold leading-tight">MDD-W Master Challenge</h2>
-                <p className="text-primary/80 text-sm font-medium mt-1">ASHA Training Program</p>
+                <h2 className="text-primary text-xl font-bold leading-tight">{t("appNameFull")}</h2>
+                <p className="text-primary/80 text-sm font-medium mt-1">{t("ashaTrainingProgram")}</p>
               </div>
             </div>
 
             <div className="hidden md:block mb-4 text-center">
-              <h1 className="text-3xl font-bold text-foreground">Welcome Back!</h1>
-              <p className="text-muted-foreground mt-2">Please enter your details to continue</p>
+              <h1 className="text-3xl font-bold text-foreground">{t("loginWelcomeTitle")}</h1>
+              <p className="text-muted-foreground mt-2">{t("loginWelcomeDesc")}</p>
             </div>
 
             <NutriCompanion message={t("companionIntro")} />
