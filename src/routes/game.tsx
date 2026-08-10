@@ -19,6 +19,8 @@ import { NutriCompanion } from "@/components/mddw/NutriCompanion";
 import { Certificate } from "@/components/mddw/Certificate";
 import { PROBING_SCENARIOS, type ProbingScenarioData } from "@/lib/mddw/probingScenarios";
 import { IMAGE_SCENARIOS, type ImageScenarioData } from "@/lib/mddw/imageScenarios";
+import { GroupGlyph } from "@/components/mddw/kalam/GroupGlyph";
+import { BlockBorder } from "@/components/mddw/kalam/BlockBorder";
 
 
 function FallbackImage({ src, alt, className, fallbackEmoji, fallbackClassName }: { src: string, alt: string, className: string, fallbackEmoji: string, fallbackClassName: string }) {
@@ -271,9 +273,18 @@ function GamePage() {
         <div className="mx-auto max-w-xl px-4 py-5 w-full">
         <AnimatePresence mode="wait">
           {phase === "playing" && !current && (
-            <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-20 gap-4">
-              <div className="text-5xl animate-bounce">🍽️</div>
-              <p className="text-muted-foreground font-medium">{t("loading") || "Loading questions..."}</p>
+            <motion.div key="loading" data-world="kalamkari" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-20 gap-5">
+              {/* Undyed cloth waiting for the block: the ten empty impressions. */}
+              <div className="grid grid-cols-5 gap-1.5" aria-hidden>
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="w-9 h-9"
+                    style={{ border: "1px dashed color-mix(in oklab, var(--kal-iron) 32%, transparent)" }}
+                  />
+                ))}
+              </div>
+              <p style={{ color: "color-mix(in oklab, var(--kal-iron) 70%, transparent)" }}>{t("loading") || "Loading questions..."}</p>
             </motion.div>
           )}
           {phase === "playing" && current && current.type === "probing_scenario" && (
@@ -751,80 +762,175 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
     return val === key ? fallback : val;
   };
 
+  const discoveredIds = new Set(discovered.map((g: any) => g.id));
+  const groupBand = (allGroups ?? []) as { id: FoodGroupId; name: string }[];
+
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col h-full min-h-[400px]">
-      <div className="flex items-center justify-between mb-3 shrink-0">
-         <div className="font-bold text-purple-600 text-sm tracking-widest uppercase">{getT('modeCounseling', 'Counseling Practice')}</div>
-         <div className="text-muted-foreground text-sm">Q {qIdx + 1} / {total}</div>
-      </div>
-      <div className="h-2 rounded-full bg-muted overflow-hidden mb-4 shrink-0">
-        <motion.div className="h-full bg-purple-600" initial={{ width: 0 }} animate={{ width: `${((qIdx + 1) / total) * 100}%` }} transition={{ duration: 0.4 }} />
-      </div>
+    <motion.div
+      data-world="kalamkari"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col -mx-4 px-4 pb-3"
+    >
+      <BlockBorder className="w-full h-3.5 shrink-0" />
 
-      <div className="flex-1 overflow-hidden flex flex-col glass rounded-3xl border-2 border-border/50 mb-4 shadow-sm relative" style={{ minHeight: '300px' }}>
-        <div className="p-3 border-b-2 border-border/50 bg-card flex flex-col gap-3 shrink-0 z-10">
-           <div className="flex items-center gap-3">
-             <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-border/50 shadow-inner bg-card flex items-center justify-center">
-               <img src={`${import.meta.env.BASE_URL || '/'}images/avatars/${
-                 chat[chat.length - 1]?.isWrong || chat[chat.length - 1]?.isConfused ? 'mother_confused.png' :
-                 chat[chat.length - 1]?.isSuccess ? 'mother_happy.png' :
-                 'mother_neutral.png'
-               }`} alt="Mother Avatar" className="w-full h-full object-cover" />
-             </div>
-             <div>
-               <div className="font-bold text-sm leading-tight">{data.motherName}</div>
-               <div className="text-xs text-muted-foreground">{t("motherRole")}</div>
-             </div>
-           </div>
-           
-           {discovered.length > 0 && (
-             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide w-full">
-               <AnimatePresence>
-                 {discovered.map((g: any, i: number) => {
-                   const translatedG = foodGroupMap[g.id];
-                   return (
-                     <motion.div key={i} initial={{ scale: 0 }} animate={{ scale: 1 }} className="bg-card border border-border px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap" title={translatedG?.name || g.name}>
-                       <span>{translatedG?.emoji || g.emoji}</span> <span>{translatedG?.name || g.name}</span>
-                     </motion.div>
-                   );
-                 })}
-               </AnimatePresence>
-             </div>
-           )}
-        </div>
-
-        <div ref={chatRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 scroll-smooth">
-          {chat.map((msg, i) => (
-            <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[85%] rounded-2xl p-3 text-sm md:text-base font-medium shadow-sm ${msg.sender === 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm' : msg.isFeedback ? 'bg-destructive/15 text-destructive border border-destructive/30 rounded-tl-sm' : 'bg-purple-600/10 text-foreground border border-purple-600/20 rounded-tl-sm'}`}>
-                 {chatText(msg)}
-              </div>
-            </motion.div>
+      {/* Scenario mark: one stamped square per scenario, inked as it is done.
+          A drawn count, not a progress bar. */}
+      <div className="flex items-baseline justify-between gap-4 pt-3 pb-2 shrink-0">
+        <h2 className="text-[1.35rem] leading-none">{getT('modeCounseling', 'Counseling Practice')}</h2>
+        <div className="flex items-center gap-1.5" aria-label={`${qIdx + 1} / ${total}`}>
+          {Array.from({ length: total }).map((_, i) => (
+            <span
+              key={i}
+              className="w-2.5 h-2.5"
+              style={{
+                border: "1.5px solid var(--kal-iron)",
+                background: i <= qIdx ? "var(--kal-madder)" : "transparent",
+              }}
+            />
           ))}
         </div>
       </div>
 
-      <div className="shrink-0 space-y-3">
+      {/* Register 1 — the mother. Squared frame with a double kalam rule; a
+          portrait is drawn inside a border on cloth, never cut into a circle. */}
+      <div className="flex items-center gap-3.5 pb-3 shrink-0">
+        <div
+          className="w-16 h-16 shrink-0 overflow-hidden"
+          style={{ border: "2px solid var(--kal-iron)", outline: "1px solid var(--kal-iron)", outlineOffset: "2px" }}
+        >
+          <img
+            src={`${import.meta.env.BASE_URL || '/'}images/avatars/${
+              chat[chat.length - 1]?.isWrong || chat[chat.length - 1]?.isConfused ? 'mother_confused.png' :
+              chat[chat.length - 1]?.isSuccess ? 'mother_happy.png' :
+              'mother_neutral.png'
+            }`}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{ filter: "sepia(0.35) saturate(0.85) contrast(1.05)" }}
+          />
+        </div>
+        <div className="min-w-0">
+          <div className="text-lg leading-tight" style={{ fontFamily: '"Eczar", "Ramaraja", "Noto Serif Telugu", serif' }}>
+            {data.motherName}
+          </div>
+          <div className="text-sm" style={{ color: "color-mix(in oklab, var(--kal-iron) 68%, transparent)" }}>
+            {t("motherRole")}
+          </div>
+        </div>
+      </div>
+
+      {/* The story registers. Each turn is a band of cloth divided by a drawn
+          rule and marked in the margin: madder for the mother, indigo for the
+          ASHA. No bubbles, no cards. */}
+      <div ref={chatRef} className="pr-1" style={{ borderTop: "2px solid var(--kal-iron)", minHeight: "7rem" }}>
+        {chat.map((msg) => {
+          const mine = msg.sender === 'user';
+          const ink = msg.isWrong ? "var(--kal-madder)" : mine ? "var(--kal-indigo)" : "var(--kal-iron)";
+          return (
+            <motion.div
+              key={msg.id}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              className="kal-register grid gap-3 first:border-t-0"
+              style={{ gridTemplateColumns: "0.5rem 1fr" }}
+            >
+              <span
+                className="mt-[0.45rem] h-2 w-2"
+                style={{ background: mine ? "var(--kal-indigo)" : "var(--kal-madder)" }}
+                aria-hidden
+              />
+              <p
+                className={`text-[0.98rem] leading-relaxed ${mine ? "" : "pr-4"}`}
+                style={{
+                  color: ink,
+                  fontStyle: mine ? "normal" : "italic",
+                  fontWeight: msg.isSuccess ? 600 : 400,
+                  maxWidth: "68ch",
+                }}
+              >
+                {chatText(msg)}
+              </p>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* The stamped band — the thesis. All ten groups are always present as
+          carved outlines; probing inks them in. What she has not told you is
+          as visible as what she has. */}
+      <div className="shrink-0 pt-3" style={{ borderTop: "2px solid var(--kal-iron)" }}>
+        <div className="grid grid-cols-5 gap-1.5">
+          {groupBand.map((g) => {
+            const found = discoveredIds.has(g.id);
+            return (
+              <span
+                key={g.id}
+                title={g.name}
+                className={`inline-flex items-center justify-center w-full h-11 ${found ? "kal-stamp kal-ink-in" : ""}`}
+                style={
+                  found
+                    ? { color: "var(--kal-madder)" }
+                    : {
+                        border: "1px dashed color-mix(in oklab, var(--kal-iron) 38%, transparent)",
+                        color: "color-mix(in oklab, var(--kal-iron) 34%, transparent)",
+                      }
+                }
+              >
+                <GroupGlyph id={g.id} filled={found} className="w-6 h-6" />
+                <span className="sr-only">{g.name}</span>
+              </span>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="shrink-0 pt-4 space-y-2.5">
         {!finished && !suggestStep && (
           <>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{getT('askNext', 'What will you ask next?')}</div>
+            <div className="text-sm" style={{ color: "color-mix(in oklab, var(--kal-iron) 70%, transparent)" }}>
+              {getT('askNext', 'What will you ask next?')}
+            </div>
             <div className="grid grid-cols-1 gap-2">
               {currentStep.options.map((opt: any, i: number) => (
-                <button key={i} onClick={() => handleOption(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-3.5 rounded-2xl font-medium transition active:scale-[0.98] text-sm md:text-base">
+                <button
+                  key={i}
+                  onClick={() => handleOption(opt)}
+                  className="w-full text-left px-4 py-3.5 text-[0.98rem] leading-snug min-h-14 transition-colors"
+                  style={{
+                    background: "var(--kal-cloth-deep)",
+                    border: "1.5px solid var(--kal-iron)",
+                    color: "var(--kal-iron)",
+                  }}
+                >
                   {t(opt.text)}
                 </button>
               ))}
             </div>
           </>
         )}
-        
+
         {suggestStep && !finished && (
           <>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">{getT('selectFoodGroup', 'Select a food group')}</div>
+            <div className="text-sm" style={{ color: "color-mix(in oklab, var(--kal-iron) 70%, transparent)" }}>
+              {getT('selectFoodGroup', 'Select a food group')}
+            </div>
             <div className="grid grid-cols-1 gap-2">
               {suggestOptions.map((opt: any, i: number) => (
-                <button key={i} onClick={() => handleSuggestPick(opt)} className="w-full text-left bg-card hover:bg-muted border-2 border-border p-3.5 rounded-2xl font-medium transition active:scale-[0.98] flex items-center gap-3">
-                  <span className="text-2xl">{opt.group.emoji}</span> <span>{opt.group.name}</span>
+                <button
+                  key={i}
+                  onClick={() => handleSuggestPick(opt)}
+                  className="w-full text-left px-4 py-3 min-h-14 flex items-center gap-3.5 transition-colors"
+                  style={{
+                    background: "var(--kal-cloth-deep)",
+                    border: "1.5px solid var(--kal-iron)",
+                    color: "var(--kal-iron)",
+                  }}
+                >
+                  <GroupGlyph id={opt.group.id} className="w-7 h-7 shrink-0" />
+                  <span className="text-[0.98rem]">{opt.group.name}</span>
                 </button>
               ))}
             </div>
@@ -832,11 +938,24 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
         )}
 
         {finished && (
-          <button onClick={() => onNext(wrongCount === 0 ? 1 : 0, wrongCount === 0 ? 1 : 0, wrongCount > 0 ? 1 : 0, mistakes)} className="mt-2 w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14 relative z-50 pointer-events-auto cursor-pointer" style={{ WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}>
-            {getT('finishScenario', 'Finish Scenario ➡️')}
+          <button
+            onClick={() => onNext(wrongCount === 0 ? 1 : 0, wrongCount === 0 ? 1 : 0, wrongCount > 0 ? 1 : 0, mistakes)}
+            className="mt-1 w-full py-4 text-lg min-h-14 relative z-50 pointer-events-auto cursor-pointer"
+            style={{
+              background: "var(--kal-madder)",
+              color: "var(--kal-cloth)",
+              border: "2px solid var(--kal-iron)",
+              fontFamily: '"Eczar", "Ramaraja", "Noto Serif Telugu", serif',
+              WebkitTapHighlightColor: "transparent",
+              touchAction: "manipulation",
+            }}
+          >
+            {getT('finishScenario', 'Finish Scenario')}
           </button>
         )}
       </div>
+
+      <BlockBorder flip className="w-full h-3.5 shrink-0 mt-3" />
     </motion.div>
   );
 }

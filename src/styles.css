@@ -119,6 +119,77 @@
   text-wrap: balance;
 }
 
+/* ── Kalamkari Panel ─────────────────────────────────────────────────────
+   Srikalahasti narrative cloth: dyed pigment on unbleached cotton, drawn
+   in kalam line and stacked in registers. Scoped to [data-world="kalamkari"]
+   so surfaces not yet rebuilt keep the incumbent look until they are.
+   Dye names are the real ones; these are pigments, not brand colours. */
+[data-world="kalamkari"] {
+  --kal-cloth: oklch(0.915 0.028 88);
+  --kal-cloth-deep: oklch(0.862 0.042 85);
+  --kal-cloth-shade: oklch(0.80 0.05 82);
+  --kal-madder: oklch(0.482 0.132 32);
+  --kal-madder-wash: oklch(0.735 0.088 34);
+  --kal-indigo: oklch(0.362 0.086 262);
+  --kal-indigo-wash: oklch(0.735 0.048 258);
+  --kal-iron: oklch(0.215 0.012 60);
+  --kal-turmeric: oklch(0.706 0.128 84);
+
+  /* Kalam line weights. The hairline is the drawn rule; the rule is the
+     inked contour. Nothing here is a card border. */
+  --kal-hair: 1px;
+  --kal-rule: 2px;
+
+  color: var(--kal-iron);
+  font-family: "Martel", "Noto Serif Telugu", Georgia, serif;
+
+  /* Woven cotton: two crossed thread directions, not a texture image. */
+  background-color: var(--kal-cloth);
+  background-image:
+    repeating-linear-gradient(90deg, color-mix(in oklab, var(--kal-cloth-shade) 22%, transparent) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(0deg, color-mix(in oklab, var(--kal-cloth-shade) 16%, transparent) 0 1px, transparent 1px 5px);
+}
+
+[data-world="kalamkari"] h1,
+[data-world="kalamkari"] h2,
+[data-world="kalamkari"] h3 {
+  font-family: "Eczar", "Ramaraja", "Noto Serif Telugu", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+
+/* A register is the unit of composition: a band of cloth carrying one beat of
+   the story, separated by a drawn rule rather than boxed into a card. */
+@utility kal-register {
+  border-top: var(--kal-hair) solid color-mix(in oklab, var(--kal-iron) 28%, transparent);
+  padding-block: 1.25rem;
+}
+
+/* The stamped block, as a woodblock lands on cloth: ink sits unevenly and the
+   impression is offset, never a drop shadow. */
+@utility kal-stamp {
+  background:
+    linear-gradient(0deg, color-mix(in oklab, var(--kal-madder) 6%, transparent), transparent),
+    var(--kal-cloth-deep);
+  border: var(--kal-rule) solid var(--kal-iron);
+  box-shadow: 0 2px 0 -1px color-mix(in oklab, var(--kal-iron) 45%, transparent);
+}
+
+@keyframes kal-ink-in {
+  from { clip-path: inset(100% 0 0 0); opacity: 0.35; }
+  to   { clip-path: inset(0 0 0 0);    opacity: 1; }
+}
+
+/* The one authored moment: dye wicking up through cloth as a group is
+   revealed. Exponential ease-out from an already-visible default. */
+@utility kal-ink-in {
+  animation: kal-ink-in 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kal-ink-in { animation: none; }
+}
+
 @keyframes pop-in {
   0% { transform: scale(0.5); opacity: 0; }
   60% { transform: scale(1.08); opacity: 1; }

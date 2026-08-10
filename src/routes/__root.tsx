@@ -99,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Eczar:wght@500;600;700;800&family=Martel:wght@400;600;700&family=Ramaraja&family=Noto+Serif+Telugu:wght@400;500;600;700&display=swap",
       },
     ],
   }),
@@ -116,6 +116,26 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <div
+          hidden
+          dangerouslySetInnerHTML={{
+            __html: `<!--
+THESIS: This teaches the probe, not the list: an ASHA learns to draw out what a
+mother did not think to mention. It refuses the gamified card stack with mascot,
+progress ring and confetti that every training app ships.
+OWN-WORLD: Srikalahasti kalamkari. Unbleached cotton ground, madder red, indigo,
+iron black, turmeric. Kalam pen line, block-print vegetal borders, stamped
+registers, hairline rules. No glass, no gradient, no rounded card stack.
+STORY: The ASHA reads the mother's words, chooses a probe, and watches the food
+groups ink in one by one as the truth surfaces.
+FIRST VIEWPORT: Cloth field bordered in block-print. The mother sits in the first
+register in kalam line, her words beside her. The ten groups run as a stamped
+band along the foot, inked in only as she reveals them. Probes sit below.
+FORM: Kalamkari Panel, candidate 4 of the grounded list; seed key d8d157f7.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->`,
+          }}
+        />
         {children}
         <Scripts />
       </body>
