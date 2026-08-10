@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { useLang } from "@/lib/mddw/useLang";
 import { NutriCompanion } from "@/components/mddw/NutriCompanion";
-import { loadProgress } from "@/lib/mddw/storage";
+import { useRegistration } from "@/lib/mddw/useRegistration";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,10 +21,17 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { t } = useLang();
-  const progress = loadProgress();
+
+  const { status, progress } = useRegistration();
+
+  // Nothing is known until the client has read storage; render the ground colour
+  // rather than a flash of either the dashboard or the login screen.
+  if (status === "loading") {
+    return <main className="h-dvh bg-gradient-premium" aria-busy="true" />;
+  }
 
   // Redirect to login if user hasn't registered yet
-  if (!progress.userName || !progress.phoneNumber) {
+  if (status === "unregistered") {
     return <Navigate to="/login" replace />;
   }
   const stats = [

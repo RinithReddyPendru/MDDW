@@ -43,6 +43,9 @@ export interface ProgressState {
 
 const KEY = "mddw_progress_v1";
 
+/** The localStorage key progress is stored under. Exported so callers cannot drift from it. */
+export const STORAGE_KEY = KEY;
+
 const DEFAULT: ProgressState = {
   results: [],
   unlockedLevel: 1,
@@ -79,6 +82,18 @@ export function loadProgress(): ProgressState {
 export function saveProgress(p: ProgressState) {
   if (typeof window === "undefined") return;
   localStorage.setItem(KEY, JSON.stringify(p));
+}
+
+/**
+ * Clears the ASHA's saved progress — used by logout / "Reset App".
+ * Keeps the chosen language, which is a device preference rather than account data.
+ */
+export function clearProgress(options: { keepLang?: boolean } = {}) {
+  if (typeof window === "undefined") return;
+  const { keepLang = true } = options;
+  const lang = keepLang ? loadProgress().lang : DEFAULT.lang;
+  localStorage.removeItem(KEY);
+  if (lang !== DEFAULT.lang) saveProgress({ ...DEFAULT, lang });
 }
 
 export function setLang(lang: Lang) {

@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { RequireRegistration } from "@/components/mddw/RequireRegistration";
 import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
@@ -15,7 +16,11 @@ export const Route = createFileRoute("/progress")({
       { name: "description", content: "Track your MDDW training progress and badges." },
     ],
   }),
-  component: ProgressPage,
+  component: () => (
+    <RequireRegistration>
+      <ProgressPage />
+    </RequireRegistration>
+  ),
 });
 
 function ProgressPage() {

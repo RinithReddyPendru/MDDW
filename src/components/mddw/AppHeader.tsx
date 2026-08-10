@@ -3,6 +3,7 @@ import { useLang } from "@/lib/mddw/useLang";
 import { LANGS, type Lang } from "@/lib/mddw/translations";
 import { useState } from "react";
 import { isMuted, toggleMute } from "@/lib/mddw/audio";
+import { clearProgress } from "@/lib/mddw/storage";
 
 interface Props {
   showBack?: boolean;
@@ -20,7 +21,10 @@ export function AppHeader({ showBack }: Props) {
   return (
     <header className="sticky top-0 z-40 bg-background/95 backdrop-blur border-b border-border">
       <div className="mx-auto max-w-xl px-4 py-3 flex items-center gap-2">
-        {showBack ? (
+        {/* The leading slot is only ever "back". It used to hold the destructive
+            reset on screens without a back button, so the same position meant
+            "go back" on one screen and "erase all my progress" on the next. */}
+        {showBack && (
           <Link
             to="/"
             className="inline-flex items-center justify-center min-h-11 min-w-11 -ml-2 rounded-full text-foreground hover:bg-muted"
@@ -28,17 +32,6 @@ export function AppHeader({ showBack }: Props) {
           >
             ←
           </Link>
-        ) : (
-          <button 
-            onClick={() => {
-              if(confirm("Reset all progress and log out?")) {
-                localStorage.removeItem("mddw_progress");
-                window.location.href = "/login";
-              }
-            }}
-            className="text-xl inline-flex items-center justify-center min-h-11 min-w-11 -ml-2 rounded-full hover:bg-muted" 
-            title="Reset App"
-          >↩️</button>
         )}
         <div className="flex-1 min-w-0">
           <h1 className="text-base font-bold leading-tight truncate">{t("appTitle")}</h1>
@@ -61,6 +54,23 @@ export function AppHeader({ showBack }: Props) {
             <option key={l.code} value={l.code}>{l.label}</option>
           ))}
         </select>
+        {/* Reset/log out lives at the trailing edge, away from back, and only on
+            top-level screens — never mid-flow where a mis-tap loses a round. */}
+        {!showBack && (
+          <button
+            onClick={() => {
+              if (confirm(t("resetConfirm"))) {
+                clearProgress();
+                window.location.href = "/login";
+              }
+            }}
+            className="p-2.5 rounded-lg border border-border bg-card hover:bg-destructive/10 hover:border-destructive/40 text-foreground transition min-h-11 min-w-11 flex items-center justify-center"
+            aria-label={t("resetApp")}
+            title={t("resetApp")}
+          >
+            ↩️
+          </button>
+        )}
       </div>
     </header>
   );

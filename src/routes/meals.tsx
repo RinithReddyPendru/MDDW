@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { RequireRegistration } from "@/components/mddw/RequireRegistration";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLang } from "@/lib/mddw/useLang";
@@ -8,13 +9,18 @@ import { AppHeader } from "@/components/mddw/AppHeader";
 import { loadProgress } from "@/lib/mddw/storage";
 
 export const Route = createFileRoute("/meals")({
-  component: MealsComponent,
+  component: () => (
+    <RequireRegistration>
+      <MealsComponent />
+    </RequireRegistration>
+  ),
 });
+
+const getImgUrl = (path: string) => path.startsWith('http') ? path : `${import.meta.env.BASE_URL || '/'}${path.replace(/^\//, '')}`;
 
 function MealsComponent() {
   const { lang, t } = useLang();
   const progress = loadProgress();
-  const getImgUrl = (path: string) => path.startsWith('http') ? path : `${import.meta.env.BASE_URL || '/'}${path.replace(/^\//, '')}`;
   const [activeTab, setActiveTab] = useState<MealCategory>("breakfast");
   const [expandedDish, setExpandedDish] = useState<string | null>(null);
 

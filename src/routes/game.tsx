@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { RequireRegistration } from "@/components/mddw/RequireRegistration";
 import { useMemo, useState, useRef, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,7 +14,6 @@ import {
 import { recordResult, loadProgress, saveProgress, saveToAdminDatabase } from "@/lib/mddw/storage";
 import { playPop, playSuccess, playFailure, speakText } from "@/lib/mddw/audio";
 import { useLang } from "@/lib/mddw/useLang";
-import { PlateResults } from "@/components/mddw/PlateResults";
 import { generateNativeCertificate } from "@/lib/mddw/certificateGenerator";
 import { NutriCompanion } from "@/components/mddw/NutriCompanion";
 import { Certificate } from "@/components/mddw/Certificate";
@@ -43,12 +43,11 @@ export const Route = createFileRoute("/game")({
       { name: "description", content: "Interactive MDD-W Training." },
     ],
   }),
-  component: GamePage,
-  validateSearch: (search: Record<string, unknown>) => {
-    return {
-      mode: search.mode as string || 'image',
-    }
-  },
+  component: () => (
+    <RequireRegistration>
+      <GamePage />
+    </RequireRegistration>
+  ),
 });
 
 type GameMode = "standard" | "counseling" | "visual";
@@ -623,10 +622,36 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
   const [suggestOptions, setSuggestOptions] = useState<any[]>([]);
 
   // Chat History
-  type ChatMessage = { id: string; sender: 'mother' | 'user'; text: string; isFeedback?: boolean };
+  //
+  // Messages store a translation KEY, never resolved text. Storing t(...) output
+  // in state froze the conversation in whichever language was active when each
+  // line was added, so switching language mid-scenario left the chat behind
+  // until a full reload. `text` is only for lines that genuinely have no key,
+  // and `groupId` re-resolves a food group name through the live map.
+  type ChatMessage = {
+    id: string;
+    sender: 'mother' | 'user';
+    textKey?: string;
+    text?: string;
+    groupId?: string;
+    isFeedback?: boolean;
+    isWrong?: boolean;
+    isConfused?: boolean;
+    isSuccess?: boolean;
+  };
   const [chat, setChat] = useState<ChatMessage[]>([
-    { id: 'm0', sender: 'mother', text: t(data.steps[data.firstStepId].motherText) }
+    { id: 'm0', sender: 'mother', textKey: data.steps[data.firstStepId].motherText }
   ]);
+
+  // Resolved at render time, so every message follows the current language.
+  const chatText = (msg: ChatMessage): string => {
+    if (msg.groupId) return foodGroupMap[msg.groupId]?.name ?? msg.text ?? "";
+    if (msg.textKey) {
+      const translated = t(msg.textKey);
+      return translated === msg.textKey && msg.text ? msg.text : translated;
+    }
+    return msg.text ?? "";
+  };
   const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -639,7 +664,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
 
   const handleOption = (opt: any) => {
     // Add user's choice to chat
-    setChat(prev => [...prev, { id: 'u' + Date.now(), sender: 'user', text: t(opt.text) }]);
+    setChat(prev => [...prev, { id: 'u' + Date.now(), sender: 'user', textKey: opt.text }]);
 
     if (opt.feedback && !opt.isCorrect) {
       playFailure();
@@ -647,9 +672,8 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       setWrongCount(w => w + 1);
       setMistakes(m => [...m, { question: t(currentStep.motherText), userAnswer: t(opt.text), correctAnswer: "Explore other options" }]);
       
-      const fbk = t(opt.feedback) !== opt.feedback ? t(opt.feedback) : opt.feedback;
       setTimeout(() => {
-        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: fbk, isFeedback: true, isWrong: true }]);
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', textKey: opt.feedback, isFeedback: true, isWrong: true }]);
       }, 500);
       return;
     }
@@ -665,7 +689,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
     if (opt.nextStepId) {
       setStepId(opt.nextStepId);
       setTimeout(() => {
-        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.steps[opt.nextStepId].motherText) }]);
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', textKey: data.steps[opt.nextStepId].motherText }]);
       }, 500);
     } else if (opt.isCorrect) {
       const uniqueGroupIds = Array.from(new Set(newDiscovered.map(g => g.id)));
@@ -689,19 +713,19 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
         setSuggestOptions(opts);
         setSuggestStep(true);
         setTimeout(() => {
-          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t("suggest_prompt") !== "suggest_prompt" ? t("suggest_prompt") : "It seems the mother only ate a few foods. What additional food group could you suggest to her to improve her diet?", isFeedback: true, isConfused: true }]);
+          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', textKey: "suggest_prompt", text: "It seems the mother only ate a few foods. What additional food group could you suggest to her to improve her diet?", isFeedback: true, isConfused: true }]);
         }, 500);
       } else {
         setFinished(true);
         setTimeout(() => {
-          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.finalLesson), isSuccess: true }]);
+          setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', textKey: data.finalLesson, isSuccess: true }]);
         }, 500);
       }
     }
   };
   
   const handleSuggestPick = (opt: any) => {
-    setChat(prev => [...prev, { id: 'u' + Date.now(), sender: 'user', text: opt.group.name }]);
+    setChat(prev => [...prev, { id: 'u' + Date.now(), sender: 'user', groupId: opt.group.id }]);
     
     if (opt.isCorrect) {
       playSuccess();
@@ -709,7 +733,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       setSuggestStep(false);
       setDiscovered([...discovered, { id: opt.group.id, name: opt.group.name, emoji: opt.group.emoji }]);
       setTimeout(() => {
-        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t(data.finalLesson), isSuccess: true }]);
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', textKey: data.finalLesson, isSuccess: true }]);
       }, 500);
     } else {
       playFailure();
@@ -717,7 +741,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
       setWrongCount(w => w + 1);
       setMistakes(m => [...m, { question: "Suggest a missing food group", userAnswer: opt.group.name, correctAnswer: "A food group she hasn't eaten yet" }]);
       setTimeout(() => {
-        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', text: t("suggest_wrong") !== "suggest_wrong" ? t("suggest_wrong") : "Not quite! Try suggesting a food group she missed.", isFeedback: true, isWrong: true }]);
+        setChat(prev => [...prev, { id: 'm' + Date.now(), sender: 'mother', textKey: "suggest_wrong", text: "Not quite! Try suggesting a food group she missed.", isFeedback: true, isWrong: true }]);
       }, 500);
     }
   };
@@ -773,7 +797,7 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
           {chat.map((msg, i) => (
             <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[85%] rounded-2xl p-3 text-sm md:text-base font-medium shadow-sm ${msg.sender === 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm' : msg.isFeedback ? 'bg-destructive/15 text-destructive border border-destructive/30 rounded-tl-sm' : 'bg-purple-600/10 text-foreground border border-purple-600/20 rounded-tl-sm'}`}>
-                 {msg.text}
+                 {chatText(msg)}
               </div>
             </motion.div>
           ))}

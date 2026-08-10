@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { RequireRegistration } from "@/components/mddw/RequireRegistration";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
@@ -15,7 +16,11 @@ export const Route = createFileRoute("/plate")({
       { name: "description", content: "Interactive dietary diversity plate builder for ASHA training." },
     ],
   }),
-  component: PlateSandbox,
+  component: () => (
+    <RequireRegistration>
+      <PlateSandbox />
+    </RequireRegistration>
+  ),
 });
 
 function getRandomSandboxFoods(): QuizFood[] {

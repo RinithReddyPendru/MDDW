@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { RequireRegistration } from "@/components/mddw/RequireRegistration";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
 import { useState, useRef } from "react";
 import { AppHeader } from "@/components/mddw/AppHeader";
@@ -13,7 +14,11 @@ export const Route = createFileRoute("/learn")({
       { name: "description", content: "Explore the 10 MDDW food groups with examples and benefits." },
     ],
   }),
-  component: Learn,
+  component: () => (
+    <RequireRegistration>
+      <Learn />
+    </RequireRegistration>
+  ),
 });
 
 function Learn() {
