@@ -183,13 +183,23 @@ export async function saveToAdminDatabase(row: AdminRow) {
   const state = loadProgress();
   if (state.sheetsWebhookUrl && state.sheetsWebhookUrl.startsWith("http")) {
     try {
+      const webhookPayload = {
+        date: row.date,
+        userName: row.name,
+        phcName: row.phc,
+        score: row.score,
+        correct: row.correct,
+        total: row.total,
+        phone: row.phone
+      };
+
       await fetch(state.sheetsWebhookUrl, {
         method: 'POST',
         mode: 'no-cors', // Prevents CORS errors from blocking the request
         headers: {
           'Content-Type': 'text/plain',
         },
-        body: JSON.stringify(row)
+        body: JSON.stringify(webhookPayload)
       });
       console.log("Data successfully sent to Google Sheets");
     } catch (e) {
