@@ -181,7 +181,9 @@ export async function saveToAdminDatabase(row: AdminRow) {
 
   // 2. Send to Google Sheets Webhook
   const state = loadProgress();
-  if (state.sheetsWebhookUrl && state.sheetsWebhookUrl.startsWith("http")) {
+  const webhookUrl = state.sheetsWebhookUrl?.trim();
+  
+  if (webhookUrl && webhookUrl.startsWith("http")) {
     try {
       const webhookPayload = {
         date: row.date,
@@ -193,7 +195,7 @@ export async function saveToAdminDatabase(row: AdminRow) {
         phone: row.phone
       };
 
-      await fetch(state.sheetsWebhookUrl, {
+      await fetch(webhookUrl, {
         method: 'POST',
         mode: 'no-cors', // Prevents CORS errors from blocking the request
         headers: {
