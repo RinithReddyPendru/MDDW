@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { loadAdminDatabase, type AdminRow } from "@/lib/mddw/storage";
-import { Lock, Users, Target, Award, ArrowLeft, X, Activity, Download } from "lucide-react";
+import { Lock, Users, Target, Award, Download, Trophy, Clock, Phone } from "lucide-react";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -24,22 +24,11 @@ const MOCK_DATA: AdminRow[] = [
   { date: new Date(Date.now() - 86400000 * 8).toISOString(), name: "Sunita Reddy", phc: "Vijayawada Hub", phone: "9876543218", score: 100, correct: 20, total: 20 },
 ];
 
-type ScoreBracket = "Needs Review (<70)" | "Passing (70-99)" | "Perfect (100)";
-
-function getBracket(score: number): ScoreBracket {
-  if (score < 70) return "Needs Review (<70)";
-  if (score < 100) return "Passing (70-99)";
-  return "Perfect (100)";
-}
-
 function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pin, setPin] = useState("");
   const [data, setData] = useState<AdminRow[]>([]);
   const [loading, setLoading] = useState(true);
-  
-  // Drill-down state
-  const [selectedCell, setSelectedCell] = useState<{ phc: string; bracket: ScoreBracket; ashas: AdminRow[] } | null>(null);
 
   // Authenticate
   const handleLogin = (e: React.FormEvent) => {
@@ -57,6 +46,7 @@ function AdminDashboard() {
     
     setLoading(true);
     
+    // We fetch everything sorted by date desc, then we sort manually for the leaderboard
     const q = query(collection(db, "quiz_scores"), orderBy("date", "desc"));
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -155,48 +145,23 @@ function AdminDashboard() {
   const avgScore = totalTrained ? Math.round(data.reduce((acc, curr) => acc + curr.score, 0) / totalTrained) : 0;
   const perfectScores = data.filter(d => d.score === 100).length;
 
-  // Process data for the Heatmap Matrix
-  const phcMap: Record<string, Record<ScoreBracket, AdminRow[]>> = {};
-  const allBrackets: ScoreBracket[] = ["Needs Review (<70)", "Passing (70-99)", "Perfect (100)"];
-
-  data.forEach(d => {
-    const phc = d.phc || "Unknown PHC";
-    if (!phcMap[phc]) {
-      phcMap[phc] = {
-        "Needs Review (<70)": [],
-        "Passing (70-99)": [],
-        "Perfect (100)": []
-      };
-    }
-    const bracket = getBracket(d.score);
-    phcMap[phc][bracket].push(d);
-  });
-
-  const phcNames = Object.keys(phcMap).sort();
-
-  // Helper for cell coloring
-  const getCellColor = (bracket: ScoreBracket, count: number) => {
-    if (count === 0) return "bg-gray-100/50 text-gray-400";
-    if (bracket === "Needs Review (<70)") {
-      return count > 5 ? "bg-red-500 text-white" : count > 2 ? "bg-red-400 text-white" : "bg-red-200 text-red-900";
-    }
-    if (bracket === "Passing (70-99)") {
-      return count > 5 ? "bg-yellow-400 text-yellow-950" : "bg-yellow-200 text-yellow-900";
-    }
-    if (bracket === "Perfect (100)") {
-      return count > 5 ? "bg-green-500 text-white" : "bg-green-300 text-green-950";
-    }
-    return "bg-gray-100";
-  };
+  // --- Live Leaderboard Processing ---
+  // Sort by score (desc), then by date (desc) to break ties so recent completions float up
+  const leaderboardData = useMemo(() => {
+    return [...data].sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+  }, [data]);
 
   return (
     <main 
-      className="min-h-dvh flex flex-col bg-slate-50 relative pb-10"
+      className="min-h-dvh flex flex-col bg-[#F8FAFC] relative pb-10"
     >
       <div className="relative z-10 flex flex-col h-full w-full">
         <AppHeader />
         
-        <div className="mx-auto w-full max-w-7xl px-4 py-6 flex flex-col gap-6">
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 flex flex-col gap-8">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-border/50 pb-6">
@@ -206,19 +171,19 @@ function AdminDashboard() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
               </div>
-              <span className="text-xs font-bold text-green-600 uppercase tracking-widest">Live Firestore Sync</span>
+              <span className="text-xs font-bold text-green-600 uppercase tracking-widest">Live Sync Active</span>
             </div>
             <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
-              <Target className="w-8 h-8 text-primary" /> Training Performance Matrix
+              <Trophy className="w-8 h-8 text-primary" /> Live Leaderboard
             </h1>
             <p className="text-muted-foreground mt-1 text-sm font-medium">
-              Real-time heat map of ASHA completions by PHC and score bracket.
+              Real-time feed of ASHA completions ranked by score.
             </p>
           </div>
           
           <button 
             onClick={exportData}
-            className="flex items-center gap-2 bg-white border border-border hover:bg-slate-50 text-foreground font-bold py-2.5 px-4 rounded-xl transition shadow-sm text-sm"
+            className="flex items-center gap-2 bg-white border border-border hover:bg-slate-50 text-foreground font-bold py-2.5 px-5 rounded-xl transition shadow-sm text-sm"
           >
             <Download className="w-4 h-4" /> Export CSV
           </button>
@@ -229,204 +194,144 @@ function AdminDashboard() {
             <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
           </div>
         ) : (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col lg:flex-row gap-6"
-          >
-            {/* Left Column: Heatmap & KPIs */}
-            <div className="flex-1 flex flex-col gap-6">
-              
-              {/* KPI Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                    <Users className="w-6 h-6 text-blue-500" />
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Total Trained</p>
-                    <p className="text-2xl font-black text-foreground">{totalTrained}</p>
-                  </div>
+          <div className="flex flex-col gap-8">
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-3xl border border-border/50 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center">
+                  <Users className="w-7 h-7 text-blue-500" />
                 </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
-                    <Target className="w-6 h-6 text-orange-500" />
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Avg Score</p>
-                    <p className="text-2xl font-black text-foreground">{avgScore}%</p>
-                  </div>
-                </div>
-
-                <div className="bg-white p-5 rounded-2xl border border-border shadow-sm flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
-                    <Award className="w-6 h-6 text-green-500" />
-                  </div>
-                  <div>
-                    <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Perfect Scores</p>
-                    <p className="text-2xl font-black text-foreground">{perfectScores}</p>
-                  </div>
+                <div>
+                  <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Trained</p>
+                  <p className="text-3xl font-black text-slate-800">{totalTrained}</p>
                 </div>
               </div>
 
-              {/* Heatmap Matrix */}
-              <div className="bg-white rounded-3xl border border-border shadow-sm overflow-hidden flex flex-col">
-                <div className="p-6 border-b border-border bg-slate-50/50">
-                  <h2 className="text-lg font-bold text-foreground">PHC Diagnostics Heatmap</h2>
-                  <p className="text-sm text-muted-foreground">Click any block to view the specific ASHAs in that group.</p>
+              <div className="bg-white p-6 rounded-3xl border border-border/50 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-orange-500/10 flex items-center justify-center">
+                  <Target className="w-7 h-7 text-orange-500" />
                 </div>
-                
-                <div className="p-6 overflow-x-auto">
-                  <div className="min-w-[600px]">
-                    {/* Header Row */}
-                    <div className="grid grid-cols-4 gap-4 mb-4">
-                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider pt-2">Primary Health Center</div>
-                      {allBrackets.map(b => (
-                        <div key={b} className="text-xs font-bold text-slate-500 uppercase tracking-wider text-center pt-2">
-                          {b}
-                        </div>
-                      ))}
-                    </div>
+                <div>
+                  <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Average Score</p>
+                  <p className="text-3xl font-black text-slate-800">{avgScore}%</p>
+                </div>
+              </div>
 
-                    {/* Data Rows */}
-                    <div className="flex flex-col gap-3">
-                      {phcNames.map(phc => (
-                        <div key={phc} className="grid grid-cols-4 gap-4 items-center group">
-                          <div className="font-semibold text-sm text-slate-700 truncate pr-4" title={phc}>{phc}</div>
-                          
-                          {allBrackets.map(bracket => {
-                            const ashas = phcMap[phc][bracket];
-                            const count = ashas.length;
-                            return (
-                              <button
-                                key={`${phc}-${bracket}`}
-                                onClick={() => count > 0 && setSelectedCell({ phc, bracket, ashas })}
-                                disabled={count === 0}
-                                className={`
-                                  h-12 rounded-xl flex items-center justify-center text-lg font-bold transition-all
-                                  ${getCellColor(bracket, count)}
-                                  ${count > 0 ? 'hover:scale-[1.03] hover:shadow-md cursor-pointer active:scale-95' : 'cursor-default opacity-50'}
-                                `}
-                              >
-                                {count > 0 ? count : '-'}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      ))}
-                      
-                      {phcNames.length === 0 && (
-                        <div className="py-12 text-center text-muted-foreground font-medium bg-slate-50 rounded-xl border border-dashed border-border">
-                          No training data available yet.
-                        </div>
-                      )}
-                    </div>
-                  </div>
+              <div className="bg-white p-6 rounded-3xl border border-border/50 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] flex items-center gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+                  <Award className="w-7 h-7 text-amber-500" />
+                </div>
+                <div>
+                  <p className="text-slate-500 text-xs font-bold uppercase tracking-wider">Perfect Scores</p>
+                  <p className="text-3xl font-black text-slate-800">{perfectScores}</p>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Live Feed */}
-            <div className="w-full lg:w-80 flex flex-col gap-4">
-              <div className="bg-white rounded-3xl border border-border shadow-sm flex flex-col h-full max-h-[800px] overflow-hidden">
-                <div className="p-5 border-b border-border bg-slate-50/50 flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-primary" />
-                  <h3 className="font-bold text-foreground">Live Feed</h3>
-                </div>
-                
-                <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
-                  <AnimatePresence initial={false}>
-                    {data.slice(0, 15).map((row, i) => (
+            {/* The Live List */}
+            <div className="bg-white rounded-[2rem] border border-border/50 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
+              
+              {/* Header Row */}
+              <div className="grid grid-cols-[80px_2fr_2fr_1fr_120px] gap-4 p-6 border-b border-border/50 bg-slate-50/80 backdrop-blur-xl text-xs font-bold text-slate-500 uppercase tracking-widest sticky top-0 z-10">
+                <div className="text-center">Rank</div>
+                <div>ASHA Name</div>
+                <div>PHC / Village</div>
+                <div className="text-right">Score</div>
+                <div className="text-right">Time</div>
+              </div>
+
+              {/* List Body */}
+              <div className="flex flex-col p-3 gap-2 max-h-[800px] overflow-y-auto bg-slate-50/30">
+                <AnimatePresence initial={false}>
+                  {leaderboardData.map((row, i) => {
+                    // Visual styling for top 3
+                    const isGold = i === 0;
+                    const isSilver = i === 1;
+                    const isBronze = i === 2;
+                    
+                    let bgClass = "bg-white border-border/40 hover:border-border/80";
+                    let rankBg = "bg-slate-100 text-slate-500";
+                    
+                    if (isGold) {
+                      bgClass = "bg-gradient-to-r from-amber-50/50 to-white border-amber-200 shadow-[0_4px_15px_-3px_rgba(251,191,36,0.15)]";
+                      rankBg = "bg-amber-400 text-amber-950 shadow-inner";
+                    } else if (isSilver) {
+                      bgClass = "bg-gradient-to-r from-slate-50 to-white border-slate-300 shadow-sm";
+                      rankBg = "bg-slate-300 text-slate-800 shadow-inner";
+                    } else if (isBronze) {
+                      bgClass = "bg-gradient-to-r from-orange-50/30 to-white border-orange-200 shadow-sm";
+                      rankBg = "bg-orange-300 text-orange-950 shadow-inner";
+                    }
+
+                    const timeStr = new Date(row.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    // Use a unique key based on the row's exact time + name so Framer Motion animates changes correctly
+                    const uniqueKey = `${row.name}-${row.date}`;
+
+                    return (
                       <motion.div
-                        key={`${row.date}-${row.name}-${i}`}
-                        initial={{ opacity: 0, x: -20, height: 0 }}
-                        animate={{ opacity: 1, x: 0, height: 'auto' }}
-                        className="p-3 rounded-xl bg-slate-50 border border-border text-sm flex flex-col gap-1"
+                        layout
+                        key={uniqueKey}
+                        initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                        className={`grid grid-cols-[80px_2fr_2fr_1fr_120px] gap-4 items-center p-4 rounded-2xl border transition-all ${bgClass}`}
                       >
-                        <div className="flex justify-between items-start">
-                          <span className="font-bold text-foreground truncate pr-2">{row.name}</span>
-                          <span className={`font-black ${row.score >= 80 ? 'text-green-600' : row.score < 50 ? 'text-red-500' : 'text-orange-500'}`}>
-                            {row.score}%
+                        {/* Rank */}
+                        <div className="flex justify-center">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-lg ${rankBg}`}>
+                            {i + 1}
+                          </div>
+                        </div>
+
+                        {/* Name & Phone */}
+                        <div className="flex flex-col truncate pr-4">
+                          <span className="font-bold text-slate-800 text-lg truncate">{row.name}</span>
+                          <span className="text-xs text-slate-400 font-mono mt-0.5 flex items-center gap-1">
+                            <Phone className="w-3 h-3" /> {row.phone || "No phone"}
                           </span>
                         </div>
-                        <div className="text-xs text-muted-foreground flex justify-between">
-                          <span className="truncate">{row.phc}</span>
-                          <span>
-                            {new Date(row.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+
+                        {/* PHC */}
+                        <div className="flex items-center">
+                          <span className="text-sm font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg truncate max-w-full">
+                            {row.phc}
+                          </span>
+                        </div>
+
+                        {/* Score */}
+                        <div className="flex justify-end">
+                          <div className={`px-4 py-1.5 rounded-xl text-base font-black border ${
+                            row.score >= 80 ? 'bg-green-50 text-green-700 border-green-200' : 
+                            row.score < 70 ? 'bg-red-50 text-red-600 border-red-100' : 
+                            'bg-orange-50 text-orange-700 border-orange-200'
+                          }`}>
+                            {row.score}%
+                          </div>
+                        </div>
+
+                        {/* Time */}
+                        <div className="flex justify-end text-right">
+                          <span className="text-sm font-medium text-slate-400 flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5" /> {timeStr}
                           </span>
                         </div>
                       </motion.div>
-                    ))}
-                  </AnimatePresence>
-                  
-                  {data.length === 0 && (
-                    <div className="text-center text-sm text-muted-foreground py-8">
-                      Waiting for activity...
-                    </div>
-                  )}
-                </div>
+                    );
+                  })}
+                </AnimatePresence>
+                
+                {leaderboardData.length === 0 && (
+                  <div className="py-20 text-center text-slate-400 font-medium flex flex-col items-center gap-4">
+                    <Trophy className="w-12 h-12 text-slate-200" />
+                    No training scores yet. The leaderboard is waiting for its first champion!
+                  </div>
+                )}
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
         </div>
       </div>
-
-      {/* Drill Down Modal */}
-      <AnimatePresence>
-        {selectedCell && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-            onClick={() => setSelectedCell(null)}
-          >
-            <motion.div 
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              onClick={e => e.stopPropagation()}
-              className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-border flex flex-col max-h-[85vh]"
-            >
-              <div className="p-6 border-b border-border flex justify-between items-start bg-slate-50">
-                <div>
-                  <h3 className="text-xl font-black text-foreground">{selectedCell.phc}</h3>
-                  <p className="text-sm font-bold mt-1 text-muted-foreground uppercase tracking-wider">{selectedCell.bracket}</p>
-                </div>
-                <button 
-                  onClick={() => setSelectedCell(null)}
-                  className="p-2 bg-slate-200 hover:bg-slate-300 rounded-full transition active:scale-95"
-                >
-                  <X className="w-5 h-5 text-slate-700" />
-                </button>
-              </div>
-              
-              <div className="p-6 overflow-y-auto flex-1 bg-white">
-                <div className="flex flex-col gap-3">
-                  {selectedCell.ashas.map((asha, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-border flex justify-between items-center">
-                      <div>
-                        <p className="font-bold text-foreground text-base">{asha.name}</p>
-                        <p className="text-sm text-slate-500 font-mono mt-1">{asha.phone || "No phone provided"}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className={`text-2xl font-black ${asha.score >= 80 ? 'text-green-500' : asha.score < 50 ? 'text-red-500' : 'text-orange-500'}`}>
-                          {asha.score}%
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(asha.date).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
   );
 }
