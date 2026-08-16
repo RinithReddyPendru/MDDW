@@ -64,6 +64,37 @@ function AdminDashboard() {
     }
   };
 
+  const handleTestWebhook = async () => {
+    if (!webhookUrl || !webhookUrl.startsWith("http")) {
+      alert("Please enter a valid webhook URL starting with http");
+      return;
+    }
+    try {
+      const webhookPayload = {
+        date: new Date().toISOString(),
+        userName: "Test ASHA",
+        phcName: "Test PHC",
+        score: 100,
+        correct: 20,
+        total: 20,
+        phone: "1234567890"
+      };
+
+      await fetch(webhookUrl.trim(), {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+        body: JSON.stringify(webhookPayload)
+      });
+      alert("Test data sent successfully! Please check your Google Sheet for the 'Test ASHA' entry.");
+    } catch (e) {
+      console.error(e);
+      alert("Failed to send test data. Please check your network connection or URL.");
+    }
+  };
+
   // Fetch from Google Sheets or Local DB
   const fetchData = async () => {
     setLoading(true);
@@ -144,15 +175,24 @@ function AdminDashboard() {
                     onChange={(e) => setPin(e.target.value)}
                     autoFocus
                   />
-                  <div className="text-left mt-2">
+                  <div className="text-left mt-2 relative">
                     <label className="text-xs font-bold text-muted-foreground uppercase ml-2">Google Sheets Webhook (Optional)</label>
-                    <input
-                      type="url"
-                      placeholder="https://script.google.com/macros/s/..."
-                      className="w-full p-3 mt-1 rounded-xl bg-white/50 border-2 border-border focus:border-primary focus:ring-0 outline-none text-sm transition-all"
-                      value={webhookUrl}
-                      onChange={(e) => setWebhookUrl(e.target.value)}
-                    />
+                    <div className="flex gap-2 mt-1">
+                      <input
+                        type="url"
+                        placeholder="https://script.google.com/macros/s/..."
+                        className="flex-1 p-3 rounded-xl bg-white/50 border-2 border-border focus:border-primary focus:ring-0 outline-none text-sm transition-all"
+                        value={webhookUrl}
+                        onChange={(e) => setWebhookUrl(e.target.value)}
+                      />
+                      <button 
+                        type="button" 
+                        onClick={handleTestWebhook}
+                        className="bg-secondary text-secondary-foreground font-bold px-4 rounded-xl active:scale-[0.98] transition hover:brightness-95"
+                      >
+                        Test
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <button type="submit" className="bg-primary text-primary-foreground font-bold p-4 rounded-2xl active:scale-[0.98] transition mt-2">
