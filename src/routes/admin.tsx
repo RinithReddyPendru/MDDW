@@ -175,25 +175,6 @@ function AdminDashboard() {
                     onChange={(e) => setPin(e.target.value)}
                     autoFocus
                   />
-                  <div className="text-left mt-2 relative">
-                    <label className="text-xs font-bold text-muted-foreground uppercase ml-2">Google Sheets Webhook (Optional)</label>
-                    <div className="flex gap-2 mt-1">
-                      <input
-                        type="url"
-                        placeholder="https://script.google.com/macros/s/..."
-                        className="flex-1 p-3 rounded-xl bg-white/50 border-2 border-border focus:border-primary focus:ring-0 outline-none text-sm transition-all"
-                        value={webhookUrl}
-                        onChange={(e) => setWebhookUrl(e.target.value)}
-                      />
-                      <button 
-                        type="button" 
-                        onClick={handleTestWebhook}
-                        className="bg-secondary text-secondary-foreground font-bold px-4 rounded-xl active:scale-[0.98] transition hover:brightness-95"
-                      >
-                        Test
-                      </button>
-                    </div>
-                  </div>
                 </div>
                 <button type="submit" className="bg-primary text-primary-foreground font-bold p-4 rounded-2xl active:scale-[0.98] transition mt-2">
                   Unlock Dashboard
@@ -246,7 +227,7 @@ function AdminDashboard() {
         <div className="mx-auto w-full max-w-5xl px-4 py-6 flex flex-col gap-8">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-border/30 pb-6">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 border-b border-border/30 pb-6">
           <div>
             <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-2">
               <Target className="w-8 h-8 text-primary" /> MDD-W Training Hub
@@ -254,6 +235,33 @@ function AdminDashboard() {
             <p className="text-muted-foreground mt-1 text-sm font-medium">
               Real-time analytics and performance monitoring
             </p>
+          </div>
+          
+          <div className="w-full lg:w-[450px] bg-white/60 backdrop-blur-md p-4 rounded-2xl border border-border/50 shadow-sm">
+            <label className="text-xs font-bold text-muted-foreground uppercase ml-1 flex items-center gap-1">
+              Google Sheets Webhook
+            </label>
+            <div className="flex gap-2 mt-2">
+              <input
+                type="url"
+                placeholder="Paste your Web App URL here..."
+                className="flex-1 p-2.5 rounded-xl bg-white border border-border focus:border-primary focus:ring-0 outline-none text-sm transition-all"
+                value={webhookUrl}
+                onChange={(e) => {
+                  setWebhookUrl(e.target.value);
+                  const p = loadProgress();
+                  p.sheetsWebhookUrl = e.target.value;
+                  saveProgress(p);
+                }}
+              />
+              <button 
+                type="button" 
+                onClick={handleTestWebhook}
+                className="bg-secondary text-secondary-foreground font-bold px-4 rounded-xl active:scale-[0.98] transition hover:brightness-95 text-sm"
+              >
+                Test
+              </button>
+            </div>
           </div>
         </div>
 
