@@ -154,6 +154,8 @@ export interface AdminRow {
   phc: string;
   phone: string;
   score: number;
+  correct: number;
+  total: number;
 }
 
 const ADMIN_DB_KEY = "mddw_admin_db";

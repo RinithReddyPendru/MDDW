@@ -231,7 +231,9 @@ function GamePage() {
           name: userName,
           phc: phcName,
           phone: phoneNumber,
-          score: Math.round((finalScore / 20) * 100)
+          score: Math.round((finalScore / 20) * 100),
+          correct: correct + c,
+          total: 20
         });
         
         setPhase("result");
