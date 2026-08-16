@@ -4,8 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AppHeader } from "@/components/mddw/AppHeader";
 import { loadAdminDatabase, type AdminRow } from "@/lib/mddw/storage";
 import { Lock, Users, Target, Award, Download, Trophy, Clock, Phone } from "lucide-react";
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 
 export const Route = createFileRoute("/admin")({
   component: AdminDashboard,
@@ -45,43 +43,60 @@ function AdminDashboard() {
     if (!isAuthenticated) return;
     
     setLoading(true);
+    let unsubscribe: (() => void) | undefined;
     
-    // We fetch everything sorted by date desc, then we sort manually for the leaderboard
-    const q = query(collection(db, "quiz_scores"), orderBy("date", "desc"));
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      if (snapshot.empty) {
-        let localDb = loadAdminDatabase();
-        if (localDb.length === 0) {
-          localDb = MOCK_DATA;
-          localStorage.setItem("mddw_admin_db", JSON.stringify(MOCK_DATA));
-        }
-        setData([...localDb].reverse());
-      } else {
-        const firebaseData = snapshot.docs.map(doc => {
-          const d = doc.data();
-          return {
-            date: d.date || new Date().toISOString(),
-            name: d.userName || "Unknown",
-            phc: d.phcName || "Unknown",
-            score: d.score || 0,
-            correct: d.correct || 0,
-            total: d.total || 20,
-            phone: d.phone || ""
-          };
-        });
-        setData(firebaseData);
-      }
-      setLoading(false);
-    }, (error) => {
-      console.error("Firebase listen error", error);
-      let localDb = loadAdminDatabase();
-      if (localDb.length === 0) localDb = MOCK_DATA;
-      setData([...localDb].reverse());
-      setLoading(false);
-    });
+    const initFirebase = async () => {
+      try {
+        const { collection, onSnapshot, query, orderBy } = await import("firebase/firestore");
+        const { db } = await import("@/lib/firebase");
 
-    return () => unsubscribe();
+        const q = query(collection(db, "quiz_scores"), orderBy("date", "desc"));
+        
+        unsubscribe = onSnapshot(q, (snapshot) => {
+          if (snapshot.empty) {
+            let localDb = loadAdminDatabase();
+            if (localDb.length === 0) {
+              localDb = MOCK_DATA;
+              localStorage.setItem("mddw_admin_db", JSON.stringify(MOCK_DATA));
+            }
+            setData([...localDb].reverse());
+          } else {
+            const firebaseData = snapshot.docs.map(doc => {
+              const d = doc.data();
+              return {
+                date: d.date || new Date().toISOString(),
+                name: d.userName || "Unknown",
+                phc: d.phcName || "Unknown",
+                score: d.score || 0,
+                correct: d.correct || 0,
+                total: d.total || 20,
+                phone: d.phone || ""
+              };
+            });
+            setData(firebaseData);
+          }
+          setLoading(false);
+        }, (error) => {
+          console.error("Firebase listen error", error);
+          let localDb = loadAdminDatabase();
+          if (localDb.length === 0) localDb = MOCK_DATA;
+          setData([...localDb].reverse());
+          setLoading(false);
+        });
+      } catch (err) {
+        console.error("Failed to load Firebase", err);
+        let localDb = loadAdminDatabase();
+        if (localDb.length === 0) localDb = MOCK_DATA;
+        setData([...localDb].reverse());
+        setLoading(false);
+      }
+    };
+
+    initFirebase();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, [isAuthenticated]);
 
   const exportData = () => {
