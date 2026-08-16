@@ -179,33 +179,22 @@ export async function saveToAdminDatabase(row: AdminRow) {
   db.push(row);
   localStorage.setItem(ADMIN_DB_KEY, JSON.stringify(db));
 
-  // 2. Send to Google Sheets Webhook
-  const state = loadProgress();
-  const webhookUrl = state.sheetsWebhookUrl?.trim();
-  
-  if (webhookUrl && webhookUrl.startsWith("http")) {
-    try {
-      const webhookPayload = {
-        date: row.date,
-        userName: row.name,
-        phcName: row.phc,
-        score: row.score,
-        correct: row.correct,
-        total: row.total,
-        phone: row.phone
-      };
-
-      await fetch(webhookUrl, {
-        method: 'POST',
-        mode: 'no-cors', // Prevents CORS errors from blocking the request
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-        body: JSON.stringify(webhookPayload)
-      });
-      console.log("Data successfully sent to Google Sheets");
-    } catch (e) {
-      console.error("Failed to send data to Google Sheets", e);
-    }
+  // 2. Send to Firebase Firestore
+  try {
+    const { collection, addDoc } = await import("firebase/firestore");
+    const { db } = await import("../firebase");
+    
+    await addDoc(collection(db, "quiz_scores"), {
+      date: row.date,
+      userName: row.name,
+      phcName: row.phc,
+      score: row.score,
+      correct: row.correct,
+      total: row.total,
+      phone: row.phone
+    });
+    console.log("Data successfully saved to Firebase Firestore");
+  } catch (e) {
+    console.error("Failed to send data to Firebase", e);
   }
 }

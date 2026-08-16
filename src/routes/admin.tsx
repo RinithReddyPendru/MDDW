@@ -45,18 +45,10 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [isMock, setIsMock] = useState(false);
 
-  const [webhookUrl, setWebhookUrl] = useState(() => {
-    if (typeof window === "undefined") return "";
-    return loadProgress().sheetsWebhookUrl || "";
-  });
-
   // Authenticate
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (pin === "1234") {
-      const p = loadProgress();
-      p.sheetsWebhookUrl = webhookUrl;
-      saveProgress(p);
       setIsAuthenticated(true);
       fetchData();
     } else {
@@ -64,77 +56,44 @@ function AdminDashboard() {
     }
   };
 
-  const handleTestWebhook = async () => {
-    if (!webhookUrl || !webhookUrl.startsWith("http")) {
-      alert("Please enter a valid webhook URL starting with http");
-      return;
-    }
-    try {
-      const webhookPayload = {
-        date: new Date().toISOString(),
-        userName: "Test ASHA",
-        phcName: "Test PHC",
-        score: 100,
-        correct: 20,
-        total: 20,
-        phone: "1234567890"
-      };
-
-      await fetch(webhookUrl.trim(), {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-        body: JSON.stringify(webhookPayload)
-      });
-      alert("Test data sent successfully! Please check your Google Sheet for the 'Test ASHA' entry.");
-    } catch (e) {
-      console.error(e);
-      alert("Failed to send test data. Please check your network connection or URL.");
-    }
-  };
-
-  // Fetch from Google Sheets or Local DB
+  // Fetch from Firebase Firestore
   const fetchData = async () => {
     setLoading(true);
-    const p = loadProgress();
-    const url = p.sheetsWebhookUrl;
-
-    if (!url) {
-      let localDb = loadAdminDatabase();
-      if (localDb.length === 0) {
-        localDb = MOCK_DATA;
-        localStorage.setItem("mddw_admin_db", JSON.stringify(MOCK_DATA));
-      }
-      // Show newest first
-      setData([...localDb].reverse());
-      setIsMock(false); // It's real local data now!
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await fetch(url);
-      const text = await response.text();
+      const { collection, getDocs } = await import("firebase/firestore");
+      const { db } = await import("../lib/firebase");
       
-      try {
-        const json = JSON.parse(text);
-        if (Array.isArray(json)) {
-          setData(json);
-          setIsMock(false);
-        } else {
-          throw new Error("Invalid format");
-        }
-      } catch (e) {
-        console.warn("Could not parse JSON. Falling back to local data.");
+      const snapshot = await getDocs(collection(db, "quiz_scores"));
+      
+      if (snapshot.empty) {
+        // Fallback to local DB if Firebase is empty (useful for migration/first run)
         let localDb = loadAdminDatabase();
-        if (localDb.length === 0) localDb = MOCK_DATA;
+        if (localDb.length === 0) {
+          localDb = MOCK_DATA;
+          localStorage.setItem("mddw_admin_db", JSON.stringify(MOCK_DATA));
+        }
         setData([...localDb].reverse());
-        setIsMock(false);
+      } else {
+        const firebaseData = snapshot.docs.map(doc => {
+          const d = doc.data();
+          return {
+            date: d.date || new Date().toISOString(),
+            name: d.userName || "Unknown",
+            phc: d.phcName || "Unknown",
+            score: d.score || 0,
+            correct: d.correct || 0,
+            total: d.total || 20,
+            phone: d.phone || ""
+          };
+        });
+        
+        // Sort newest first
+        firebaseData.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        setData(firebaseData);
       }
-    } catch (error) {
-      console.error("Fetch failed", error);
+      setIsMock(false);
+    } catch (e) {
+      console.error("Failed to fetch from Firebase, falling back to local DB", e);
       let localDb = loadAdminDatabase();
       if (localDb.length === 0) localDb = MOCK_DATA;
       setData([...localDb].reverse());
@@ -233,35 +192,8 @@ function AdminDashboard() {
               <Target className="w-8 h-8 text-primary" /> MDD-W Training Hub
             </h1>
             <p className="text-muted-foreground mt-1 text-sm font-medium">
-              Real-time analytics and performance monitoring
+              Real-time analytics and performance monitoring powered by Firebase
             </p>
-          </div>
-          
-          <div className="w-full lg:w-[450px] bg-white/60 backdrop-blur-md p-4 rounded-2xl border border-border/50 shadow-sm">
-            <label className="text-xs font-bold text-muted-foreground uppercase ml-1 flex items-center gap-1">
-              Google Sheets Webhook
-            </label>
-            <div className="flex gap-2 mt-2">
-              <input
-                type="url"
-                placeholder="Paste your Web App URL here..."
-                className="flex-1 p-2.5 rounded-xl bg-white border border-border focus:border-primary focus:ring-0 outline-none text-sm transition-all"
-                value={webhookUrl}
-                onChange={(e) => {
-                  setWebhookUrl(e.target.value);
-                  const p = loadProgress();
-                  p.sheetsWebhookUrl = e.target.value;
-                  saveProgress(p);
-                }}
-              />
-              <button 
-                type="button" 
-                onClick={handleTestWebhook}
-                className="bg-secondary text-secondary-foreground font-bold px-4 rounded-xl active:scale-[0.98] transition hover:brightness-95 text-sm"
-              >
-                Test
-              </button>
-            </div>
           </div>
         </div>
 
