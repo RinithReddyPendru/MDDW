@@ -112,6 +112,24 @@ function AdminDashboard() {
     document.body.removeChild(link);
   };
 
+  // --- Live Leaderboard Processing ---
+  // Sort by score (desc), then by date (desc) to break ties so recent completions float up
+  const leaderboardData = useMemo(() => {
+    return [...data].sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      
+      const getTime = (dateVal: any) => {
+        if (!dateVal) return 0;
+        if (typeof dateVal.toDate === 'function') return dateVal.toDate().getTime();
+        if (typeof dateVal === 'object' && 'seconds' in dateVal) return dateVal.seconds * 1000;
+        const t = new Date(dateVal).getTime();
+        return isNaN(t) ? 0 : t;
+      };
+      
+      return getTime(b.date) - getTime(a.date);
+    });
+  }, [data]);
+
   if (!isAuthenticated) {
     return (
       <main 
@@ -159,24 +177,6 @@ function AdminDashboard() {
   const totalTrained = data.length;
   const avgScore = totalTrained ? Math.round(data.reduce((acc, curr) => acc + curr.score, 0) / totalTrained) : 0;
   const perfectScores = data.filter(d => d.score === 100).length;
-
-  // --- Live Leaderboard Processing ---
-  // Sort by score (desc), then by date (desc) to break ties so recent completions float up
-  const leaderboardData = useMemo(() => {
-    return [...data].sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      
-      const getTime = (dateVal: any) => {
-        if (!dateVal) return 0;
-        if (typeof dateVal.toDate === 'function') return dateVal.toDate().getTime();
-        if (typeof dateVal === 'object' && 'seconds' in dateVal) return dateVal.seconds * 1000;
-        const t = new Date(dateVal).getTime();
-        return isNaN(t) ? 0 : t;
-      };
-      
-      return getTime(b.date) - getTime(a.date);
-    });
-  }, [data]);
 
   return (
     <main 
