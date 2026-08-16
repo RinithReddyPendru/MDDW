@@ -165,7 +165,9 @@ export function loadAdminDatabase(): AdminRow[] {
   try {
     const raw = localStorage.getItem(ADMIN_DB_KEY);
     if (!raw) return [];
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed;
   } catch {
     return [];
   }

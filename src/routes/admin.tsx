@@ -165,7 +165,16 @@ function AdminDashboard() {
   const leaderboardData = useMemo(() => {
     return [...data].sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      return new Date(b.date).getTime() - new Date(a.date).getTime();
+      
+      const getTime = (dateVal: any) => {
+        if (!dateVal) return 0;
+        if (typeof dateVal.toDate === 'function') return dateVal.toDate().getTime();
+        if (typeof dateVal === 'object' && 'seconds' in dateVal) return dateVal.seconds * 1000;
+        const t = new Date(dateVal).getTime();
+        return isNaN(t) ? 0 : t;
+      };
+      
+      return getTime(b.date) - getTime(a.date);
     });
   }, [data]);
 
@@ -278,7 +287,23 @@ function AdminDashboard() {
                       rankBg = "bg-orange-300 text-orange-950 shadow-inner";
                     }
 
-                    const timeStr = new Date(row.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    let timeStr = "--:--";
+                    try {
+                      let dateObj = new Date(row.date);
+                      // Handle Firestore Timestamp edge case if user manually entered one in console
+                      if (row.date && typeof (row.date as any).toDate === 'function') {
+                        dateObj = (row.date as any).toDate();
+                      } else if (row.date && typeof row.date === 'object' && 'seconds' in row.date) {
+                        dateObj = new Date((row.date as any).seconds * 1000);
+                      }
+                      
+                      if (!isNaN(dateObj.getTime())) {
+                        timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                      }
+                    } catch (e) {
+                      console.error("Invalid date format", row.date);
+                    }
+
                     // Use a unique key based on the row's exact time + name so Framer Motion animates changes correctly
                     const uniqueKey = `${row.name}-${row.date}`;
 
