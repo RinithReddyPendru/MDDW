@@ -185,7 +185,7 @@ export async function saveToAdminDatabase(row: AdminRow) {
         method: 'POST',
         mode: 'no-cors', // Prevents CORS errors from blocking the request
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'text/plain',
         },
         body: JSON.stringify(row)
       });
