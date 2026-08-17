@@ -905,50 +905,18 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t, lang }: any) {
 
 function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups }: any) {
   const data = q.data;
-  const [stepId, setStepId] = useState(data.firstStepId);
-  const [discovered, setDiscovered] = useState(data.initialDiscovered);
-  const [finished, setFinished] = useState(false);
+  const [apiKey, setApiKey] = useState<string>(() => localStorage.getItem("openai_api_key") || "");
+  const [isEditingKey, setIsEditingKey] = useState(!apiKey);
 
-  // Scoring
-  const [earnedPoints, setEarnedPoints] = useState(1);
-  const [wrongCount, setWrongCount] = useState(0);
-  const [mistakes, setMistakes] = useState<any[]>([]);
-
-  // Suggestion Step State
-  const [suggestStep, setSuggestStep] = useState(false);
-  const [suggestOptions, setSuggestOptions] = useState<any[]>([]);
-
-  // Chat History
-  //
-  // Messages store a translation KEY, never resolved text. Storing t(...) output
-  // in state froze the conversation in whichever language was active when each
-  // line was added, so switching language mid-scenario left the chat behind
-  // until a full reload. `text` is only for lines that genuinely have no key,
-  // and `groupId` re-resolves a food group name through the live map.
-  type ChatMessage = {
-    id: string;
-    sender: "mother" | "user";
-    textKey?: string;
-    text?: string;
-    groupId?: string;
-    isFeedback?: boolean;
-    isWrong?: boolean;
-    isConfused?: boolean;
-    isSuccess?: boolean;
-  };
-  const [chat, setChat] = useState<ChatMessage[]>([
-    { id: "m0", sender: "mother", textKey: data.steps[data.firstStepId].motherText },
+  const [chat, setChat] = useState<{ sender: "mother" | "user"; text: string }[]>([
+    { sender: "mother", text: "నమస్కారం! నేను నిన్న కేవలం అన్నం, పప్పు తిన్నాను." },
   ]);
-
-  // Resolved at render time, so every message follows the current language.
-  const chatText = (msg: ChatMessage): string => {
-    if (msg.groupId) return foodGroupMap[msg.groupId]?.name ?? msg.text ?? "";
-    if (msg.textKey) {
-      const translated = t(msg.textKey);
-      return translated === msg.textKey && msg.text ? msg.text : translated;
-    }
-    return msg.text ?? "";
-  };
+  const [chatHistory, setChatHistory] = useState<
+    { role: "user" | "assistant" | "system"; content: string }[]
+  >([{ role: "assistant", content: "నమస్కారం! నేను నిన్న కేవలం అన్నం, పప్పు తిన్నాను." }]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [finished, setFinished] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -957,158 +925,103 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
     }
   }, [chat]);
 
-  const currentStep = data.steps[stepId];
+  const saveKey = (key: string) => {
+    localStorage.setItem("openai_api_key", key);
+    setApiKey(key);
+    setIsEditingKey(false);
+  };
 
-  const handleOption = (opt: any) => {
-    // Add user's choice to chat
-    setChat((prev) => [...prev, { id: "u" + Date.now(), sender: "user", textKey: opt.text }]);
-
-    if (opt.feedback && !opt.isCorrect) {
-      playFailure();
-      setEarnedPoints(0);
-      setWrongCount((w) => w + 1);
-      setMistakes((m) => [
-        ...m,
-        {
-          question: t(currentStep.motherText),
-          userAnswer: t(opt.text),
-          correctAnswer: "Explore other options",
-        },
-      ]);
-
-      setTimeout(() => {
-        setChat((prev) => [
-          ...prev,
-          {
-            id: "m" + Date.now(),
-            sender: "mother",
-            textKey: opt.feedback,
-            isFeedback: true,
-            isWrong: true,
-          },
-        ]);
-      }, 500);
+  const startRecording = () => {
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech Recognition is not supported in this browser. Please use Chrome on Android.");
       return;
     }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "te-IN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-    playSuccess();
+    recognition.onstart = () => {
+      setIsRecording(true);
+      playPop();
+    };
 
-    let newDiscovered = [...discovered];
-    if (opt.discoveredGroups) {
-      newDiscovered = [...newDiscovered, ...opt.discoveredGroups];
-      setDiscovered(newDiscovered);
-    }
+    recognition.onresult = async (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setIsRecording(false);
+      await handleUserMessage(transcript);
+    };
 
-    if (opt.nextStepId) {
-      setStepId(opt.nextStepId);
-      setTimeout(() => {
-        setChat((prev) => [
-          ...prev,
-          {
-            id: "m" + Date.now(),
-            sender: "mother",
-            textKey: data.steps[opt.nextStepId].motherText,
-          },
-        ]);
-      }, 500);
-    } else if (opt.isCorrect) {
-      const uniqueGroupIds = Array.from(new Set(newDiscovered.map((g) => g.id)));
-      if (uniqueGroupIds.length < 5) {
-        const missingGroups = allGroups.filter((g: any) => !uniqueGroupIds.includes(g.id));
-        const presentGroups = allGroups.filter((g: any) => uniqueGroupIds.includes(g.id));
+    recognition.onerror = (event: any) => {
+      console.error("Speech error:", event.error);
+      setIsRecording(false);
+    };
 
-        const correctOpt = missingGroups[Math.floor(Math.random() * missingGroups.length)];
-        const distractors = [...presentGroups].sort(() => 0.5 - Math.random()).slice(0, 2);
-        if (distractors.length < 2) {
-          const otherMissing = missingGroups
-            .filter((g: any) => g.id !== correctOpt.id)
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 2 - distractors.length);
-          distractors.push(...otherMissing);
-        }
+    recognition.onend = () => {
+      setIsRecording(false);
+    };
 
-        const opts = [
-          { group: correctOpt, isCorrect: true },
-          { group: distractors[0], isCorrect: false },
-          { group: distractors[1], isCorrect: false },
-        ].sort(() => 0.5 - Math.random());
+    recognition.start();
+  };
 
-        setSuggestOptions(opts);
-        setSuggestStep(true);
-        setTimeout(() => {
-          setChat((prev) => [
-            ...prev,
-            {
-              id: "m" + Date.now(),
-              sender: "mother",
-              textKey: "suggest_prompt",
-              text: "It seems the mother only ate a few foods. What additional food group could you suggest to her to improve her diet?",
-              isFeedback: true,
-              isConfused: true,
-            },
-          ]);
-        }, 500);
-      } else {
-        setFinished(true);
-        setTimeout(() => {
-          setChat((prev) => [
-            ...prev,
-            { id: "m" + Date.now(), sender: "mother", textKey: data.finalLesson, isSuccess: true },
-          ]);
-        }, 500);
+  const handleUserMessage = async (transcript: string) => {
+    const newChat = [...chat, { sender: "user", text: transcript }];
+    setChat(newChat as any);
+
+    const newHistory = [...chatHistory, { role: "user", content: transcript }];
+    setChatHistory(newHistory as any);
+    setIsLoading(true);
+
+    try {
+      const { sendCounselingMessage } = await import("@/lib/mddw/aiCounseling");
+      const response = await sendCounselingMessage(apiKey, newHistory as any, transcript);
+
+      setChat([...newChat, { sender: "mother", text: response.message }] as any);
+      setChatHistory([...newHistory, { role: "assistant", content: response.message }] as any);
+
+      if ("speechSynthesis" in window) {
+        const utterance = new SpeechSynthesisUtterance(response.message);
+        utterance.lang = "te-IN";
+        window.speechSynthesis.speak(utterance);
       }
+
+      if (response.convinced) {
+        setFinished(true);
+        playSuccess();
+      }
+    } catch (e: any) {
+      alert(e.message);
+      setIsEditingKey(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSuggestPick = (opt: any) => {
-    setChat((prev) => [...prev, { id: "u" + Date.now(), sender: "user", groupId: opt.group.id }]);
-
-    if (opt.isCorrect) {
-      playSuccess();
-      setFinished(true);
-      setSuggestStep(false);
-      setDiscovered([
-        ...discovered,
-        { id: opt.group.id, name: opt.group.name, emoji: opt.group.emoji },
-      ]);
-      setTimeout(() => {
-        setChat((prev) => [
-          ...prev,
-          { id: "m" + Date.now(), sender: "mother", textKey: data.finalLesson, isSuccess: true },
-        ]);
-      }, 500);
-    } else {
-      playFailure();
-      setEarnedPoints(0);
-      setWrongCount((w) => w + 1);
-      setMistakes((m) => [
-        ...m,
-        {
-          question: "Suggest a missing food group",
-          userAnswer: opt.group.name,
-          correctAnswer: "A food group she hasn't eaten yet",
-        },
-      ]);
-      setTimeout(() => {
-        setChat((prev) => [
-          ...prev,
-          {
-            id: "m" + Date.now(),
-            sender: "mother",
-            textKey: "suggest_wrong",
-            text: "Not quite! Try suggesting a food group she missed.",
-            isFeedback: true,
-            isWrong: true,
-          },
-        ]);
-      }, 500);
-    }
-  };
-
-  const getT = (key: string, fallback: string) => {
-    const val = t(key as any);
-    return val === key ? fallback : val;
-  };
+  if (isEditingKey) {
+    return (
+      <div className="flex flex-col h-full items-center justify-center p-6 text-center">
+        <h2 className="text-2xl font-bold mb-4">API Key Required</h2>
+        <p className="mb-6 text-muted-foreground">
+          To use the AI Voice features, please enter your OpenAI API Key.
+        </p>
+        <input
+          type="password"
+          placeholder="sk-..."
+          className="w-full max-w-md p-3 border-2 border-border rounded-xl mb-4 bg-background"
+          onChange={(e) => setApiKey(e.target.value)}
+          value={apiKey}
+        />
+        <button
+          onClick={() => saveKey(apiKey)}
+          className="bg-primary text-primary-foreground px-8 py-3 rounded-full font-bold shadow-md"
+        >
+          Save & Continue
+        </button>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -1119,141 +1032,76 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
     >
       <div className="flex items-center justify-between mb-3 shrink-0">
         <div className="font-bold text-purple-600 text-sm tracking-widest uppercase">
-          {getT("modeCounseling", "Counseling Practice")}
+          AI Voice Counseling
         </div>
         <div className="text-muted-foreground text-sm">
           Q {qIdx + 1} / {total}
         </div>
-      </div>
-      <div className="h-2 rounded-full bg-muted overflow-hidden mb-4 shrink-0">
-        <motion.div
-          className="h-full bg-purple-600"
-          initial={{ width: 0 }}
-          animate={{ width: `${((qIdx + 1) / total) * 100}%` }}
-          transition={{ duration: 0.4 }}
-        />
       </div>
 
       <div
         className="flex-1 overflow-hidden flex flex-col glass rounded-3xl border-2 border-border/50 mb-4 shadow-sm relative"
         style={{ minHeight: "300px" }}
       >
-        <div className="p-3 border-b-2 border-border/50 bg-card flex flex-col gap-3 shrink-0 z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-border/50 shadow-inner bg-card flex items-center justify-center">
-              <img
-                src={`${import.meta.env.BASE_URL || "/"}images/avatars/${
-                  chat[chat.length - 1]?.isWrong || chat[chat.length - 1]?.isConfused
-                    ? "mother_confused.png"
-                    : chat[chat.length - 1]?.isSuccess
-                      ? "mother_happy.png"
-                      : "mother_neutral.png"
-                }`}
-                alt="Mother Avatar"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div>
-              <div className="font-bold text-sm leading-tight">{data.motherName}</div>
-              <div className="text-xs text-muted-foreground">{t("motherRole")}</div>
-            </div>
+        <div className="p-3 border-b-2 border-border/50 bg-card flex items-center gap-3 shrink-0 z-10">
+          <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-border/50 shadow-inner bg-card flex items-center justify-center">
+            <img
+              src={`${import.meta.env.BASE_URL || "/"}images/avatars/mother_neutral.png`}
+              alt="Mother"
+              className="w-full h-full object-cover"
+            />
           </div>
-
-          {discovered.length > 0 && (
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide w-full">
-              <AnimatePresence>
-                {discovered.map((g: any, i: number) => {
-                  const translatedG = foodGroupMap[g.id];
-                  return (
-                    <motion.div
-                      key={i}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="bg-card border border-border px-3 py-1 rounded-full text-xs font-bold shadow-sm flex items-center gap-1.5 shrink-0 whitespace-nowrap"
-                      title={translatedG?.name || g.name}
-                    >
-                      <span>{translatedG?.emoji || g.emoji}</span>{" "}
-                      <span>{translatedG?.name || g.name}</span>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </div>
-          )}
+          <div>
+            <div className="font-bold text-sm leading-tight">Lakshmi</div>
+            <div className="text-xs text-muted-foreground">Rural Mother (AI)</div>
+          </div>
         </div>
 
         <div ref={chatRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 scroll-smooth">
           {chat.map((msg, i) => (
             <motion.div
-              key={msg.id}
+              key={i}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[85%] rounded-2xl p-3 text-sm md:text-base font-medium shadow-sm ${msg.sender === "user" ? "bg-primary text-primary-foreground rounded-tr-sm" : msg.isFeedback ? "bg-destructive/15 text-destructive border border-destructive/30 rounded-tl-sm" : "bg-purple-600/10 text-foreground border border-purple-600/20 rounded-tl-sm"}`}
+                className={`max-w-[85%] rounded-2xl p-3 text-sm md:text-base font-medium shadow-sm ${msg.sender === "user" ? "bg-primary text-primary-foreground rounded-tr-sm" : "bg-purple-600/10 text-foreground border border-purple-600/20 rounded-tl-sm"}`}
               >
-                {chatText(msg)}
+                {msg.text}
               </div>
             </motion.div>
           ))}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-purple-600/10 text-foreground border border-purple-600/20 rounded-2xl rounded-tl-sm p-3 shadow-sm">
+                <span className="animate-pulse">Thinking...</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="shrink-0 space-y-3">
-        {!finished && !suggestStep && (
-          <>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-              {getT("askNext", "What will you ask next?")}
-            </div>
-            <div className="grid grid-cols-1 gap-2">
-              {currentStep.options.map((opt: any, i: number) => (
-                <button
-                  key={i}
-                  onClick={() => handleOption(opt)}
-                  className="w-full text-left bg-card hover:bg-muted border-2 border-border p-3.5 rounded-2xl font-medium transition active:scale-[0.98] text-sm md:text-base"
-                >
-                  {t(opt.text)}
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-
-        {suggestStep && !finished && (
-          <>
-            <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">
-              {getT("selectFoodGroup", "Select a food group")}
-            </div>
-            <div className="grid grid-cols-1 gap-2">
-              {suggestOptions.map((opt: any, i: number) => (
-                <button
-                  key={i}
-                  onClick={() => handleSuggestPick(opt)}
-                  className="w-full text-left bg-card hover:bg-muted border-2 border-border p-3.5 rounded-2xl font-medium transition active:scale-[0.98] flex items-center gap-3"
-                >
-                  <span className="text-2xl">{opt.group.emoji}</span> <span>{opt.group.name}</span>
-                </button>
-              ))}
-            </div>
-          </>
-        )}
-
-        {finished && (
+      <div className="shrink-0 space-y-3 pb-4 flex flex-col items-center">
+        {!finished ? (
           <button
-            onClick={() =>
-              onNext(
-                wrongCount === 0 ? 1 : 0,
-                wrongCount === 0 ? 1 : 0,
-                wrongCount > 0 ? 1 : 0,
-                mistakes,
-              )
-            }
-            className="mt-2 w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14 relative z-50 pointer-events-auto cursor-pointer"
-            style={{ WebkitTapHighlightColor: "transparent", touchAction: "manipulation" }}
+            onPointerDown={startRecording}
+            disabled={isLoading}
+            className={`w-24 h-24 rounded-full flex items-center justify-center shadow-lg transition-all ${isRecording ? "bg-red-500 scale-110 animate-pulse" : "bg-primary hover:scale-105 active:scale-95"} text-white text-4xl disabled:opacity-50`}
+            style={{ touchAction: "none" }}
           >
-            {getT("finishScenario", "Finish Scenario ➡️")}
+            🎙️
           </button>
+        ) : (
+          <button
+            onClick={() => onNext(1, 1, 0, [])}
+            className="w-full rounded-2xl bg-purple-600 text-white py-4 text-lg font-bold shadow-md min-h-14 animate-in fade-in slide-in-from-bottom-2"
+          >
+            Finish Scenario ➡️
+          </button>
+        )}
+        {!finished && (
+          <div className="text-xs font-bold text-muted-foreground uppercase mt-2">{`${isRecording ? "Listening..." : "Tap to Talk (Telugu)"}`}</div>
         )}
       </div>
     </motion.div>
