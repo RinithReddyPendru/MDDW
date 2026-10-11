@@ -14,8 +14,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useLang } from "@/lib/mddw/useLang";
-import { setLang as saveLangToStorage } from "@/lib/mddw/storage";
-import type { Lang } from "@/lib/mddw/translations";
+import { LANGS, type Lang } from "@/lib/mddw/translations";
 import type { FoodGroupId } from "@/lib/mddw/foodGroups";
 import {
   MOTHER_VISIT_PROFILES,
@@ -35,23 +34,34 @@ const GROUP_META: {
   emoji: string;
   shortName: Record<Lang, string>;
 }[] = [
-  { id: "grains", emoji: "🌾", shortName: { en: "Grain", te: "ధాన్యాలు (Grain)", hi: "अनाज (Grain)" } },
-  { id: "pulses", emoji: "🫘", shortName: { en: "Pulses", te: "పప్పులు (Pulses)", hi: "दालें (Pulses)" } },
-  { id: "nuts", emoji: "🥜", shortName: { en: "Nuts", te: "గింజలు (Nuts)", hi: "मेवे (Nuts)" } },
-  { id: "dairy", emoji: "🥛", shortName: { en: "Dairy", te: "పాలు (Dairy)", hi: "डेयरी (Dairy)" } },
-  { id: "meat", emoji: "🍗", shortName: { en: "Meat", te: "మాంసం (Meat)", hi: "मांस (Meat)" } },
-  { id: "eggs", emoji: "🥚", shortName: { en: "Eggs", te: "గుడ్లు (Eggs)", hi: "अंडे (Eggs)" } },
-  { id: "dglv", emoji: "🥬", shortName: { en: "Greens", te: "ఆకుకూరలు (Greens)", hi: "हरी पत्तेदार (Greens)" } },
-  { id: "vitaminA", emoji: "🥕", shortName: { en: "Vit-A", te: "విటమిన్-A (Vit-A)", hi: "विटामिन-A (Vit-A)" } },
-  { id: "otherVeg", emoji: "🍅", shortName: { en: "Veg", te: "కూరగాయలు (Veg)", hi: "सब्जियां (Veg)" } },
-  { id: "otherFruit", emoji: "🍌", shortName: { en: "Fruit", te: "పండ్లు (Fruit)", hi: "फल (Fruit)" } },
+  { id: "grains", emoji: "🌾", shortName: { en: "Grain", te: "ధాన్యాలు", hi: "अनाज" } },
+  { id: "pulses", emoji: "🫘", shortName: { en: "Pulses", te: "పప్పులు", hi: "दालें" } },
+  { id: "nuts", emoji: "🥜", shortName: { en: "Nuts", te: "గింజలు / పల్లీలు", hi: "मेवे / मूंगफली" } },
+  { id: "dairy", emoji: "🥛", shortName: { en: "Dairy", te: "పాలు / పెరుగు", hi: "दूध / दही" } },
+  { id: "meat", emoji: "🍗", shortName: { en: "Meat", te: "మాంసం / చేపలు", hi: "मांस / मछली" } },
+  { id: "eggs", emoji: "🥚", shortName: { en: "Eggs", te: "గుడ్లు", hi: "अंडे" } },
+  { id: "dglv", emoji: "🥬", shortName: { en: "Greens", te: "ఆకుకూరలు", hi: "हरी पत्तेदार" } },
+  { id: "vitaminA", emoji: "🥕", shortName: { en: "Vit-A", te: "విటమిన్-ఎ", hi: "विटामिन-ए" } },
+  { id: "otherVeg", emoji: "🍅", shortName: { en: "Veg", te: "కూరగాయలు", hi: "सब्जियां" } },
+  { id: "otherFruit", emoji: "🍌", shortName: { en: "Fruit", te: "పండ్లు", hi: "फल" } },
 ];
 
+const TRIMESTER_LABELS: Record<"T1" | "T2" | "T3", Record<Lang, string>> = {
+  T1: { en: "T1", te: "1వ త్రైమాసికం", hi: "पहली तिमाही" },
+  T2: { en: "T2", te: "2వ త్రైమాసికం", hi: "दूसरी तिमाही" },
+  T3: { en: "T3", te: "3వ త్రైమాసికం", hi: "तीसरी तिमाही" },
+};
+
 const UI_TEXT = {
+  ashaBadge: {
+    en: "ASHA",
+    te: "ఆశా",
+    hi: "आशा",
+  },
   ashaVisitMode: {
     en: "ASHA visit mode",
-    te: "ఆశా విజిట్ మోడ్ (ASHA Visit)",
-    hi: "आशा विजिट मोड (ASHA Visit)",
+    te: "ఆశా గృహ సందర్శన మోడ్",
+    hi: "आशा गृह भ्रमण मोड",
   },
   loginAlertDesc: {
     en: "A login alert will be sent to your registered number.",
@@ -62,6 +72,11 @@ const UI_TEXT = {
     en: "ASHA ID (Training PIN: 1234)",
     te: "ఆశా ID (శిక్షణ PIN: 1234)",
     hi: "आशा आईडी (प्रशिक्षण पिन: 1234)",
+  },
+  autoFillPin: {
+    en: "Auto-fill 1234 ✨",
+    te: "1234 ఆటో-ఫిల్ ✨",
+    hi: "1234 ऑटो-फिल ✨",
   },
   forgotPin: {
     en: "Forgot PIN?",
@@ -75,12 +90,12 @@ const UI_TEXT = {
   },
   cancel: {
     en: "Cancel",
-    te: "రద్దు (Cancel)",
+    te: "రద్దు చేయి",
     hi: "रद्द करें",
   },
   continueBtn: {
     en: "Continue",
-    te: "కొనసాగించు (Continue)",
+    te: "కొనసాగించు",
     hi: "जारी रखें",
   },
   pinHintToast: {
@@ -90,8 +105,23 @@ const UI_TEXT = {
   },
   overviewTitle: {
     en: "30-day overview",
-    te: "30-రోజుల నివేదిక (30-day overview)",
-    hi: "30-दिन का विवरण (30-day overview)",
+    te: "30-రోజుల నివేదిక",
+    hi: "30-दिन का विवरण",
+  },
+  weekTrimesterSub: {
+    en: "{name} · Week {week} · {trimester}",
+    te: "{name} · {week}వ వారం · {trimester}",
+    hi: "{name} · सप्ताह {week} · {trimester}",
+  },
+  todaySub: {
+    en: "{name} · today",
+    te: "{name} · ఈరోజు",
+    hi: "{name} · आज",
+  },
+  switchMotherTooltip: {
+    en: "Switch to another random mother sample",
+    te: "మరొక తల్లి ప్రొఫైల్‌కు మార్చండి",
+    hi: "किसी अन्य माँ की प्रोफाइल चुनें",
   },
   daysLabel: {
     en: "days",
@@ -130,8 +160,8 @@ const UI_TEXT = {
   },
   recallTitle: {
     en: "Recall yesterday",
-    te: "నిన్నటి ఆహార వివరాలు (Recall yesterday)",
-    hi: "कल का आहार (Recall yesterday)",
+    te: "నిన్నటి ఆహార వివరాలు",
+    hi: "कल का आहार",
   },
   whatDidMotherEat: {
     en: "What did {name} eat · yesterday",
@@ -140,8 +170,8 @@ const UI_TEXT = {
   },
   recallInstruction: {
     en: "Tap any item from Mother Logged to add it below. Add anything she missed using Quick Add.",
-    te: "తల్లి నమోదు చేసిన వాటిలో ఆమె నిజంగా తిన్న వాటిని నొక్కండి. మర్చిపోయిన వాటిని '+ Add more' ద్వారా చేర్చండి.",
-    hi: "माँ द्वारा लॉग किए गए आइटम पर टैप करके नीचे जोड़ें। छूटे हुए आइटम को Quick Add से जोड़ें।",
+    te: "తల్లి నమోదు చేసిన వాటిలో ఆమె నిజంగా తిన్న వాటిని నొక్కండి. మర్చిపోయిన వాటిని '+ మరిన్ని చేర్చండి' ద్వారా చేర్చండి.",
+    hi: "माँ द्वारा दर्ज किए गए आइटम पर टैप करके नीचे जोड़ें। छूटे हुए आइटम को '+ और जोड़ें' से जोड़ें।",
   },
   motherSaysLabel: {
     en: "When you ask her what she ate yesterday, she says:",
@@ -150,33 +180,43 @@ const UI_TEXT = {
   },
   motherLoggedHeader: {
     en: "MOTHER LOGGED",
-    te: "తల్లి యాప్‌లో నమోదు చేసినవి (MOTHER LOGGED)",
-    hi: "माँ द्वारा दर्ज (MOTHER LOGGED)",
+    te: "తల్లి నమోదు చేసినవి",
+    hi: "माँ द्वारा दर्ज",
   },
   ashaAddsHeader: {
     en: "ASHA ADDS (CONFIRMED + MISSED)",
-    te: "ఆశా నిర్ధారించినవి (CONFIRMED + MISSED)",
-    hi: "आशा द्वारा पुष्टि (ASHA ADDS)",
+    te: "ఆశా నిర్ధారించినవి (నిజంగా తిన్నవి)",
+    hi: "आशा द्वारा पुष्टि (पुष्टि + छूटे हुए)",
   },
   addMoreBtn: {
     en: "+ Add more",
-    te: "+ మరిన్ని చేర్చండి (Add more)",
-    hi: "+ और जोड़ें (Add more)",
+    te: "+ మరిన్ని చేర్చండి",
+    hi: "+ और जोड़ें",
+  },
+  quickAddTitle: {
+    en: "Quick Add Dish (Missed by Mother)",
+    te: "తల్లి మర్చిపోయిన వంటకాన్ని చేర్చండి",
+    hi: "माँ द्वारा छूटा हुआ व्यंजन जोड़ें",
+  },
+  doneBtn: {
+    en: "Done ✓",
+    te: "పూర్తయింది ✓",
+    hi: "हो गया ✓",
   },
   tapMotherHelper: {
     en: "Tap mother's items to confirm · ✓ Added to ASHA Adds · + Quick add below",
-    te: "నిర్ధారించడానికి తల్లి ఐటమ్స్ నొక్కండి · ✓ ఆశా జాబితాకు చేర్చబడింది",
-    hi: "पुष्टि करने के लिए माँ के आइटम टैप करें · ✓ आशा सूची में जोड़ा गया",
+    te: "నిర్ధారించడానికి తల్లి ఐటమ్స్ నొక్కండి · ✓ ఆశా జాబితాకు చేర్చబడింది · + కింద మరిన్ని చేర్చండి",
+    hi: "पुष्टि करने के लिए माँ के आइटम टैप करें · ✓ आशा सूची में जोड़ा गया · + नीचे से और जोड़ें",
   },
   saveRecallBtn: {
     en: "Save recall ({count} items) →",
-    te: "నివేదిక సేవ్ చేయండి ({count} వస్తువులు) →",
+    te: "నివేదిక సేవ్ చేయండి ({count} వంటకాలు) →",
     hi: "रिकॉल सेव करें ({count} आइटम) →",
   },
   todaysGapsTitle: {
     en: "Today's gaps",
-    te: "నేటి పోషకాహార లోపాలు (Today's gaps)",
-    hi: "आज की कमियां (Today's gaps)",
+    te: "నేటి పోషకాహార లోపాలు",
+    hi: "आज की पोषण कमियां",
   },
   yesterdaysCoachingFocus: {
     en: "Yesterday's coaching focus",
@@ -193,6 +233,11 @@ const UI_TEXT = {
     te: "ఈ ఆహార వర్గాలు నిన్న తినలేదు — తల్లితో చర్చించండి.",
     hi: "ये खाद्य समूह कल नहीं खाए गए — माँ के साथ चर्चा करें।",
   },
+  groupsFraction: {
+    en: "{num} / {den} groups",
+    te: "{num} / {den} వర్గాలు",
+    hi: "{num} / {den} समूह",
+  },
   tappedInAppYesterday: {
     en: "tapped in app yesterday",
     te: "నిన్న యాప్‌లో నొక్కినవి",
@@ -200,8 +245,8 @@ const UI_TEXT = {
   },
   recallCoveredHeader: {
     en: "RECALL COVERED",
-    te: "నిజంగా తిన్నవి (RECALL COVERED)",
-    hi: "रिकॉल में कवर (RECALL COVERED)",
+    te: "నిజంగా తిన్నవి",
+    hi: "रिकॉल में कवर",
   },
   missingCountLabel: {
     en: "{count} missing",
@@ -210,8 +255,8 @@ const UI_TEXT = {
   },
   suggestedCoachingHeader: {
     en: "SUGGESTED COACHING",
-    te: "సూచించిన పోషకాహార సలహా (SUGGESTED COACHING)",
-    hi: "सुझाया गया परामर्श (SUGGESTED COACHING)",
+    te: "సూచించిన పోషకాహార సలహా",
+    hi: "सुझाया गया पोषण परामर्श",
   },
   suggestedCoachingBody: {
     en: "Focus today on: {groups}. Encourage the mother to include these food groups in her next meal and to log them in the app.",
@@ -240,8 +285,8 @@ const UI_TEXT = {
   },
   visitCompleteTitle: {
     en: "Visit complete",
-    te: "సందర్శన పూర్తయింది (Visit complete)",
-    hi: "विजिट पूर्ण (Visit complete)",
+    te: "సందర్శన పూర్తయింది",
+    hi: "विजिट पूर्ण",
   },
   visitRecordedHeading: {
     en: "Visit recorded",
@@ -255,23 +300,33 @@ const UI_TEXT = {
   },
   visitSummaryHeader: {
     en: "VISIT SUMMARY",
-    te: "సందర్శన సారాంశం (VISIT SUMMARY)",
-    hi: "विजिट सारांश (VISIT SUMMARY)",
+    te: "సందర్శన సారాంశం",
+    hi: "विजिट सारांश",
   },
   engagementRow: {
     en: "Engagement",
-    te: "యాప్ వినియోగం (Engagement)",
-    hi: "सक्रियता (Engagement)",
+    te: "యాప్ వినియోగం",
+    hi: "ऐप सक्रियता",
+  },
+  engagementValue: {
+    en: "{days} of 30 days",
+    te: "30 రోజులలో {days} రోజులు",
+    hi: "30 दिनों में से {days} दिन",
   },
   yesterdaysCoverageRow: {
     en: "Yesterday's coverage",
     te: "నిన్నటి ఆహార వర్గాలు",
     hi: "कल का आहार कवरेज",
   },
+  coverageValue: {
+    en: "{count} of 10 groups",
+    te: "10 వర్గాలలో {count} వర్గాలు",
+    hi: "10 समूहों में से {count} समूह",
+  },
   gapsFoundRow: {
     en: "Gaps found",
-    te: "కనుగొన్న లోపాలు (Gaps)",
-    hi: "पाई गई कमियां (Gaps)",
+    te: "కనుగొన్న లోపాలు",
+    hi: "पाई गई कमियां",
   },
   ifaAdherenceRow: {
     en: "IFA adherence",
@@ -285,12 +340,12 @@ const UI_TEXT = {
   },
   recordedVal: {
     en: "Recorded",
-    te: "నమోదైంది (Recorded)",
+    te: "నమోదైంది",
     hi: "रिकॉर्ड किया गया",
   },
   closeAshaModeBtn: {
     en: "Close ASHA mode",
-    te: "ఆశా మోడ్ మూసివేయండి (Close)",
+    te: "ఆశా మోడ్ మూసివేయండి",
     hi: "आशा मोड बंद करें",
   },
   practiceAnotherMotherBtn: {
@@ -309,7 +364,7 @@ function pickRandomMother(excludeId?: string): MotherVisitProfile {
 
 function AshaVisitSimulator() {
   const navigate = useNavigate();
-  const { lang, changeLang } = useLang();
+  const { lang, setLang } = useLang();
 
   const [mother, setMother] = useState<MotherVisitProfile>(() => pickRandomMother());
   const [step, setStep] = useState<VisitStep>("pin");
@@ -331,12 +386,9 @@ function AshaVisitSimulator() {
     useRef<HTMLInputElement>(null),
   ];
 
-  const cycleLanguage = () => {
+  const handleLanguageChange = (nextLang: Lang) => {
     playPop();
-    const order: Lang[] = ["en", "te", "hi"];
-    const next = order[(order.indexOf(lang) + 1) % order.length];
-    saveLangToStorage(next);
-    changeLang(next);
+    setLang(nextLang);
   };
 
   const randomizeMother = () => {
@@ -426,8 +478,6 @@ function AshaVisitSimulator() {
     };
   }, [mother, ashaDishes]);
 
-  const langLabel = lang === "en" ? "EN" : lang === "te" ? "తె" : "हि";
-
   // ── SCREEN 1: PIN ENTRY (ASHA VISIT MODE) ───────────────────────────────
   if (step === "pin") {
     const isPinReady = pinDigits.join("") === "1234";
@@ -436,12 +486,18 @@ function AshaVisitSimulator() {
         <div className="w-full max-w-md bg-white rounded-3xl sm:border sm:border-slate-200 sm:shadow-xl p-6 flex flex-col gap-6 relative">
           {/* Top bar with language switcher & close X */}
           <div className="flex items-center justify-between">
-            <button
-              onClick={cycleLanguage}
-              className="px-3 py-1 rounded-full border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100"
+            <select
+              aria-label="Language"
+              value={lang}
+              onChange={(e) => handleLanguageChange(e.target.value as Lang)}
+              className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-800 hover:bg-slate-50 transition cursor-pointer"
             >
-              {langLabel} 🌐
-            </button>
+              {LANGS.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
             <button
               onClick={() => navigate({ to: "/" })}
               className="p-2 text-slate-500 hover:text-slate-800 rounded-full hover:bg-slate-100 transition"
@@ -475,7 +531,7 @@ function AshaVisitSimulator() {
                 onClick={handleAutoFillPin}
                 className="text-xs font-bold text-[#1B6E4D] bg-[#EAF5F0] px-2.5 py-1 rounded-md hover:bg-[#d5ece2] transition"
               >
-                Auto-fill 1234 ✨
+                {UI_TEXT.autoFillPin[lang]}
               </button>
             </div>
 
@@ -569,12 +625,15 @@ function AshaVisitSimulator() {
 
   const headerSub =
     step === "overview"
-      ? `${mother.name[lang]} · Week ${mother.week} · ${mother.trimester}`
+      ? UI_TEXT.weekTrimesterSub[lang]
+          .replace("{name}", mother.name[lang])
+          .replace("{week}", String(mother.week))
+          .replace("{trimester}", TRIMESTER_LABELS[mother.trimester][lang])
       : step === "recall"
       ? UI_TEXT.whatDidMotherEat[lang].replace("{name}", mother.name[lang])
       : step === "gaps"
       ? UI_TEXT.yesterdaysCoachingFocus[lang]
-      : `${mother.name[lang]} · today`;
+      : UI_TEXT.todaySub[lang].replace("{name}", mother.name[lang]);
 
   const handleBack = () => {
     playPop();
@@ -611,20 +670,25 @@ function AshaVisitSimulator() {
               <button
                 type="button"
                 onClick={randomizeMother}
-                title="Switch to another random mother sample"
+                title={UI_TEXT.switchMotherTooltip[lang]}
                 className="p-2 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-100 transition"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
               </button>
-              <button
-                type="button"
-                onClick={cycleLanguage}
-                className="px-3 py-1 rounded-full border border-slate-300 text-xs font-extrabold text-slate-800 hover:bg-slate-50 transition"
+              <select
+                aria-label="Language"
+                value={lang}
+                onChange={(e) => handleLanguageChange(e.target.value as Lang)}
+                className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-extrabold text-slate-800 hover:bg-slate-50 transition cursor-pointer"
               >
-                {langLabel}
-              </button>
-              <span className="px-3 py-1 rounded-full bg-[#145A3E] text-white text-xs font-extrabold tracking-wide">
-                ASHA
+                {LANGS.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+              <span className="px-2.5 py-1 rounded-full bg-[#145A3E] text-white text-xs font-extrabold tracking-wide">
+                {UI_TEXT.ashaBadge[lang]}
               </span>
             </div>
           </div>
@@ -832,14 +896,14 @@ function AshaVisitSimulator() {
                   <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col gap-2.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600">
-                        Quick Add Dish (Missed by Mother)
+                        {UI_TEXT.quickAddTitle[lang]}
                       </span>
                       <button
                         type="button"
                         onClick={() => setShowQuickAdd(false)}
                         className="text-xs font-bold text-slate-500 hover:text-slate-800"
                       >
-                        Done ✓
+                        {UI_TEXT.doneBtn[lang]}
                       </button>
                     </div>
                     <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pt-1">
@@ -917,7 +981,9 @@ function AshaVisitSimulator() {
                       {UI_TEXT.motherLoggedHeader[lang]}
                     </span>
                     <div className="text-xl font-extrabold text-slate-900 mt-0.5">
-                      {motherGroups.size} / 10 groups
+                      {UI_TEXT.groupsFraction[lang]
+                        .replace("{num}", String(motherGroups.size))
+                        .replace("{den}", "10")}
                     </div>
                     <span className="text-xs text-slate-500">
                       {UI_TEXT.tappedInAppYesterday[lang]}
@@ -929,7 +995,9 @@ function AshaVisitSimulator() {
                       {UI_TEXT.recallCoveredHeader[lang]}
                     </span>
                     <div className="text-xl font-extrabold text-slate-900 mt-0.5">
-                      {ashaGroups.size} / {motherGroups.size} groups
+                      {UI_TEXT.groupsFraction[lang]
+                        .replace("{num}", String(ashaGroups.size))
+                        .replace("{den}", String(motherGroups.size))}
                     </div>
                     <span className="text-xs font-extrabold text-[#D97706]">
                       {UI_TEXT.missingCountLabel[lang].replace(
@@ -1058,7 +1126,10 @@ function AshaVisitSimulator() {
                         {UI_TEXT.engagementRow[lang]}
                       </span>
                       <span className="font-extrabold text-slate-900">
-                        {mother.activeDays30} of 30 {UI_TEXT.daysLabel[lang]}
+                        {UI_TEXT.engagementValue[lang].replace(
+                          "{days}",
+                          String(mother.activeDays30)
+                        )}
                       </span>
                     </div>
                     <div className="px-4 py-3.5 flex items-center justify-between">
@@ -1066,7 +1137,10 @@ function AshaVisitSimulator() {
                         {UI_TEXT.yesterdaysCoverageRow[lang]}
                       </span>
                       <span className="font-extrabold text-slate-900">
-                        {ashaGroups.size} of 10 groups
+                        {UI_TEXT.coverageValue[lang].replace(
+                          "{count}",
+                          String(ashaGroups.size)
+                        )}
                       </span>
                     </div>
                     <div className="px-4 py-3.5 flex items-center justify-between">

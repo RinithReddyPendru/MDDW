@@ -10,32 +10,32 @@ export interface VisitDish {
 export const VISIT_DISHES: VisitDish[] = [
   {
     id: "idli",
-    name: { en: "Idli", te: "ఇడ్లీ (Idli)", hi: "इडली (Idli)" },
+    name: { en: "Idli", te: "ఇడ్లీ", hi: "इडली" },
     groups: ["grains", "pulses"],
   },
   {
     id: "dosa_plain",
-    name: { en: "Dosa (plain)", te: "సాదా దోశ (Plain Dosa)", hi: "सादा डोसा (Plain Dosa)" },
+    name: { en: "Dosa (plain)", te: "సాదా దోశ", hi: "सादा डोसा" },
     groups: ["grains", "pulses"],
   },
   {
     id: "pesarattu",
-    name: { en: "Pesarattu", te: "పెసరట్టు (Pesarattu)", hi: "पेसरट्टू (Pesarattu)" },
+    name: { en: "Pesarattu", te: "పెసరట్టు", hi: "पेसरट्टू" },
     groups: ["pulses"],
   },
   {
     id: "upma",
-    name: { en: "Upma", te: "ఉప్మా (Upma)", hi: "उपमा (Upma)" },
+    name: { en: "Upma", te: "ఉప్మా", hi: "उपमा" },
     groups: ["grains", "otherVeg"],
   },
   {
     id: "pappu_rice",
-    name: { en: "Pappu & Rice", te: "పప్పు అన్నం (Dal Rice)", hi: "दाल चावल (Dal Rice)" },
+    name: { en: "Pappu & Rice", te: "పప్పు అన్నం", hi: "दाल चावल" },
     groups: ["grains", "pulses"],
   },
   {
     id: "tomato_curry",
-    name: { en: "Tomato Onion Curry", te: "టమాటా కూర (Tomato Curry)", hi: "टमाटर की सब्जी" },
+    name: { en: "Tomato Onion Curry", te: "టమాటా ఉల్లిపాయ కూర", hi: "टमाटर प्याज की सब्जी" },
     groups: ["otherVeg"],
   },
   {
@@ -45,27 +45,27 @@ export const VISIT_DISHES: VisitDish[] = [
   },
   {
     id: "boiled_egg",
-    name: { en: "Boiled Egg", te: "ఉడికించిన గుడ్డు (Boiled Egg)", hi: "उबला अंडा (Boiled Egg)" },
+    name: { en: "Boiled Egg", te: "ఉడికించిన గుడ్డు", hi: "उबला अंडा" },
     groups: ["eggs"],
   },
   {
     id: "milk_curd",
-    name: { en: "Milk / Curd (Perugu)", te: "పాలు / పెరుగు (Milk / Curd)", hi: "दूध / दही (Milk / Curd)" },
+    name: { en: "Milk / Curd (Perugu)", te: "పాలు / పెరుగు", hi: "दूध / दही" },
     groups: ["dairy"],
   },
   {
     id: "groundnut_chutney",
-    name: { en: "Peanut Chutney (Palli)", te: "పల్లీ చట్నీ (Peanut Chutney)", hi: "मूंगफली चटनी" },
+    name: { en: "Peanut Chutney (Palli)", te: "పల్లీ చట్నీ", hi: "मूंगफली चटनी" },
     groups: ["nuts"],
   },
   {
     id: "chicken_curry",
-    name: { en: "Chicken Curry", te: "చికెన్ కూర (Chicken Curry)", hi: "चिकन करी" },
+    name: { en: "Chicken Curry", te: "చికెన్ కూర", hi: "चिकन करी" },
     groups: ["meat"],
   },
   {
     id: "fish_pulusu",
-    name: { en: "Chepala Pulusu (Fish)", te: "చేపల పులుసు (Fish Curry)", hi: "मछली करी" },
+    name: { en: "Chepala Pulusu (Fish)", te: "చేపల పులుసు", hi: "मछली करी" },
     groups: ["meat"],
   },
   {
@@ -80,7 +80,7 @@ export const VISIT_DISHES: VisitDish[] = [
   },
   {
     id: "ragi_sangati",
-    name: { en: "Ragi Sangati", te: "రాగి సంగటి (Ragi Ball)", hi: "रागी संगटी" },
+    name: { en: "Ragi Sangati", te: "రాగి సంగటి", hi: "रागी संगटी" },
     groups: ["grains"],
   },
   {
@@ -117,13 +117,13 @@ export interface MotherVisitProfile {
 export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   {
     id: "swathi",
-    name: { en: "Swathi", te: "స్వాతి (Swathi)", hi: "स्वाति (Swathi)" },
+    name: { en: "Swathi", te: "స్వాతి", hi: "स्वाति" },
     week: 28,
     trimester: "T3",
     activeDays30: 7,
     lastVisitText: {
       en: "7 Oct · 4 days ago",
-      te: "7 అక్టో · 4 రోజుల క్రితం",
+      te: "7 అక్టోబర్ · 4 రోజుల క్రితం",
       hi: "7 अक्टूबर · 4 दिन पहले",
     },
     daysPerGroup: {
@@ -149,13 +149,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "lakshmi",
-    name: { en: "Lakshmi", te: "లక్ష్మి (Lakshmi)", hi: "लक्ष्मी (Lakshmi)" },
+    name: { en: "Lakshmi", te: "లక్ష్మి", hi: "लक्ष्मी" },
     week: 22,
     trimester: "T2",
     activeDays30: 11,
     lastVisitText: {
       en: "4 Oct · 7 days ago",
-      te: "4 అక్టో · 7 రోజుల క్రితం",
+      te: "4 అక్టోబర్ · 7 రోజుల క్రితం",
       hi: "4 अक्टूबर · 7 दिन पहले",
     },
     daysPerGroup: {
@@ -181,13 +181,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "padma",
-    name: { en: "Padma", te: "పద్మ (Padma)", hi: "पद्मा (Padma)" },
+    name: { en: "Padma", te: "పద్మ", hi: "पद्मा" },
     week: 32,
     trimester: "T3",
     activeDays30: 6,
     lastVisitText: {
       en: "2 Oct · 9 days ago",
-      te: "2 అక్టో · 9 రోజుల క్రితం",
+      te: "2 అక్టోబర్ · 9 రోజుల క్రితం",
       hi: "2 अक्टूबर · 9 दिन पहले",
     },
     daysPerGroup: {
@@ -213,13 +213,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "bhavani",
-    name: { en: "Bhavani", te: "భవాని (Bhavani)", hi: "भवानी (Bhavani)" },
+    name: { en: "Bhavani", te: "భవాని", hi: "भवानी" },
     week: 16,
     trimester: "T2",
     activeDays30: 9,
     lastVisitText: {
       en: "6 Oct · 5 days ago",
-      te: "6 అక్టో · 5 రోజుల క్రితం",
+      te: "6 అక్టోబర్ · 5 రోజుల క్రితం",
       hi: "6 अक्टूबर · 5 दिन पहले",
     },
     daysPerGroup: {
@@ -245,13 +245,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "sravani",
-    name: { en: "Sravani", te: "శ్రావణి (Sravani)", hi: "श्रावणी (Sravani)" },
+    name: { en: "Sravani", te: "శ్రావణి", hi: "श्रावणी" },
     week: 26,
     trimester: "T2",
     activeDays30: 8,
     lastVisitText: {
       en: "5 Oct · 6 days ago",
-      te: "5 అక్టో · 6 రోజుల క్రితం",
+      te: "5 అక్టోబర్ · 6 రోజుల క్రితం",
       hi: "5 अक्टूबर · 6 दिन पहले",
     },
     daysPerGroup: {
@@ -277,13 +277,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "anitha",
-    name: { en: "Anitha", te: "అనిత (Anitha)", hi: "अनिता (Anitha)" },
+    name: { en: "Anitha", te: "అనిత", hi: "अनिता" },
     week: 34,
     trimester: "T3",
     activeDays30: 5,
     lastVisitText: {
       en: "1 Oct · 10 days ago",
-      te: "1 అక్టో · 10 రోజుల క్రితం",
+      te: "1 అక్టోబర్ · 10 రోజుల క్రితం",
       hi: "1 अक्टूबर · 10 दिन पहले",
     },
     daysPerGroup: {
@@ -309,13 +309,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "kavitha",
-    name: { en: "Kavitha", te: "కవిత (Kavitha)", hi: "कविता (Kavitha)" },
+    name: { en: "Kavitha", te: "కవిత", hi: "कविता" },
     week: 20,
     trimester: "T2",
     activeDays30: 14,
     lastVisitText: {
       en: "8 Oct · 3 days ago",
-      te: "8 అక్టో · 3 రోజుల క్రితం",
+      te: "8 అక్టోబర్ · 3 రోజుల క్రితం",
       hi: "8 अक्टूबर · 3 दिन पहले",
     },
     daysPerGroup: {
@@ -341,13 +341,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "rajeswari",
-    name: { en: "Rajeswari", te: "రాజేశ్వరి (Rajeswari)", hi: "राजेश्वरी (Rajeswari)" },
+    name: { en: "Rajeswari", te: "రాజేశ్వరి", hi: "राजेश्वरी" },
     week: 30,
     trimester: "T3",
     activeDays30: 6,
     lastVisitText: {
       en: "3 Oct · 8 days ago",
-      te: "3 అక్టో · 8 రోజుల క్రితం",
+      te: "3 అక్టోబర్ · 8 రోజుల క్రితం",
       hi: "3 अक्टूबर · 8 दिन पहले",
     },
     daysPerGroup: {
@@ -373,13 +373,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "divya",
-    name: { en: "Divya", te: "దివ్య (Divya)", hi: "दिव्या (Divya)" },
+    name: { en: "Divya", te: "దివ్య", hi: "दिव्या" },
     week: 14,
     trimester: "T2",
     activeDays30: 10,
     lastVisitText: {
       en: "6 Oct · 5 days ago",
-      te: "6 అక్టో · 5 రోజుల క్రితం",
+      te: "6 అక్టోబర్ · 5 రోజుల క్రితం",
       hi: "6 अक्टूबर · 5 दिन पहले",
     },
     daysPerGroup: {
@@ -405,13 +405,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "sujatha",
-    name: { en: "Sujatha", te: "సుజాత (Sujatha)", hi: "सुजाता (Sujatha)" },
+    name: { en: "Sujatha", te: "సుజాత", hi: "सुजाता" },
     week: 36,
     trimester: "T3",
     activeDays30: 4,
     lastVisitText: {
       en: "29 Sep · 12 days ago",
-      te: "29 సెప్టెం · 12 రోజుల క్రితం",
+      te: "29 సెప్టెంబర్ · 12 రోజుల క్రితం",
       hi: "29 सितंबर · 12 दिन पहले",
     },
     daysPerGroup: {
@@ -437,13 +437,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "madhavi",
-    name: { en: "Madhavi", te: "మాధవి (Madhavi)", hi: "माधवी (Madhavi)" },
+    name: { en: "Madhavi", te: "మాధవి", hi: "माधवी" },
     week: 24,
     trimester: "T2",
     activeDays30: 12,
     lastVisitText: {
       en: "7 Oct · 4 days ago",
-      te: "7 అక్టో · 4 రోజుల క్రితం",
+      te: "7 అక్టోబర్ · 4 రోజుల క్రితం",
       hi: "7 अक्टूबर · 4 दिन पहले",
     },
     daysPerGroup: {
@@ -469,13 +469,13 @@ export const MOTHER_VISIT_PROFILES: MotherVisitProfile[] = [
   },
   {
     id: "renuka",
-    name: { en: "Renuka", te: "రేణుక (Renuka)", hi: "रेणुका (Renuka)" },
+    name: { en: "Renuka", te: "రేణుక", hi: "रेणुका" },
     week: 18,
     trimester: "T2",
     activeDays30: 8,
     lastVisitText: {
       en: "5 Oct · 6 days ago",
-      te: "5 అక్టో · 6 రోజుల క్రితం",
+      te: "5 అక్టోబర్ · 6 రోజుల క్రితం",
       hi: "5 अक्टूबर · 6 दिन पहले",
     },
     daysPerGroup: {

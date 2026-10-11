@@ -24,9 +24,9 @@ function Index() {
 
   const ashaVisitLabel =
     lang === "te"
-      ? "ఆశా గృహ సందర్శన (ASHA Visit Mode)"
+      ? "ఆశా గృహ సందర్శన మోడ్"
       : lang === "hi"
-      ? "आशा गृह भ्रमण (ASHA Visit Mode)"
+      ? "आशा गृह भ्रमण मोड"
       : "ASHA Home Visit Mode";
 
   const { status, progress } = useRegistration();
