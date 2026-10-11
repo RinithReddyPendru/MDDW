@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VisitRouteImport } from './routes/visit'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as PlateRouteImport } from './routes/plate'
 import { Route as MealsRouteImport } from './routes/meals'
@@ -18,6 +19,11 @@ import { Route as GameRouteImport } from './routes/game'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VisitRoute = VisitRouteImport.update({
+  id: '/visit',
+  path: '/visit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgressRoute = ProgressRouteImport.update({
   id: '/progress',
   path: '/progress',
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
+  '/visit': typeof VisitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
+  '/visit': typeof VisitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/meals': typeof MealsRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
+  '/visit': typeof VisitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/meals'
     | '/plate'
     | '/progress'
+    | '/visit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/meals'
     | '/plate'
     | '/progress'
+    | '/visit'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/meals'
     | '/plate'
     | '/progress'
+    | '/visit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,10 +144,18 @@ export interface RootRouteChildren {
   MealsRoute: typeof MealsRoute
   PlateRoute: typeof PlateRoute
   ProgressRoute: typeof ProgressRoute
+  VisitRoute: typeof VisitRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/visit': {
+      id: '/visit'
+      path: '/visit'
+      fullPath: '/visit'
+      preLoaderRoute: typeof VisitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/progress': {
       id: '/progress'
       path: '/progress'
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   MealsRoute: MealsRoute,
   PlateRoute: PlateRoute,
   ProgressRoute: ProgressRoute,
+  VisitRoute: VisitRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

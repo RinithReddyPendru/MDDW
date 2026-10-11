@@ -20,7 +20,14 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
+
+  const ashaVisitLabel =
+    lang === "te"
+      ? "ఆశా గృహ సందర్శన (ASHA Visit Mode)"
+      : lang === "hi"
+      ? "आशा गृह भ्रमण (ASHA Visit Mode)"
+      : "ASHA Home Visit Mode";
 
   const { status, progress } = useRegistration();
 
@@ -111,26 +118,35 @@ function Index() {
                 </div>
                 <div className="flex flex-col gap-2 relative">
                   <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-border z-0" />
-                  <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
+                  <Link to="/learn" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass hover:border-primary/40 transition">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">1</div>
                     <div className="font-semibold text-sm flex-1">📖 {t("learnFoodGroups")}</div>
-                  </div>
-                  <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
+                  </Link>
+                  <Link to="/plate" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass hover:border-primary/40 transition">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">2</div>
                     <div className="font-semibold text-sm flex-1">🍽 {t("buildPlate")}</div>
-                  </div>
-                  <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
+                  </Link>
+                  <Link to="/meals" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass hover:border-primary/40 transition">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">3</div>
                     <div className="font-semibold text-sm flex-1">📸 {t("dishDecoderTitle")}</div>
-                  </div>
-                  <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
-                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">4</div>
+                  </Link>
+                  <Link to="/visit" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border-2 border-[#1B6E4D]/40 glass hover:border-[#1B6E4D] transition">
+                    <div className="w-6 h-6 rounded-full bg-[#1B6E4D] text-white flex items-center justify-center text-xs font-bold shrink-0">4</div>
+                    <div className="font-semibold text-sm flex-1">🛡️ {ashaVisitLabel}</div>
+                  </Link>
+                  <Link to="/game" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass hover:border-primary/40 transition">
+                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">5</div>
                     <div className="font-semibold text-sm flex-1">🎖 {t("grandChallenge")}</div>
-                  </div>
+                  </Link>
                 </div>
-                <Link to={progress.savedRoundIndex !== undefined ? "/game" : "/learn"} className="rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition">
-                  {progress.savedRoundIndex !== undefined ? (t("resumeChallenge" as any) || "Resume Challenge ➡️") : "Continue Training ➡️"}
-                </Link>
+                <div className="flex flex-col sm:flex-row gap-2.5">
+                  <Link to={progress.savedRoundIndex !== undefined ? "/game" : "/learn"} className="flex-1 rounded-2xl bg-primary text-primary-foreground py-4 px-4 text-base font-bold text-center shadow-md active:scale-[0.98] transition">
+                    {progress.savedRoundIndex !== undefined ? (t("resumeChallenge" as any) || "Resume Challenge ➡️") : "Continue Training ➡️"}
+                  </Link>
+                  <Link to="/visit" className="flex-1 rounded-2xl bg-[#1B6E4D] text-white py-4 px-4 text-base font-bold text-center shadow-md active:scale-[0.98] transition">
+                    🛡️ {ashaVisitLabel}
+                  </Link>
+                </div>
               </div>
             ) : (
               <>
@@ -147,6 +163,11 @@ function Index() {
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
                   <Link to="/meals" className="rounded-2xl bg-primary/90 backdrop-blur-md text-primary-foreground px-5 py-4 text-lg font-bold shadow-md min-h-14 flex items-center justify-center gap-2">
                     {"📸"} {t("dishDecoderTitle")}
+                  </Link>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
+                  <Link to="/visit" className="rounded-2xl bg-[#1B6E4D] backdrop-blur-md text-white px-5 py-4 text-lg font-bold shadow-md min-h-14 flex items-center justify-center gap-2">
+                    {"🛡️"} {ashaVisitLabel}
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
