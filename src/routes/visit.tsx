@@ -221,9 +221,9 @@ const UI_TEXT = {
     hi: "+ और जोड़ें",
   },
   quickAddTitle: {
-    en: "Quick Add Dish (Missed by Mother)",
-    te: "తల్లి మర్చిపోయిన వంటకాన్ని చేర్చండి",
-    hi: "माँ द्वारा छूटा हुआ व्यंजन जोड़ें",
+    en: "Select Other Dishes",
+    te: "ఇతర వంటకాలు ఎంచుకోండి",
+    hi: "अन्य व्यंजन चुनें",
   },
   doneBtn: {
     en: "Done ✓",
@@ -392,11 +392,66 @@ const UI_TEXT = {
   },
 };
 
+function getScenarioBucket(m: MotherVisitProfile): "over" | "under" | "mixed" {
+  const hasExtraLogged = m.motherLoggedDishes.some(
+    (d) => !m.recommendedAshaDishes.includes(d)
+  );
+  const hasMissedByMother = m.recommendedAshaDishes.some(
+    (d) => !m.motherLoggedDishes.includes(d)
+  );
+  if (hasExtraLogged && hasMissedByMother) return "mixed";
+  if (hasMissedByMother) return "under";
+  return "over";
+}
+
+function shuffleArray<T>(arr: T[]): T[] {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+let balancedMotherDeck: string[] = [];
+
 function pickRandomMother(excludeId?: string): MotherVisitProfile {
-  const pool = excludeId
-    ? MOTHER_VISIT_PROFILES.filter((m) => m.id !== excludeId)
-    : MOTHER_VISIT_PROFILES;
-  return pool[Math.floor(Math.random() * pool.length)];
+  if (balancedMotherDeck.length === 0) {
+    const over = shuffleArray(
+      MOTHER_VISIT_PROFILES.filter((m) => getScenarioBucket(m) === "over")
+    );
+    const under = shuffleArray(
+      MOTHER_VISIT_PROFILES.filter((m) => getScenarioBucket(m) === "under")
+    );
+    const mixed = shuffleArray(
+      MOTHER_VISIT_PROFILES.filter((m) => getScenarioBucket(m) === "mixed")
+    );
+    const maxLen = Math.max(over.length, under.length, mixed.length);
+    const nextDeck: string[] = [];
+    for (let i = 0; i < maxLen; i++) {
+      const triad = shuffleArray(
+        [over[i], under[i], mixed[i]].filter(Boolean) as MotherVisitProfile[]
+      );
+      for (const m of triad) {
+        nextDeck.push(m.id);
+      }
+    }
+    if (excludeId && nextDeck[0] === excludeId && nextDeck.length > 1) {
+      [nextDeck[0], nextDeck[1]] = [nextDeck[1], nextDeck[0]];
+    }
+    balancedMotherDeck = nextDeck;
+  }
+
+  let nextId = balancedMotherDeck.shift()!;
+  if (excludeId && nextId === excludeId && balancedMotherDeck.length > 0) {
+    const altId = balancedMotherDeck.shift()!;
+    balancedMotherDeck.unshift(nextId);
+    nextId = altId;
+  }
+
+  return (
+    MOTHER_VISIT_PROFILES.find((m) => m.id === nextId) || MOTHER_VISIT_PROFILES[0]
+  );
 }
 
 function AshaVisitSimulator() {
