@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShieldCheck,
@@ -12,6 +12,8 @@ import {
   ChevronUp,
   ChevronDown,
   RefreshCw,
+  Volume2,
+  Square,
 } from "lucide-react";
 import { useLang } from "@/lib/mddw/useLang";
 import { LANGS, type Lang } from "@/lib/mddw/translations";
@@ -177,6 +179,21 @@ const UI_TEXT = {
     en: "When you ask her what she ate yesterday, she says:",
     te: "నిన్న ఏమి తిన్నారని మీరు అడిగినప్పుడు, తల్లి ఇలా చెబుతోంది:",
     hi: "जब आप पूछती हैं कि कल क्या खाया, तो माँ कहती है:",
+  },
+  listenMotherBtn: {
+    en: "Listen to Mother",
+    te: "తల్లి మాట వినండి",
+    hi: "माँ की बात सुनें",
+  },
+  stopAudioBtn: {
+    en: "Stop Audio",
+    te: "ఆడియో ఆపండి",
+    hi: "ऑडियो रोकें",
+  },
+  listenCoachingBtn: {
+    en: "Listen",
+    te: "వినండి",
+    hi: "सुनें",
   },
   motherLoggedHeader: {
     en: "MOTHER LOGGED",
@@ -387,6 +404,8 @@ function AshaVisitSimulator() {
   const [recallError, setRecallError] = useState(false);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [showComparisonTable, setShowComparisonTable] = useState(true);
+  const [speakingSource, setSpeakingSource] = useState<"mother" | "coaching" | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const pinRefs = [
     useRef<HTMLInputElement>(null),
@@ -395,13 +414,66 @@ function AshaVisitSimulator() {
     useRef<HTMLInputElement>(null),
   ];
 
+  const stopAudio = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    setSpeakingSource(null);
+  }, []);
+
+  // Stop any playing audio when step, language, or mother changes
+  useEffect(() => {
+    stopAudio();
+    return () => stopAudio();
+  }, [step, lang, mother.id, stopAudio]);
+
+  const speakWithFallback = (text: string, source: "mother" | "coaching", mp3Url?: string) => {
+    if (speakingSource === source) {
+      stopAudio();
+      return;
+    }
+    stopAudio();
+    setSpeakingSource(source);
+
+    const runBrowserTTS = () => {
+      if (typeof window === "undefined" || !window.speechSynthesis) {
+        setSpeakingSource(null);
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-IN";
+      utterance.rate = 0.92;
+      utterance.onend = () => setSpeakingSource(null);
+      utterance.onerror = () => setSpeakingSource(null);
+      window.speechSynthesis.speak(utterance);
+    };
+
+    if (mp3Url && typeof window !== "undefined") {
+      const audio = new Audio(mp3Url);
+      audioRef.current = audio;
+      audio.onended = () => setSpeakingSource(null);
+      audio.onerror = () => runBrowserTTS();
+      audio.play().catch(() => runBrowserTTS());
+    } else {
+      runBrowserTTS();
+    }
+  };
+
   const handleLanguageChange = (nextLang: Lang) => {
     playPop();
+    stopAudio();
     setLang(nextLang);
   };
 
   const randomizeMother = () => {
     playPop();
+    stopAudio();
     const nextMother = pickRandomMother(mother.id);
     setMother(nextMother);
     setAshaDishes([]);
@@ -819,11 +891,40 @@ function AshaVisitSimulator() {
                   </p>
                 </div>
 
-                {/* Simulated Pregnant Woman Dialogue Card (for Training Realism) */}
-                <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex flex-col gap-1.5">
-                  <div className="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
-                    <span>👩🏽</span>
-                    <span>{UI_TEXT.motherSaysLabel[lang]}</span>
+                {/* Simulated Pregnant Woman Dialogue Card (with Voice Audio in EN/TE/HI) */}
+                <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex flex-col gap-2.5 shadow-2xs">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                      <span>👩🏽</span>
+                      <span>{UI_TEXT.motherSaysLabel[lang]}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        speakWithFallback(
+                          mother.motherDialogue[lang],
+                          "mother",
+                          `/audio/visit_${mother.id}_${lang}.mp3`
+                        )
+                      }
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold transition shadow-2xs cursor-pointer ${
+                        speakingSource === "mother"
+                          ? "bg-red-600 text-white animate-pulse"
+                          : "bg-[#1B6E4D] hover:bg-[#145A3E] text-white"
+                      }`}
+                    >
+                      {speakingSource === "mother" ? (
+                        <>
+                          <Square className="w-3.5 h-3.5 fill-current" />
+                          <span>{UI_TEXT.stopAudioBtn[lang]}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-3.5 h-3.5" />
+                          <span>{UI_TEXT.listenMotherBtn[lang]}</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                   <p className="text-sm font-semibold text-slate-800 italic leading-snug">
                     "{mother.motherDialogue[lang]}"
@@ -1031,10 +1132,46 @@ function AshaVisitSimulator() {
                 </div>
 
                 {/* SUGGESTED COACHING Card */}
-                <div className="bg-[#EAF5F0] border border-[#B8DEC9] border-l-4 border-l-[#1B6E4D] rounded-2xl p-4 flex flex-col gap-1.5">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#1B6E4D]">
-                    {UI_TEXT.suggestedCoachingHeader[lang]}
-                  </span>
+                <div className="bg-[#EAF5F0] border border-[#B8DEC9] border-l-4 border-l-[#1B6E4D] rounded-2xl p-4 flex flex-col gap-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-[#1B6E4D]">
+                      {UI_TEXT.suggestedCoachingHeader[lang]}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        speakWithFallback(
+                          UI_TEXT.suggestedCoachingBody[lang].replace(
+                            "{groups}",
+                            focusGroups
+                              .map(
+                                (gId) =>
+                                  GROUP_META.find((m) => m.id === gId)?.shortName[lang] || gId
+                              )
+                              .join(", ")
+                          ),
+                          "coaching"
+                        )
+                      }
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition cursor-pointer ${
+                        speakingSource === "coaching"
+                          ? "bg-red-600 text-white animate-pulse"
+                          : "bg-white border border-[#1B6E4D]/30 text-[#1B6E4D] hover:bg-[#d5ece2]"
+                      }`}
+                    >
+                      {speakingSource === "coaching" ? (
+                        <>
+                          <Square className="w-3 h-3 fill-current" />
+                          <span>{UI_TEXT.stopAudioBtn[lang]}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Volume2 className="w-3 h-3" />
+                          <span>{UI_TEXT.listenCoachingBtn[lang]}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                   <p className="text-sm text-slate-800 leading-relaxed font-medium">
                     {UI_TEXT.suggestedCoachingBody[lang].replace(
                       "{groups}",
