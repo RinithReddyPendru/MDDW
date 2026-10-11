@@ -208,6 +208,16 @@ const UI_TEXT = {
     te: "నిర్ధారించడానికి తల్లి ఐటమ్స్ నొక్కండి · ✓ ఆశా జాబితాకు చేర్చబడింది · + కింద మరిన్ని చేర్చండి",
     hi: "पुष्टि करने के लिए माँ के आइटम टैप करें · ✓ आशा सूची में जोड़ा गया · + नीचे से और जोड़ें",
   },
+  emptyAshaAddsHint: {
+    en: "No dishes added yet — tap the dishes she actually ate above or tap '+ Add more'",
+    te: "ఇంకా ఏ వంటకాలు చేర్చలేదు — తల్లి నిజంగా తిన్న వాటిని పైన నొక్కండి లేదా '+ మరిన్ని చేర్చండి' నొక్కండి",
+    hi: "अभी कोई व्यंजन नहीं जोड़ा गया — ऊपर माँ द्वारा खाए गए व्यंजन टैप करें या '+ और जोड़ें' दबाएं",
+  },
+  selectAtLeastOneError: {
+    en: "Please select the food items the mother ate yesterday before saving!",
+    te: "దయచేసి సేవ్ చేసే ముందు నిన్న తల్లి తిన్న ఆహార పదార్థాలను ఎంచుకోండి!",
+    hi: "कृपया सेव करने से पहले माँ द्वारा कल खाए गए खाद्य पदार्थों को चुनें!",
+  },
   saveRecallBtn: {
     en: "Save recall ({count} items) →",
     te: "నివేదిక సేవ్ చేయండి ({count} వంటకాలు) →",
@@ -372,10 +382,9 @@ function AshaVisitSimulator() {
   const [pinError, setPinError] = useState(false);
   const [showPinHint, setShowPinHint] = useState(false);
 
-  // Recall step state
-  const [ashaDishes, setAshaDishes] = useState<string[]>(() =>
-    mother.motherLoggedDishes.slice(0, 2)
-  );
+  // Recall step state — starts empty so the ASHA worker must fill it herself!
+  const [ashaDishes, setAshaDishes] = useState<string[]>([]);
+  const [recallError, setRecallError] = useState(false);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [showComparisonTable, setShowComparisonTable] = useState(true);
 
@@ -395,7 +404,8 @@ function AshaVisitSimulator() {
     playPop();
     const nextMother = pickRandomMother(mother.id);
     setMother(nextMother);
-    setAshaDishes(nextMother.motherLoggedDishes.slice(0, 2));
+    setAshaDishes([]);
+    setRecallError(false);
     setShowQuickAdd(false);
   };
 
@@ -439,6 +449,7 @@ function AshaVisitSimulator() {
 
   const toggleDishInRecall = (dishId: string) => {
     playPop();
+    setRecallError(false);
     setAshaDishes((prev) =>
       prev.includes(dishId) ? prev.filter((id) => id !== dishId) : [...prev, dishId]
     );
@@ -857,6 +868,11 @@ function AshaVisitSimulator() {
                   <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
                     {UI_TEXT.ashaAddsHeader[lang]}
                   </h2>
+                  {ashaDishes.length === 0 && (
+                    <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-3 text-xs font-medium text-slate-500">
+                      {UI_TEXT.emptyAshaAddsHint[lang]}
+                    </div>
+                  )}
                   <div className="flex flex-wrap gap-2.5 items-center">
                     {ashaDishes.map((dishId) => {
                       const dish = VISIT_DISHES.find((d) => d.id === dishId);
@@ -885,6 +901,12 @@ function AshaVisitSimulator() {
                       {UI_TEXT.addMoreBtn[lang]}
                     </button>
                   </div>
+
+                  {recallError && (
+                    <p className="text-xs font-bold text-red-600 mt-0.5">
+                      ⚠️ {UI_TEXT.selectAtLeastOneError[lang]}
+                    </p>
+                  )}
 
                   <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                     {UI_TEXT.tapMotherHelper[lang]}
@@ -1205,10 +1227,19 @@ function AshaVisitSimulator() {
             <button
               type="button"
               onClick={() => {
+                if (ashaDishes.length === 0) {
+                  playFailure();
+                  setRecallError(true);
+                  return;
+                }
                 playSuccess();
                 setStep("gaps");
               }}
-              className="w-full py-4 rounded-xl bg-[#1B6E4D] hover:bg-[#145A3E] text-white font-extrabold text-base shadow-md active:scale-[0.99] transition"
+              className={`w-full py-4 rounded-xl text-white font-extrabold text-base shadow-md active:scale-[0.99] transition ${
+                ashaDishes.length === 0
+                  ? "bg-[#8AB8A5] hover:bg-[#7aa995]"
+                  : "bg-[#1B6E4D] hover:bg-[#145A3E]"
+              }`}
             >
               {UI_TEXT.saveRecallBtn[lang].replace(
                 "{count}",
