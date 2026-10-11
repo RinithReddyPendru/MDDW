@@ -16,4 +16,10 @@ export default defineConfig({
     // Use Vercel preset for one-command deployment
     preset: "vercel",
   },
+  vite: {
+    build: {
+      cssCodeSplit: true,
+      chunkSizeWarningLimit: 1000,
+    },
+  },
 });

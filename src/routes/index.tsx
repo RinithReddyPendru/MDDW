@@ -53,6 +53,9 @@ function Index() {
           <img 
             src="/dashboard_hero.png" 
             alt="Dashboard" 
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             className="w-full flex-1 object-cover md:object-cover bg-primary/5 min-h-0 aspect-[4/3] md:aspect-auto"
           />
         </motion.div>

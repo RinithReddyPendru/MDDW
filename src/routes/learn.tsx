@@ -51,6 +51,9 @@ function Learn() {
           <img 
             src="/learn_hero.png" 
             alt="Learning Food Groups" 
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             className="w-full flex-1 object-cover md:object-cover bg-primary/5 min-h-0 aspect-[4/3] md:aspect-auto"
           />
           <div className="bg-primary/10 p-3 md:p-6 text-center border-t border-primary/20 shrink-0">

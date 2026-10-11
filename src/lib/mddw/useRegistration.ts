@@ -16,11 +16,18 @@ export type RegistrationGate =
  * one place and cannot drift between routes.
  */
 export function useRegistration(): RegistrationGate {
-  const [progress, setProgress] = useState<ProgressState | null>(null);
+  const [progress, setProgress] = useState<ProgressState | null>(() => {
+    if (typeof window !== "undefined") {
+      return loadProgress();
+    }
+    return null;
+  });
 
   useEffect(() => {
-    setProgress(loadProgress());
-  }, []);
+    if (progress === null) {
+      setProgress(loadProgress());
+    }
+  }, [progress]);
 
   if (progress === null) return { status: "loading", progress: null };
   if (!progress.userName || !progress.phoneNumber) {

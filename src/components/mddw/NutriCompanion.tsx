@@ -18,6 +18,10 @@ export function NutriCompanion({ message, compact }: Props) {
       <motion.img
         src="/asha_companion.png"
         alt="ASHA Companion"
+        width={compact ? 44 : 64}
+        height={compact ? 44 : 64}
+        loading="eager"
+        decoding="async"
         className={`object-contain rounded-full border border-primary/20 shrink-0 bg-background/50 shadow-sm ${
           compact ? "w-11 h-11" : "w-16 h-16 md:w-20 md:h-20"
         }`}

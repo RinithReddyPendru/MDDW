@@ -43,7 +43,7 @@ function FallbackImage({
       </div>
     );
   }
-  return <img src={src} alt={alt} className={className} onError={() => setError(true)} />;
+  return <img src={src} alt={alt} loading="lazy" decoding="async" className={className} onError={() => setError(true)} />;
 }
 
 export const Route = createFileRoute("/game")({
@@ -827,6 +827,8 @@ function PlayImageDish({ q, qIdx, total, onNext, foodGroupMap, t, lang }: any) {
         <img
           src={`${import.meta.env.BASE_URL || "/"}${q.data.imagePath.replace(/^\//, "")}`}
           alt="Meal"
+          loading="eager"
+          decoding="async"
           className="w-full h-64 object-cover object-center"
         />
         <div className="p-4 bg-card text-center">
@@ -1048,6 +1050,8 @@ function PlayProbing({ q, qIdx, total, onNext, t, lang, foodGroupMap, allGroups 
             <img
               src={`${import.meta.env.BASE_URL || "/"}images/avatars/mother_neutral.png`}
               alt="Mother"
+              loading="eager"
+              decoding="async"
               className="w-full h-full object-cover"
             />
           </div>

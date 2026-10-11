@@ -46,6 +46,9 @@ function Login() {
           <img 
             src="/login_hero.jpg" 
             alt="ASHA Training" 
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             className="w-full h-auto object-contain bg-primary/5"
           />
           <div className="bg-primary/10 p-6 text-center border-t border-primary/20">
@@ -69,6 +72,9 @@ function Login() {
               <img 
                 src="/login_hero.jpg" 
                 alt="ASHA Training" 
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 className="w-full h-auto object-contain bg-primary/5"
               />
               <div className="bg-primary/10 p-4 text-center border-t border-primary/20">

@@ -98,6 +98,9 @@ function MealsComponent() {
               >
                 <img 
                   src={getImgUrl(meal.imageUrl)} 
+                  alt={meal.id}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-90" />
@@ -151,7 +154,7 @@ function DishModal({ mealId, onClose, lang, t }: any) {
           className="bg-background rounded-t-[2.5rem] sm:rounded-[2.5rem] shadow-2xl overflow-hidden w-full max-w-md max-h-[90dvh] flex flex-col pointer-events-auto"
         >
           <div className="relative h-72 shrink-0">
-             <img src={getImgUrl(meal.imageUrl)} className="w-full h-full object-cover" />
+             <img src={getImgUrl(meal.imageUrl)} alt={meal.id} decoding="async" className="w-full h-full object-cover" />
              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/30" />
              
              <button 
