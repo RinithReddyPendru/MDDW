@@ -118,35 +118,26 @@ function Index() {
                 </div>
                 <div className="flex flex-col gap-2 relative">
                   <div className="absolute left-6 top-6 bottom-6 w-0.5 bg-border z-0" />
-                  <Link to="/learn" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass hover:border-primary/40 transition">
+                  <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">1</div>
                     <div className="font-semibold text-sm flex-1">📖 {t("learnFoodGroups")}</div>
-                  </Link>
-                  <Link to="/plate" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass hover:border-primary/40 transition">
+                  </div>
+                  <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">2</div>
                     <div className="font-semibold text-sm flex-1">🍽 {t("buildPlate")}</div>
-                  </Link>
-                  <Link to="/meals" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass hover:border-primary/40 transition">
+                  </div>
+                  <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
                     <div className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-xs font-bold shrink-0">3</div>
                     <div className="font-semibold text-sm flex-1">📸 {t("dishDecoderTitle")}</div>
-                  </Link>
-                  <Link to="/visit" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border-2 border-[#1B6E4D]/40 glass hover:border-[#1B6E4D] transition">
-                    <div className="w-6 h-6 rounded-full bg-[#1B6E4D] text-white flex items-center justify-center text-xs font-bold shrink-0">4</div>
-                    <div className="font-semibold text-sm flex-1">🛡️ {ashaVisitLabel}</div>
-                  </Link>
-                  <Link to="/game" className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass hover:border-primary/40 transition">
-                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">5</div>
+                  </div>
+                  <div className="flex items-center gap-4 relative z-10 bg-card p-3 rounded-2xl border glass">
+                    <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shrink-0">4</div>
                     <div className="font-semibold text-sm flex-1">🎖 {t("grandChallenge")}</div>
-                  </Link>
+                  </div>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2.5">
-                  <Link to={progress.savedRoundIndex !== undefined ? "/game" : "/learn"} className="flex-1 rounded-2xl bg-primary text-primary-foreground py-4 px-4 text-base font-bold text-center shadow-md active:scale-[0.98] transition">
-                    {progress.savedRoundIndex !== undefined ? (t("resumeChallenge" as any) || "Resume Challenge ➡️") : "Continue Training ➡️"}
-                  </Link>
-                  <Link to="/visit" className="flex-1 rounded-2xl bg-[#1B6E4D] text-white py-4 px-4 text-base font-bold text-center shadow-md active:scale-[0.98] transition">
-                    🛡️ {ashaVisitLabel}
-                  </Link>
-                </div>
+                <Link to={progress.savedRoundIndex !== undefined ? "/game" : "/learn"} className="rounded-2xl bg-primary text-primary-foreground py-4 text-lg font-bold text-center shadow-md active:scale-[0.98] transition">
+                  {progress.savedRoundIndex !== undefined ? (t("resumeChallenge" as any) || "Resume Challenge ➡️") : "Continue Training ➡️"}
+                </Link>
               </div>
             ) : (
               <>
@@ -166,22 +157,25 @@ function Index() {
                   </Link>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
-                  <Link to="/visit" className="rounded-2xl bg-[#1B6E4D] backdrop-blur-md text-white px-5 py-4 text-lg font-bold shadow-md min-h-14 flex items-center justify-center gap-2">
-                    {"🛡️"} {ashaVisitLabel}
-                  </Link>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
                   <Link to="/game" className="rounded-2xl bg-amber-600/90 backdrop-blur-md text-white px-5 py-4 text-lg font-bold shadow-md min-h-14 flex items-center justify-center gap-2">
                     {"🗣"} {progress.savedRoundIndex !== undefined ? t("resumeChallenge" as any) || "Resume Challenge" : t("startTraining")}
                   </Link>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
-                  <Link to="/progress" className="rounded-2xl glass-heavy text-foreground border-2 border-border/50 px-5 py-4 text-lg font-bold shadow-sm min-h-14 flex items-center justify-center gap-2">
-                    {"📈"} {t("myProgress")}
-                  </Link>
-                </motion.div>
               </>
             )}
+
+            {/* Separate Standalone Options (Always visible below the Training Path) */}
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
+              <Link to="/visit" className="rounded-2xl bg-[#1B6E4D] hover:bg-[#145A3E] text-white border-2 border-[#145A3E]/30 px-5 py-4 text-lg font-bold shadow-md min-h-14 flex items-center justify-center gap-2 transition">
+                {"🛡️"} {ashaVisitLabel}
+              </Link>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
+              <Link to="/progress" className="rounded-2xl glass-heavy text-foreground border-2 border-border/50 px-5 py-4 text-lg font-bold shadow-sm min-h-14 flex items-center justify-center gap-2">
+                {"📈"} {t("myProgress")}
+              </Link>
+            </motion.div>
           </nav>
 
           <p className="text-center text-xs text-muted-foreground mt-auto pt-4">
