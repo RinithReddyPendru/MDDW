@@ -176,14 +176,24 @@ const UI_TEXT = {
     hi: "माँ द्वारा दर्ज किए गए आइटम पर टैप करके नीचे जोड़ें। छूटे हुए आइटम को '+ और जोड़ें' से जोड़ें।",
   },
   motherSaysLabel: {
-    en: "When you ask her what she ate yesterday, she says:",
-    te: "నిన్న ఏమి తిన్నారని మీరు అడిగినప్పుడు, తల్లి ఇలా చెబుతోంది:",
-    hi: "जब आप पूछती हैं कि कल क्या खाया, तो माँ कहती है:",
+    en: "Ask the mother what she ate yesterday (Andhra Telugu Voice):",
+    te: "నిన్న ఏమి తిన్నారో తల్లిని అడగండి (ఆంధ్ర తెలుగు వాయిస్):",
+    hi: "माँ से पूछें कि कल उन्होंने क्या खाया (आंध्र तेलुगु आवाज़):",
   },
-  listenMotherBtn: {
-    en: "Listen to Mother",
-    te: "తల్లి మాట వినండి",
-    hi: "माँ की बात सुनें",
+  askMotherTeluguBtn: {
+    en: "🎙️ Ask Mother: \"నిన్న ఏం తిన్నావు అమ్మా?\" (Play Andhra Telugu)",
+    te: "🎙️ తల్లిని అడగండి: \"నిన్న ఏం తిన్నావు అమ్మా?\" (తల్లి మాట వినండి)",
+    hi: "🎙️ माँ से पूछें: \"నిన్న ఏం తిన్నావు అమ్మా?\" (तेलुगु में सुनें)",
+  },
+  listenTranslatedBtn: {
+    en: "🔊 Listen in English (Andhra Accent)",
+    te: "🔊 ఇంగ్లీష్‌లో వినండి",
+    hi: "🔊 हिंदी में सुनें",
+  },
+  clickToHearHint: {
+    en: "Tap the button above to hear the pregnant mother explain in Andhra Telugu what she actually ate yesterday.",
+    te: "నిన్న తల్లి నిజంగా ఏమి తిన్నారో ఆంధ్ర తెలుగులో వినడానికి పై బటన్‌ను నొక్కండి.",
+    hi: "माँ ने कल वास्तव में क्या खाया, यह आंध्र तेलुगु में सुनने के लिए ऊपर दिए गए बटन को दबाएं।",
   },
   stopAudioBtn: {
     en: "Stop Audio",
@@ -401,10 +411,13 @@ function AshaVisitSimulator() {
 
   // Recall step state — starts empty so the ASHA worker must fill it herself!
   const [ashaDishes, setAshaDishes] = useState<string[]>([]);
+  const [motherSpoken, setMotherSpoken] = useState(false);
   const [recallError, setRecallError] = useState(false);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const [showComparisonTable, setShowComparisonTable] = useState(true);
-  const [speakingSource, setSpeakingSource] = useState<"mother" | "coaching" | null>(null);
+  const [speakingSource, setSpeakingSource] = useState<
+    "mother_te" | "mother_lang" | "coaching" | null
+  >(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const pinRefs = [
@@ -432,7 +445,12 @@ function AshaVisitSimulator() {
     return () => stopAudio();
   }, [step, lang, mother.id, stopAudio]);
 
-  const speakWithFallback = (text: string, source: "mother" | "coaching", mp3Url?: string) => {
+  const speakWithFallback = (
+    text: string,
+    source: "mother_te" | "mother_lang" | "coaching",
+    mp3Url?: string,
+    ttsLocale?: string
+  ) => {
     if (speakingSource === source) {
       stopAudio();
       return;
@@ -447,7 +465,8 @@ function AshaVisitSimulator() {
       }
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-IN";
+      utterance.lang =
+        ttsLocale || (lang === "te" ? "te-IN" : lang === "hi" ? "hi-IN" : "en-IN");
       utterance.rate = 0.92;
       utterance.onend = () => setSpeakingSource(null);
       utterance.onerror = () => setSpeakingSource(null);
@@ -477,6 +496,7 @@ function AshaVisitSimulator() {
     const nextMother = pickRandomMother(mother.id);
     setMother(nextMother);
     setAshaDishes([]);
+    setMotherSpoken(false);
     setRecallError(false);
     setShowQuickAdd(false);
   };
@@ -891,44 +911,89 @@ function AshaVisitSimulator() {
                   </p>
                 </div>
 
-                {/* Simulated Pregnant Woman Dialogue Card (with Voice Audio in EN/TE/HI) */}
-                <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex flex-col gap-2.5 shadow-2xs">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
-                      <span>👩🏽</span>
-                      <span>{UI_TEXT.motherSaysLabel[lang]}</span>
-                    </div>
+                {/* Simulated Pregnant Woman Dialogue Card (Andhra Telugu Voice on button click) */}
+                <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-4 flex flex-col gap-3 shadow-2xs">
+                  <div className="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+                    <span>👩🏽</span>
+                    <span>{UI_TEXT.motherSaysLabel[lang]}</span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
-                      onClick={() =>
+                      onClick={() => {
+                        setMotherSpoken(true);
                         speakWithFallback(
-                          mother.motherDialogue[lang],
-                          "mother",
-                          `/audio/visit_${mother.id}_${lang}.mp3`
-                        )
-                      }
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-extrabold transition shadow-2xs cursor-pointer ${
-                        speakingSource === "mother"
+                          mother.motherDialogue.te,
+                          "mother_te",
+                          `/audio/visit_${mother.id}_te.mp3`,
+                          "te-IN"
+                        );
+                      }}
+                      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-extrabold transition shadow-xs cursor-pointer ${
+                        speakingSource === "mother_te"
                           ? "bg-red-600 text-white animate-pulse"
                           : "bg-[#1B6E4D] hover:bg-[#145A3E] text-white"
                       }`}
                     >
-                      {speakingSource === "mother" ? (
+                      {speakingSource === "mother_te" ? (
                         <>
-                          <Square className="w-3.5 h-3.5 fill-current" />
+                          <Square className="w-3.5 h-3.5 fill-current shrink-0" />
                           <span>{UI_TEXT.stopAudioBtn[lang]}</span>
                         </>
                       ) : (
                         <>
-                          <Volume2 className="w-3.5 h-3.5" />
-                          <span>{UI_TEXT.listenMotherBtn[lang]}</span>
+                          <Volume2 className="w-4 h-4 shrink-0" />
+                          <span>{UI_TEXT.askMotherTeluguBtn[lang]}</span>
                         </>
                       )}
                     </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMotherSpoken(true);
+                        const altLang = lang === "te" ? "en" : lang;
+                        speakWithFallback(
+                          mother.motherDialogue[altLang],
+                          "mother_lang",
+                          `/audio/visit_${mother.id}_${altLang}.mp3`,
+                          altLang === "hi" ? "hi-IN" : "en-IN"
+                        );
+                      }}
+                      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                        speakingSource === "mother_lang"
+                          ? "bg-red-600 text-white border-red-600 animate-pulse"
+                          : "bg-white text-slate-700 border-amber-300 hover:bg-amber-100/60"
+                      }`}
+                    >
+                      {speakingSource === "mother_lang" ? (
+                        <>
+                          <Square className="w-3 h-3 fill-current shrink-0" />
+                          <span>{UI_TEXT.stopAudioBtn[lang]}</span>
+                        </>
+                      ) : (
+                        <span>{UI_TEXT.listenTranslatedBtn[lang]}</span>
+                      )}
+                    </button>
                   </div>
-                  <p className="text-sm font-semibold text-slate-800 italic leading-snug">
-                    "{mother.motherDialogue[lang]}"
-                  </p>
+
+                  {!motherSpoken ? (
+                    <p className="text-xs font-medium text-amber-900/80 leading-relaxed">
+                      {UI_TEXT.clickToHearHint[lang]}
+                    </p>
+                  ) : (
+                    <div className="bg-white/90 border border-amber-200/80 rounded-xl p-3 flex flex-col gap-1.5">
+                      <p className="text-sm font-bold text-slate-900 leading-relaxed">
+                        "{mother.motherDialogue.te}"
+                      </p>
+                      {lang !== "te" && (
+                        <p className="text-xs font-medium text-slate-600 italic leading-relaxed border-t border-slate-100 pt-1.5">
+                          "{mother.motherDialogue[lang]}"
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* MOTHER LOGGED */}
