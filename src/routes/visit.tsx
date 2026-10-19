@@ -556,6 +556,18 @@ function AshaVisitSimulator() {
     setShowQuickAdd(false);
   };
 
+  const selectMotherById = (targetId: string) => {
+    const nextMother = MOTHER_VISIT_PROFILES.find((m) => m.id === targetId);
+    if (!nextMother) return;
+    playPop();
+    stopAudio();
+    setMother(nextMother);
+    setAshaDishes([]);
+    setMotherSpoken(false);
+    setRecallError(false);
+    setShowQuickAdd(false);
+  };
+
   const handlePinChange = (index: number, value: string) => {
     const digit = value.replace(/\D/g, "").slice(-1);
     const next = [...pinDigits];
@@ -653,27 +665,42 @@ function AshaVisitSimulator() {
     return (
       <main className="min-h-dvh bg-white flex flex-col items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-3xl sm:border sm:border-slate-200 sm:shadow-xl p-6 flex flex-col gap-6 relative">
-          {/* Top bar with language switcher & close X */}
-          <div className="flex items-center justify-between">
+          {/* Top bar with mother picker, language switcher & close X */}
+          <div className="flex items-center justify-between gap-2">
             <select
-              aria-label="Language"
-              value={lang}
-              onChange={(e) => handleLanguageChange(e.target.value as Lang)}
-              className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-bold text-slate-800 hover:bg-slate-50 transition cursor-pointer"
+              aria-label="Select Mother"
+              value={mother.id}
+              onChange={(e) => selectMotherById(e.target.value)}
+              className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs font-bold text-slate-800 hover:bg-slate-50 transition cursor-pointer max-w-[190px] truncate"
             >
-              {LANGS.map((l) => (
-                <option key={l.code} value={l.code}>
-                  {l.label}
+              {MOTHER_VISIT_PROFILES.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name[lang]} (W{m.week} · {m.trimester})
                 </option>
               ))}
             </select>
-            <button
-              onClick={() => navigate({ to: "/" })}
-              className="p-2 text-slate-500 hover:text-slate-800 rounded-full hover:bg-slate-100 transition"
-              aria-label="Close"
-            >
-              <X className="w-6 h-6" />
-            </button>
+
+            <div className="flex items-center gap-1.5">
+              <select
+                aria-label="Language"
+                value={lang}
+                onChange={(e) => handleLanguageChange(e.target.value as Lang)}
+                className="rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs font-bold text-slate-800 hover:bg-slate-50 transition cursor-pointer"
+              >
+                {LANGS.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => navigate({ to: "/" })}
+                className="p-1.5 text-slate-500 hover:text-slate-800 rounded-full hover:bg-slate-100 transition cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Green Hero Card (Matches Screenshot 1) */}
@@ -884,6 +911,34 @@ function AshaVisitSimulator() {
                 transition={{ duration: 0.2 }}
                 className="flex flex-col gap-5"
               >
+                {/* Mother Profile Selector for ASHA training */}
+                <div className="bg-emerald-50/80 border border-emerald-200/90 rounded-2xl p-3 flex items-center justify-between gap-2 shadow-2xs">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-xl">🤰</span>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 leading-tight">
+                        {lang === "te" ? "శిక్షణ ప్రొఫైల్" : lang === "hi" ? "प्रशिक्षण प्रोफाइल" : "Training Case"}
+                      </p>
+                      <p className="text-xs font-extrabold text-[#0F4730] truncate">
+                        {mother.name[lang]} · Week {mother.week} ({TRIMESTER_LABELS[mother.trimester][lang]})
+                      </p>
+                    </div>
+                  </div>
+
+                  <select
+                    aria-label="Switch Mother Profile"
+                    value={mother.id}
+                    onChange={(e) => selectMotherById(e.target.value)}
+                    className="bg-white border border-emerald-300 rounded-xl px-2.5 py-1 text-xs font-bold text-[#0F4730] shadow-xs cursor-pointer focus:outline-none max-w-[160px] truncate"
+                  >
+                    {MOTHER_VISIT_PROFILES.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name[lang]} (W{m.week} · {m.trimester})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 {/* Dark Green 30-Day Banner */}
                 <div className="bg-[#1B6E4D] text-white rounded-2xl p-5 shadow-sm">
                   <div className="flex items-baseline justify-between gap-2">

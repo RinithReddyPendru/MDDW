@@ -29,6 +29,20 @@ function Index() {
       ? "आशा गृह भ्रमण मोड"
       : "ASHA Home Visit Mode";
 
+  const motherAppLabel =
+    lang === "te"
+      ? "గర్భిణీ స్త్రీ యాప్ డెమో (Mother's App)"
+      : lang === "hi"
+      ? "गर्भवती माँ ऐप सिमुलेटर (Demo)"
+      : "Mother's App Simulator (Demo)";
+
+  const scannerLabel =
+    lang === "te"
+      ? "స్మార్ట్ ఆహార స్కానర్ (AI Food Scanner)"
+      : lang === "hi"
+      ? "स्मार्ट फूड स्कैनर (AI Food Scanner)"
+      : "Smart Food Scanner (AI Vision)";
+
   const { status, progress } = useRegistration();
 
   // Nothing is known until the client has read storage; render the ground colour
@@ -166,8 +180,20 @@ function Index() {
 
             {/* Separate Standalone Options (Always visible below the Training Path) */}
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
+              <Link to="/mother" className="rounded-2xl bg-[#D81B60] hover:bg-[#c2185b] text-white border-2 border-[#ad1457]/30 px-5 py-4 text-lg font-bold shadow-md min-h-14 flex items-center justify-center gap-2 transition">
+                {"🤰"} {motherAppLabel}
+              </Link>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
               <Link to="/visit" className="rounded-2xl bg-[#1B6E4D] hover:bg-[#145A3E] text-white border-2 border-[#145A3E]/30 px-5 py-4 text-lg font-bold shadow-md min-h-14 flex items-center justify-center gap-2 transition">
                 {"🛡️"} {ashaVisitLabel}
+              </Link>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }}>
+              <Link to="/scanner" className="rounded-2xl bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 text-white border-2 border-amber-400/40 px-5 py-4 text-lg font-bold shadow-md min-h-14 flex items-center justify-center gap-2 transition">
+                {"📸"} {scannerLabel}
               </Link>
             </motion.div>
 

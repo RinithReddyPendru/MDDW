@@ -15,8 +15,10 @@ import { Route as GameRouteImport } from './routes/game'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MealsRouteImport } from './routes/meals'
+import { Route as MotherRouteImport } from './routes/mother'
 import { Route as PlateRouteImport } from './routes/plate'
 import { Route as ProgressRouteImport } from './routes/progress'
+import { Route as ScannerRouteImport } from './routes/scanner'
 import { Route as VisitRouteImport } from './routes/visit'
 
 const IndexRoute = IndexRouteImport.update({
@@ -49,6 +51,11 @@ const MealsRoute = MealsRouteImport.update({
   path: '/meals',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MotherRoute = MotherRouteImport.update({
+  id: '/mother',
+  path: '/mother',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlateRoute = PlateRouteImport.update({
   id: '/plate',
   path: '/plate',
@@ -57,6 +64,11 @@ const PlateRoute = PlateRouteImport.update({
 const ProgressRoute = ProgressRouteImport.update({
   id: '/progress',
   path: '/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScannerRoute = ScannerRouteImport.update({
+  id: '/scanner',
+  path: '/scanner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VisitRoute = VisitRouteImport.update({
@@ -72,8 +84,10 @@ export interface FileRoutesByFullPath {
   '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
+  '/mother': typeof MotherRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
+  '/scanner': typeof ScannerRoute
   '/visit': typeof VisitRoute
 }
 export interface FileRoutesByTo {
@@ -83,8 +97,10 @@ export interface FileRoutesByTo {
   '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
+  '/mother': typeof MotherRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
+  '/scanner': typeof ScannerRoute
   '/visit': typeof VisitRoute
 }
 export interface FileRoutesById {
@@ -95,8 +111,10 @@ export interface FileRoutesById {
   '/learn': typeof LearnRoute
   '/login': typeof LoginRoute
   '/meals': typeof MealsRoute
+  '/mother': typeof MotherRoute
   '/plate': typeof PlateRoute
   '/progress': typeof ProgressRoute
+  '/scanner': typeof ScannerRoute
   '/visit': typeof VisitRoute
 }
 export interface FileRouteTypes {
@@ -108,8 +126,10 @@ export interface FileRouteTypes {
     | '/learn'
     | '/login'
     | '/meals'
+    | '/mother'
     | '/plate'
     | '/progress'
+    | '/scanner'
     | '/visit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -119,8 +139,10 @@ export interface FileRouteTypes {
     | '/learn'
     | '/login'
     | '/meals'
+    | '/mother'
     | '/plate'
     | '/progress'
+    | '/scanner'
     | '/visit'
   id:
     | '__root__'
@@ -130,8 +152,10 @@ export interface FileRouteTypes {
     | '/learn'
     | '/login'
     | '/meals'
+    | '/mother'
     | '/plate'
     | '/progress'
+    | '/scanner'
     | '/visit'
   fileRoutesById: FileRoutesById
 }
@@ -142,8 +166,10 @@ export interface RootRouteChildren {
   LearnRoute: typeof LearnRoute
   LoginRoute: typeof LoginRoute
   MealsRoute: typeof MealsRoute
+  MotherRoute: typeof MotherRoute
   PlateRoute: typeof PlateRoute
   ProgressRoute: typeof ProgressRoute
+  ScannerRoute: typeof ScannerRoute
   VisitRoute: typeof VisitRoute
 }
 
@@ -191,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MealsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mother': {
+      id: '/mother'
+      path: '/mother'
+      fullPath: '/mother'
+      preLoaderRoute: typeof MotherRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/plate': {
       id: '/plate'
       path: '/plate'
@@ -203,6 +236,13 @@ declare module '@tanstack/react-router' {
       path: '/progress'
       fullPath: '/progress'
       preLoaderRoute: typeof ProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scanner': {
+      id: '/scanner'
+      path: '/scanner'
+      fullPath: '/scanner'
+      preLoaderRoute: typeof ScannerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/visit': {
@@ -222,8 +262,10 @@ const rootRouteChildren: RootRouteChildren = {
   LearnRoute: LearnRoute,
   LoginRoute: LoginRoute,
   MealsRoute: MealsRoute,
+  MotherRoute: MotherRoute,
   PlateRoute: PlateRoute,
   ProgressRoute: ProgressRoute,
+  ScannerRoute: ScannerRoute,
   VisitRoute: VisitRoute,
 }
 export const routeTree = rootRouteImport

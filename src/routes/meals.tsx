@@ -53,6 +53,19 @@ function MealsComponent() {
           <p className="text-muted-foreground font-medium text-lg">
             {t("dishDecoderDesc")}
           </p>
+          <div className="mt-3 flex justify-center">
+            <Link
+              to="/scanner"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md transition active:scale-95"
+            >
+              <span>📸</span>
+              <span>
+                {lang === "te"
+                  ? "మీ స్వంత ఆహారాన్ని స్కాన్ చేయండి ➡️"
+                  : "Scan your own food with AI ➡️"}
+              </span>
+            </Link>
+          </div>
         </motion.div>
 
         <div className="flex rounded-full bg-muted/60 p-1.5 shadow-inner">
