@@ -741,7 +741,7 @@ function ScannerPage() {
                           method: "POST",
                           headers: { "Content-Type": "application/json" },
                           body: JSON.stringify({
-                            items: [{ dish_id: d.id === "pesarattu" ? "JM-106" : d.id === "gutti_vankaya" ? "JM-25" : "JM-03", grams: 180 }],
+                            items: [{ catalog_id: d.id === "pesarattu" ? "JM-106" : d.id === "gutti_vankaya" ? "JM-25" : "JM-03", grams: 180 }],
                           }),
                         });
                         const calcData = await calcRes.json();
