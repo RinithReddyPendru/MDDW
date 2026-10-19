@@ -24,7 +24,14 @@ import { LANGS, type Lang } from "@/lib/mddw/translations";
 import { isMuted, toggleMute, playSuccess, playPop } from "@/lib/mddw/audio";
 
 export const Route = createFileRoute("/scanner")({
+  head: () => ({
+    meta: [
+      { title: "Smart Telugu Food Scanner – ICMR-NIN & MDD-W" },
+      { name: "description", content: "AI food image recognition with ICMR-NIN nutrition values and MDD-W 10 food groups diversity tracking." },
+    ],
+  }),
   component: ScannerPage,
+  errorComponent: ScannerErrorFallback,
 });
 
 interface ScannedItem {
@@ -98,7 +105,7 @@ const SAMPLE_DISHES = [
   { id: "keera_salad", name: "కీరా దోసకాయ సలాడ్ (Cucumber Salad)", emoji: "🥒", hint: "Raw Salad" },
 ];
 
-export function ScannerPage() {
+function ScannerPage() {
   const { lang, setLang, t } = useLang();
   const navigate = useNavigate();
 
@@ -338,7 +345,7 @@ export function ScannerPage() {
         />
 
         {/* Viewfinder / Preview Hero Card */}
-        <div className="relative rounded-3xl overflow-hidden shadow-xl border-4 border-amber-600/30 bg-black aspect-4/3 flex items-center justify-center">
+        <div className="relative rounded-3xl overflow-hidden shadow-xl border-4 border-amber-600/30 bg-black aspect-[4/3] flex items-center justify-center">
           {imagePreview ? (
             <img
               src={imagePreview}
@@ -784,3 +791,34 @@ export function ScannerPage() {
     </main>
   );
 }
+
+function ScannerErrorFallback({ error, reset }: { error: any; reset: () => void }) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-amber-50 to-background text-foreground text-center">
+      <div className="max-w-md w-full bg-card p-6 rounded-3xl border-2 border-amber-500/30 shadow-xl flex flex-col gap-4">
+        <div className="text-4xl">📸⚠️</div>
+        <h2 className="text-xl font-bold text-amber-900 dark:text-amber-200">
+          ఆహార స్కానర్ లోడ్ కాలేదు
+        </h2>
+        <p className="text-xs text-muted-foreground">
+          {error instanceof Error ? error.message : "Something went wrong loading the food scanner."}
+        </p>
+        <div className="flex gap-2 justify-center mt-2">
+          <button
+            onClick={() => reset()}
+            className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-md transition"
+          >
+            మళ్ళీ ప్రయత్నించండి (Try again)
+          </button>
+          <Link
+            to="/"
+            className="px-4 py-2.5 rounded-xl bg-card border border-border text-foreground hover:bg-muted font-bold text-xs shadow-xs transition"
+          >
+            హోమ్ పేజీ (Go home)
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+

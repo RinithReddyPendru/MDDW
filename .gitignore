@@ -36,3 +36,5 @@ dist-ssr
 
 # Temporary scripts
 *.cjs
+
+.vercel
