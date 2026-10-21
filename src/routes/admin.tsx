@@ -344,7 +344,7 @@ function AdminDashboard() {
                 className="flex items-center gap-1.5 text-xs font-bold bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100 py-2.5 px-4 rounded-xl transition shadow-sm"
                 title="Open standalone food scanner admin"
               >
-                <span>🍛 Standalone Scanner Admin</span>
+                <span>🍛 AIM FOOD SCANNER Admin</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
 
@@ -377,7 +377,7 @@ function AdminDashboard() {
               }`}
             >
               <UtensilsCrossed className="w-4 h-4 text-amber-500" />
-              <span>🍛 User Food Scans</span>
+              <span>🍛 AIM Food Scans</span>
               <span className="ml-1 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-800 font-black">
                 {totalScansCount}
               </span>
@@ -763,7 +763,7 @@ function AdminDashboard() {
                     {inspectingScan.name}
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Category: {inspectingScan.category} • Source: {inspectingScan.source || "Annapurna Telugu Food Scanner"}
+                    Category: {inspectingScan.category} • Source: {inspectingScan.source || "AIM FOOD SCANNER"}
                   </p>
                 </div>
 
