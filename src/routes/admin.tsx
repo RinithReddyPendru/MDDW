@@ -122,7 +122,7 @@ function AdminDashboard() {
         });
 
         // 2. Food Scanner Listener (Collection: food_scanner)
-        const qScans = query(collection(db, "food_scanner"), orderBy("timestamp", "desc"), limit(200));
+        const qScans = collection(db, "food_scanner");
         unsubScans = onSnapshot(qScans, (snapshot) => {
           const list: FoodScanItem[] = [];
           snapshot.forEach(docSnap => {
@@ -147,6 +147,11 @@ function AdminDashboard() {
               created_at_iso: d.created_at_iso || "",
               source: d.source || "Telugu Food Scanner"
             });
+          });
+          list.sort((a, b) => {
+            const ta = a.timestamp || (a.created_at_iso ? new Date(a.created_at_iso).getTime() : 0);
+            const tb = b.timestamp || (b.created_at_iso ? new Date(b.created_at_iso).getTime() : 0);
+            return tb - ta;
           });
           setFoodScans(list);
           setScansLoading(false);
