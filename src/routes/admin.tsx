@@ -720,210 +720,202 @@ function AdminDashboard() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-border flex flex-col"
+              className="bg-white rounded-3xl w-full max-w-4xl max-h-[calc(100vh-2rem)] overflow-hidden shadow-2xl border border-border flex flex-col"
             >
-              {/* Modal Header */}
-              <div className="p-6 border-b border-border flex items-center justify-between sticky top-0 bg-white z-10">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">🔍</span>
-                  <h2 className="text-lg font-black text-foreground">Scan Dossier & Nutrition</h2>
-                </div>
-                <button
-                  onClick={() => setInspectingScan(null)}
-                  className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition"
-                >
-                  <X className="w-5 h-5 text-slate-600" />
-                </button>
-              </div>
-
-              {/* Modal Body */}
-              <div className="p-6 flex flex-col gap-6">
-                {/* Photo */}
-                <div className="w-full h-64 bg-slate-900 rounded-2xl overflow-hidden relative shadow-inner">
-                  {inspectingScan.imageUrl ? (
-                    <img
-                      src={inspectingScan.imageUrl}
-                      alt={inspectingScan.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-slate-400">
-                      No Image Recorded
-                    </div>
-                  )}
-                  <span className="absolute bottom-3 left-3 px-3 py-1 rounded-lg text-xs font-bold bg-black/75 text-white backdrop-blur-sm">
-                    {inspectingScan.timeLabel || "Recently Scanned"}
-                  </span>
-                </div>
-
-                {/* Identity & Status */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-black text-white ${
+              {/* Modal Header (Compact All-in-One Bar) */}
+              <div className="px-5 py-3 border-b border-border flex items-center justify-between bg-white z-10 gap-4">
+                <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`px-2 py-0.5 rounded-full text-[11px] font-black text-white ${
                       inspectingScan.status.toLowerCase() === 'logged' ? 'bg-emerald-600' : 'bg-amber-600'
                     }`}>
                       {inspectingScan.status}
                     </span>
-                    <span className="px-2 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-600">
+                    <span className="px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-600">
                       {inspectingScan.mealLabel || "Meal"}
                     </span>
-                    <span className="text-xs text-muted-foreground ml-auto font-mono">
+                    <span className="text-[11px] text-muted-foreground font-mono">
                       ID: {inspectingScan.firestoreId}
                     </span>
+                    <span className="text-[11px] text-muted-foreground">
+                      {inspectingScan.timeLabel || "Recently Scanned"}
+                    </span>
                   </div>
-
-                  <h3 className="text-2xl font-black text-foreground">
+                  <h3 className="text-base font-black text-foreground truncate">
                     {inspectingScan.name}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground truncate">
                     Category: {inspectingScan.category} • Source: {inspectingScan.source || "AIM FOOD SCANNER"}
                   </p>
                 </div>
 
-                {/* 6 Macro & Micro Nutrition Grid */}
-                <div className="grid grid-cols-3 gap-3 p-4 bg-slate-50 rounded-2xl border border-border/50 text-center">
-                  <div className="bg-white p-3 rounded-xl border border-border/40 shadow-xs">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Calories</span>
-                    <span className="text-lg font-black text-amber-600">{Math.round(inspectingScan.calories || 0)} kcal</span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <button
+                    onClick={() => deleteScan(inspectingScan.firestoreId)}
+                    className="flex items-center gap-1.5 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg border border-rose-200 transition"
+                    title="Delete Scan from Firestore"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete</span>
+                  </button>
+                  <button
+                    onClick={() => setInspectingScan(null)}
+                    className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition"
+                    title="Close (Esc)"
+                  >
+                    <X className="w-4 h-4 text-slate-600" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Body (2 Columns) */}
+              <div className="p-4 grid grid-cols-1 md:grid-cols-[260px_1fr] gap-4 items-start overflow-hidden">
+                {/* Column 1: Photo & Detected Items */}
+                <div className="flex flex-col gap-3 min-w-0">
+                  <div className="w-full h-40 bg-slate-900 rounded-xl overflow-hidden relative shadow-inner shrink-0">
+                    {inspectingScan.imageUrl ? (
+                      <img
+                        src={inspectingScan.imageUrl}
+                        alt={inspectingScan.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
+                        No Image Recorded
+                      </div>
+                    )}
                   </div>
-                  <div className="bg-white p-3 rounded-xl border border-border/40 shadow-xs">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Protein</span>
-                    <span className="text-lg font-black text-blue-600">{Number(inspectingScan.protein_g || 0).toFixed(1)} g</span>
-                  </div>
-                  <div className="bg-white p-3 rounded-xl border border-border/40 shadow-xs">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Carbohydrates</span>
-                    <span className="text-lg font-black text-emerald-600">{Number(inspectingScan.carbs_g || 0).toFixed(1)} g</span>
-                  </div>
-                  <div className="bg-white p-3 rounded-xl border border-border/40 shadow-xs">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Dietary Fiber</span>
-                    <span className="text-lg font-black text-indigo-600">{Number(inspectingScan.fiber_g || 0).toFixed(1)} g</span>
-                  </div>
-                  <div className="bg-white p-3 rounded-xl border border-border/40 shadow-xs">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Iron</span>
-                    <span className="text-lg font-black text-rose-600">{Number(inspectingScan.iron_mg || 0).toFixed(2)} mg</span>
-                  </div>
-                  <div className="bg-white p-3 rounded-xl border border-border/40 shadow-xs">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase block">Calcium</span>
-                    <span className="text-lg font-black text-purple-600">{Math.round(inspectingScan.calcium_mg || 0)} mg</span>
+
+                  {/* Items List */}
+                  <div className="flex flex-col min-w-0">
+                    <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Detected Items on Plate
+                    </h4>
+                    <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto">
+                      {inspectingScan.items && inspectingScan.items.length > 0 ? (
+                        inspectingScan.items.map((item: any, idx: number) => (
+                          <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-border/40 text-xs gap-2">
+                            <div className="min-w-0 flex-1">
+                              <div className="font-bold text-foreground truncate">{item.name_en || item.name}</div>
+                              {item.name_te && <div className="text-[10px] text-amber-600 truncate">{item.name_te}</div>}
+                            </div>
+                            <div className="text-right shrink-0">
+                              {item.grams && <div className="font-bold text-foreground">{item.grams}g</div>}
+                              {item.calories && <div className="text-[10px] text-amber-600">{Math.round(item.calories)} kcal</div>}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-2 rounded-lg bg-slate-50 text-xs text-muted-foreground text-center">
+                          Single item dish
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* MDD-W 10 Food Groups Diversity Audit */}
-                {(() => {
-                  const coveredSet = new Set(inspectingScan.mddw_groups_covered || []);
-                  if (coveredSet.size === 0 && inspectingScan.items) {
-                    inspectingScan.items.forEach((it: any) => (it.food_groups || []).forEach((g: string) => coveredSet.add(g)));
-                  }
-                  const score = inspectingScan.mddw_score != null ? inspectingScan.mddw_score : coveredSet.size;
-                  const meetsTarget = score >= 5;
-
-                  const groupsList = [
-                    { code: "G1", emoji: "🌾", name: "Grains & Roots" },
-                    { code: "G2", emoji: "🌱", name: "Pulses & Dal" },
-                    { code: "G3", emoji: "🌰", name: "Nuts & Seeds" },
-                    { code: "G4", emoji: "🥛", name: "Dairy" },
-                    { code: "G5", emoji: "🍗", name: "Meat & Fish" },
-                    { code: "G6", emoji: "🍳", name: "Eggs" },
-                    { code: "G7", emoji: "🌿", name: "Dark Green Leafy" },
-                    { code: "G8", emoji: "🎃", name: "Vitamin-A Rich" },
-                    { code: "G9", emoji: "🥦", name: "Other Veg" },
-                    { code: "G10", emoji: "🍎", name: "Other Fruits" },
-                  ];
-
-                  return (
-                    <div className="p-4 rounded-2xl bg-slate-50 border border-border/50 flex flex-col gap-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg">🥗</span>
-                          <span className="text-xs font-black uppercase tracking-wider text-slate-800">
-                            MDD-W 10 Food Groups Diversity
-                          </span>
-                        </div>
-                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-black border ${
-                          meetsTarget 
-                            ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
-                            : 'bg-amber-100 text-amber-800 border-amber-300'
-                        }`}>
-                          {meetsTarget ? `✓ ${score}/10 (Target Met)` : `${score}/10 (Need ${Math.max(1, 5 - score)} for Target)`}
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-1.5">
-                        {groupsList.map(g => {
-                          const isCov = coveredSet.has(g.code);
-                          return (
-                            <div 
-                              key={g.code}
-                              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition ${
-                                isCov ? 'bg-white text-slate-800 border-emerald-400 shadow-xs' : 'bg-white/40 text-slate-400 border-slate-200 opacity-60'
-                              }`}
-                            >
-                              <span>{g.emoji}</span>
-                              <span className="flex-1 truncate"><strong>{g.code}</strong> {g.name}</span>
-                              <span className="font-bold text-emerald-600">{isCov ? '✓' : '—'}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      <div className="text-[11px] text-slate-500 bg-white p-2.5 rounded-xl border border-border/40">
-                        {meetsTarget 
-                          ? "✓ Meets the Minimum Dietary Diversity for Women (MDD-W) standard (≥ 5 groups)." 
-                          : "Below the MDD-W adequacy threshold (< 5 groups). Encouraged to add curd, leafy greens, or fruit."}
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Items List */}
-                {inspectingScan.items && inspectingScan.items.length > 0 && (
+                {/* Column 2: Nutrients & MDD-W Diversity */}
+                <div className="flex flex-col gap-3 min-w-0">
+                  {/* 6 Macro & Micro Nutrition Grid (1 Row) */}
                   <div>
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                      Detected Items on Plate
+                    <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                      Complete Nutritional Output
                     </h4>
-                    <div className="flex flex-col gap-2">
-                      {inspectingScan.items.map((item: any, idx: number) => (
-                        <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-border/40 text-sm">
-                          <div>
-                            <span className="font-bold text-foreground">{item.name_en || item.name}</span>
-                            {item.name_te && <span className="text-xs text-amber-600 ml-2">({item.name_te})</span>}
-                            <div className="text-xs text-muted-foreground">{item.cluster || item.portion_label || ""}</div>
-                            {item.food_groups && item.food_groups.length > 0 && (
-                              <div className="flex items-center gap-1 mt-1">
-                                {item.food_groups.map((g: string) => (
-                                  <span key={g} className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                                    {g}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                          <div className="text-right">
-                            {item.grams && <span className="font-bold text-foreground">{item.grams}g</span>}
-                            {item.calories && <div className="text-xs text-amber-600">{Math.round(item.calories)} kcal</div>}
-                          </div>
-                        </div>
-                      ))}
+                    <div className="grid grid-cols-6 gap-1.5 p-2 bg-slate-50 rounded-xl border border-border/50 text-center">
+                      <div className="bg-white p-1.5 rounded-lg border border-border/40 shadow-xs">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Calories</span>
+                        <span className="text-xs font-black text-amber-600 truncate block">{Math.round(inspectingScan.calories || 0)} kcal</span>
+                      </div>
+                      <div className="bg-white p-1.5 rounded-lg border border-border/40 shadow-xs">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Protein</span>
+                        <span className="text-xs font-black text-blue-600 truncate block">{Number(inspectingScan.protein_g || 0).toFixed(1)} g</span>
+                      </div>
+                      <div className="bg-white p-1.5 rounded-lg border border-border/40 shadow-xs">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Carbs</span>
+                        <span className="text-xs font-black text-emerald-600 truncate block">{Number(inspectingScan.carbs_g || 0).toFixed(1)} g</span>
+                      </div>
+                      <div className="bg-white p-1.5 rounded-lg border border-border/40 shadow-xs">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Fiber</span>
+                        <span className="text-xs font-black text-indigo-600 truncate block">{Number(inspectingScan.fiber_g || 0).toFixed(1)} g</span>
+                      </div>
+                      <div className="bg-white p-1.5 rounded-lg border border-border/40 shadow-xs">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Iron</span>
+                        <span className="text-xs font-black text-rose-600 truncate block">{Number(inspectingScan.iron_mg || 0).toFixed(2)} mg</span>
+                      </div>
+                      <div className="bg-white p-1.5 rounded-lg border border-border/40 shadow-xs">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase block">Calcium</span>
+                        <span className="text-xs font-black text-purple-600 truncate block">{Math.round(inspectingScan.calcium_mg || 0)} mg</span>
+                      </div>
                     </div>
                   </div>
-                )}
-              </div>
 
-              {/* Modal Footer */}
-              <div className="p-6 border-t border-border flex items-center justify-between bg-slate-50/80">
-                <button
-                  onClick={() => deleteScan(inspectingScan.firestoreId)}
-                  className="flex items-center gap-2 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-4 py-2.5 rounded-xl border border-rose-200 transition"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Delete Scan</span>
-                </button>
-                <button
-                  onClick={() => setInspectingScan(null)}
-                  className="bg-primary text-primary-foreground font-bold px-6 py-2.5 rounded-xl text-sm transition"
-                >
-                  Done
-                </button>
+                  {/* MDD-W 10 Food Groups Diversity Audit */}
+                  {(() => {
+                    const coveredSet = new Set(inspectingScan.mddw_groups_covered || []);
+                    if (coveredSet.size === 0 && inspectingScan.items) {
+                      inspectingScan.items.forEach((it: any) => (it.food_groups || []).forEach((g: string) => coveredSet.add(g)));
+                    }
+                    const score = inspectingScan.mddw_score != null ? inspectingScan.mddw_score : coveredSet.size;
+                    const meetsTarget = score >= 5;
+
+                    const groupsList = [
+                      { code: "G1", emoji: "🌾", name: "Grains & Roots" },
+                      { code: "G2", emoji: "🌱", name: "Pulses & Dal" },
+                      { code: "G3", emoji: "🌰", name: "Nuts & Seeds" },
+                      { code: "G4", emoji: "🥛", name: "Dairy" },
+                      { code: "G5", emoji: "🍗", name: "Meat & Fish" },
+                      { code: "G6", emoji: "🍳", name: "Eggs" },
+                      { code: "G7", emoji: "🌿", name: "Dark Green Leafy" },
+                      { code: "G8", emoji: "🎃", name: "Vitamin-A Rich" },
+                      { code: "G9", emoji: "🥦", name: "Other Veg" },
+                      { code: "G10", emoji: "🍎", name: "Other Fruits" },
+                    ];
+
+                    return (
+                      <div className="p-3 rounded-xl bg-slate-50 border border-border/50 flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm">🥗</span>
+                            <span className="text-[11px] font-black uppercase tracking-wider text-slate-800">
+                              MDD-W 10 Food Groups Diversity
+                            </span>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border ${
+                            meetsTarget 
+                              ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
+                              : 'bg-amber-100 text-amber-800 border-amber-300'
+                          }`}>
+                            {meetsTarget ? `✓ ${score}/10 (Target Met)` : `${score}/10 (Need ${Math.max(1, 5 - score)} for Target)`}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-1">
+                          {groupsList.map(g => {
+                            const isCov = coveredSet.has(g.code);
+                            return (
+                              <div 
+                                key={g.code}
+                                className={`flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-semibold border transition ${
+                                  isCov ? 'bg-white text-slate-800 border-emerald-400 shadow-xs' : 'bg-white/40 text-slate-400 border-slate-200 opacity-60'
+                                }`}
+                              >
+                                <span className="text-xs">{g.emoji}</span>
+                                <span className="flex-1 truncate"><strong>{g.code}</strong> {g.name}</span>
+                                <span className="font-bold text-emerald-600 text-[10px]">{isCov ? '✓' : '—'}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        <div className="text-[10.5px] text-slate-500 bg-white p-2 rounded-lg border border-border/40 truncate">
+                          {meetsTarget 
+                            ? "✓ Meets the Minimum Dietary Diversity for Women (MDD-W) standard (≥ 5 groups)." 
+                            : `Below MDD-W threshold (${score}/10 groups). Encouraged to add curd, leafy greens, or fruit.`}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
               </div>
             </motion.div>
           </div>
