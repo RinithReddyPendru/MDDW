@@ -41,6 +41,10 @@ export interface FoodScanItem {
   fiber_g?: number;
   iron_mg?: number;
   calcium_mg?: number;
+  mddw_score?: number;
+  meets_mddw_threshold?: boolean;
+  mddw_groups_covered?: string[];
+  mddw_groups_labels?: string[];
   items?: any[];
   timestamp?: number;
   created_at_iso?: string;
@@ -198,8 +202,8 @@ function AdminDashboard() {
       alert("No scans available to export.");
       return;
     }
-    const headers = ["DocID,Dish Name,Category,Meal,Status,Calories,Protein_g,Carbs_g,Fiber_g,Iron_mg,Calcium_mg,Date"];
-    const rows = foodScans.map(s => `"${s.firestoreId}","${(s.name || '').replace(/"/g, '""')}","${s.category || ''}","${s.mealLabel || ''}","${s.status}",${s.calories},${s.protein_g},${s.carbs_g},${s.fiber_g},${s.iron_mg},${s.calcium_mg},"${s.created_at_iso || new Date(s.timestamp || 0).toISOString()}"`);
+    const headers = ["DocID,Dish Name,Category,Meal,Status,MDDW_Score,Calories,Protein_g,Carbs_g,Fiber_g,Iron_mg,Calcium_mg,Date"];
+    const rows = foodScans.map(s => `"${s.firestoreId}","${(s.name || '').replace(/"/g, '""')}","${s.category || ''}","${s.mealLabel || ''}","${s.status}",${s.mddw_score || 0},${s.calories},${s.protein_g},${s.carbs_g},${s.fiber_g},${s.iron_mg},${s.calcium_mg},"${s.created_at_iso || new Date(s.timestamp || 0).toISOString()}"`);
     const csv = "data:text/csv;charset=utf-8," + [headers, ...rows].join("\n");
     const link = document.createElement("a");
     link.href = encodeURI(csv);
@@ -511,13 +515,22 @@ function AdminDashboard() {
                             <h3 className="font-bold text-foreground text-base line-clamp-1 group-hover:text-amber-600 transition">
                               {scan.name}
                             </h3>
-                            <div className="flex items-center gap-2 mt-1">
+                            <div className="flex items-center gap-2 mt-1 flex-wrap">
                               <span className="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase bg-slate-100 text-slate-600">
                                 {scan.mealLabel || "Meal"}
                               </span>
                               <span className="text-xs text-muted-foreground truncate">
                                 {scan.category}
                               </span>
+                              {(scan.mddw_score || (scan.mddw_groups_covered && scan.mddw_groups_covered.length)) ? (
+                                <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                                  (scan.mddw_score || scan.mddw_groups_covered?.length || 0) >= 5
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : 'bg-amber-100 text-amber-800'
+                                }`}>
+                                  🥗 {scan.mddw_score || scan.mddw_groups_covered?.length}/10 MDD-W
+                                </span>
+                              ) : null}
                             </div>
                           </div>
 
@@ -795,6 +808,73 @@ function AdminDashboard() {
                   </div>
                 </div>
 
+                {/* MDD-W 10 Food Groups Diversity Audit */}
+                {(() => {
+                  const coveredSet = new Set(inspectingScan.mddw_groups_covered || []);
+                  if (coveredSet.size === 0 && inspectingScan.items) {
+                    inspectingScan.items.forEach((it: any) => (it.food_groups || []).forEach((g: string) => coveredSet.add(g)));
+                  }
+                  const score = inspectingScan.mddw_score != null ? inspectingScan.mddw_score : coveredSet.size;
+                  const meetsTarget = score >= 5;
+
+                  const groupsList = [
+                    { code: "G1", emoji: "🌾", name: "Grains & Roots" },
+                    { code: "G2", emoji: "🌱", name: "Pulses & Dal" },
+                    { code: "G3", emoji: "🌰", name: "Nuts & Seeds" },
+                    { code: "G4", emoji: "🥛", name: "Dairy" },
+                    { code: "G5", emoji: "🍗", name: "Meat & Fish" },
+                    { code: "G6", emoji: "🍳", name: "Eggs" },
+                    { code: "G7", emoji: "🌿", name: "Dark Green Leafy" },
+                    { code: "G8", emoji: "🎃", name: "Vitamin-A Rich" },
+                    { code: "G9", emoji: "🥦", name: "Other Veg" },
+                    { code: "G10", emoji: "🍎", name: "Other Fruits" },
+                  ];
+
+                  return (
+                    <div className="p-4 rounded-2xl bg-slate-50 border border-border/50 flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">🥗</span>
+                          <span className="text-xs font-black uppercase tracking-wider text-slate-800">
+                            MDD-W 10 Food Groups Diversity
+                          </span>
+                        </div>
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-black border ${
+                          meetsTarget 
+                            ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
+                            : 'bg-amber-100 text-amber-800 border-amber-300'
+                        }`}>
+                          {meetsTarget ? `✓ ${score}/10 (Target Met)` : `${score}/10 (Need ${Math.max(1, 5 - score)} for Target)`}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {groupsList.map(g => {
+                          const isCov = coveredSet.has(g.code);
+                          return (
+                            <div 
+                              key={g.code}
+                              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                                isCov ? 'bg-white text-slate-800 border-emerald-400 shadow-xs' : 'bg-white/40 text-slate-400 border-slate-200 opacity-60'
+                              }`}
+                            >
+                              <span>{g.emoji}</span>
+                              <span className="flex-1 truncate"><strong>{g.code}</strong> {g.name}</span>
+                              <span className="font-bold text-emerald-600">{isCov ? '✓' : '—'}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <div className="text-[11px] text-slate-500 bg-white p-2.5 rounded-xl border border-border/40">
+                        {meetsTarget 
+                          ? "✓ Meets the Minimum Dietary Diversity for Women (MDD-W) standard (≥ 5 groups)." 
+                          : "Below the MDD-W adequacy threshold (< 5 groups). Encouraged to add curd, leafy greens, or fruit."}
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {/* Items List */}
                 {inspectingScan.items && inspectingScan.items.length > 0 && (
                   <div>
@@ -808,6 +888,15 @@ function AdminDashboard() {
                             <span className="font-bold text-foreground">{item.name_en || item.name}</span>
                             {item.name_te && <span className="text-xs text-amber-600 ml-2">({item.name_te})</span>}
                             <div className="text-xs text-muted-foreground">{item.cluster || item.portion_label || ""}</div>
+                            {item.food_groups && item.food_groups.length > 0 && (
+                              <div className="flex items-center gap-1 mt-1">
+                                {item.food_groups.map((g: string) => (
+                                  <span key={g} className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                    {g}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                           <div className="text-right">
                             {item.grams && <span className="font-bold text-foreground">{item.grams}g</span>}
