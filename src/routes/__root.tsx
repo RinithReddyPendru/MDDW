@@ -54,7 +54,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
-        {error && (
+        {Boolean(error) && (
           <div className="mt-4 text-left p-3 rounded-lg bg-destructive/10 text-destructive border border-destructive/20 text-xs overflow-auto max-h-40 font-mono">
             {error instanceof Error ? error.message : String(error)}
           </div>

@@ -35,9 +35,12 @@ import {
   MDDW_GROUP_INFO,
   type MotherProfile,
   type MealTab,
+  type MotherDish,
 } from "@/lib/mddw/motherAppData";
 import type { FoodGroupId } from "@/lib/mddw/foodGroups";
 import { playPop, playSuccess } from "@/lib/mddw/audio";
+import { DishPortionModal } from "@/components/mddw/DishPortionModal";
+import { type PortionSize, COMMON_ACCOMPANIMENTS } from "@/lib/mddw/dishPortions";
 
 export const Route = createFileRoute("/mother")({
   component: MotherAppSimulator,
@@ -62,6 +65,14 @@ function MotherAppSimulator() {
 
   // Dishes selected in the current logging session
   const [selectedDishes, setSelectedDishes] = useState<string[]>([]);
+
+  // Active dish for portion modal
+  const [activePortionDish, setActivePortionDish] = useState<MotherDish | null>(null);
+
+  // Stored portions & accompaniments for each dish
+  const [dishPortions, setDishPortions] = useState<
+    Record<string, { portion: PortionSize; accompaniments: string[] }>
+  >({});
 
   // Overall logged dishes for yesterday (synced to localStorage for ASHA visit mode)
   const [loggedDishes, setLoggedDishes] = useState<string[]>(() => {
@@ -218,6 +229,22 @@ function MotherAppSimulator() {
           coveredGroupMap.get(gId)!.push(dish.name[lang]);
         });
       }
+
+      // Also include any selected side accompaniments for MDD-W
+      const detail = dishPortions[dId];
+      if (detail && Array.isArray(detail.accompaniments)) {
+        detail.accompaniments.forEach((sideId) => {
+          const sideObj = COMMON_ACCOMPANIMENTS.find((s) => s.id === sideId);
+          if (sideObj) {
+            sideObj.groups.forEach((gId) => {
+              if (!coveredGroupMap.has(gId)) {
+                coveredGroupMap.set(gId, []);
+              }
+              coveredGroupMap.get(gId)!.push(sideObj.name[lang]);
+            });
+          }
+        });
+      }
     });
 
     const coveredGroupIds = Array.from(coveredGroupMap.keys()) as FoodGroupId[];
@@ -273,9 +300,40 @@ function MotherAppSimulator() {
 
   const toggleDishSelection = (dishId: string) => {
     playPop();
-    setSelectedDishes((prev) =>
-      prev.includes(dishId) ? prev.filter((id) => id !== dishId) : [...prev, dishId]
-    );
+    const dish = MOTHER_DISHES.find((d) => d.id === dishId);
+    if (dish) {
+      setActivePortionDish(dish);
+    }
+  };
+
+  const handleDishClick = (dish: MotherDish) => {
+    playPop();
+    setActivePortionDish(dish);
+  };
+
+  const handleSavePortion = (
+    dishId: string,
+    portion: PortionSize,
+    accompaniments: string[]
+  ) => {
+    setDishPortions((prev) => ({
+      ...prev,
+      [dishId]: { portion, accompaniments },
+    }));
+
+    setSelectedDishes((prev) => {
+      if (prev.includes(dishId)) return prev;
+      return [...prev, dishId];
+    });
+  };
+
+  const handleRemoveDish = (dishId: string) => {
+    setSelectedDishes((prev) => prev.filter((id) => id !== dishId));
+    setDishPortions((prev) => {
+      const next = { ...prev };
+      delete next[dishId];
+      return next;
+    });
   };
 
   const handleSaveDishes = () => {
@@ -888,7 +946,7 @@ function MotherAppSimulator() {
                       <button
                         key={dish.id}
                         type="button"
-                        onClick={() => toggleDishSelection(dish.id)}
+                        onClick={() => handleDishClick(dish)}
                         className={`rounded-2xl overflow-hidden transition active:scale-[0.98] cursor-pointer flex flex-col bg-white shadow-2xs ${
                           isSelected
                             ? "border-2 border-[#D81B60]"
@@ -913,7 +971,7 @@ function MotherAppSimulator() {
 
                         {/* Clean Dish Label (Screenshot 2 & 6: Clean white or pink strip, NO tags) */}
                         <div
-                          className={`p-2 flex-1 flex items-center ${
+                          className={`p-2 flex-1 flex flex-col justify-between ${
                             isSelected ? "bg-[#FCE4EC]" : "bg-white"
                           }`}
                         >
@@ -924,6 +982,20 @@ function MotherAppSimulator() {
                           >
                             {dish.name[lang]}
                           </p>
+
+                          {/* Selected Portion Badge */}
+                          {isSelected && dishPortions[dish.id] && (
+                            <div className="flex items-center gap-1 mt-1">
+                              <span className="text-[10px] font-extrabold text-[#D81B60] bg-white/90 border border-pink-200 px-1.5 py-0.5 rounded-full shadow-2xs">
+                                {dishPortions[dish.id].portion.charAt(0).toUpperCase() + dishPortions[dish.id].portion.slice(1)}
+                              </span>
+                              {dishPortions[dish.id].accompaniments.length > 0 && (
+                                <span className="text-[9px] font-bold text-slate-500">
+                                  +{dishPortions[dish.id].accompaniments.length} sides
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </button>
                     );
@@ -1469,6 +1541,19 @@ function MotherAppSimulator() {
             </div>
           </div>
         )}
+
+        {/* ── DISH PORTION POPUP (Countables & Non-countables matching screenshot) ── */}
+        <DishPortionModal
+          dish={activePortionDish}
+          isOpen={activePortionDish !== null}
+          onClose={() => setActivePortionDish(null)}
+          onSave={handleSavePortion}
+          onRemove={handleRemoveDish}
+          isAlreadySelected={activePortionDish ? selectedDishes.includes(activePortionDish.id) : false}
+          initialPortion={activePortionDish ? dishPortions[activePortionDish.id]?.portion || "medium" : "medium"}
+          initialAccompaniments={activePortionDish ? dishPortions[activePortionDish.id]?.accompaniments || [] : []}
+          lang={lang}
+        />
       </div>
     </div>
   );
