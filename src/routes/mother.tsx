@@ -40,7 +40,7 @@ import {
 import type { FoodGroupId } from "@/lib/mddw/foodGroups";
 import { playPop, playSuccess } from "@/lib/mddw/audio";
 import { DishPortionModal } from "@/components/mddw/DishPortionModal";
-import { type PortionSize, COMMON_ACCOMPANIMENTS } from "@/lib/mddw/dishPortions";
+import { type PortionSize, COMMON_ACCOMPANIMENTS, isSidesFeatureEnabled } from "@/lib/mddw/dishPortions";
 
 export const Route = createFileRoute("/mother")({
   component: MotherAppSimulator,
@@ -230,9 +230,9 @@ function MotherAppSimulator() {
         });
       }
 
-      // Also include any selected side accompaniments for MDD-W
+      // Also include any selected side accompaniments for MDD-W (if enabled)
       const detail = dishPortions[dId];
-      if (detail && Array.isArray(detail.accompaniments)) {
+      if (isSidesFeatureEnabled() && detail && Array.isArray(detail.accompaniments)) {
         detail.accompaniments.forEach((sideId) => {
           const sideObj = COMMON_ACCOMPANIMENTS.find((s) => s.id === sideId);
           if (sideObj) {
@@ -989,7 +989,7 @@ function MotherAppSimulator() {
                               <span className="text-[10px] font-extrabold text-[#D81B60] bg-white/90 border border-pink-200 px-1.5 py-0.5 rounded-full shadow-2xs">
                                 {dishPortions[dish.id].portion.charAt(0).toUpperCase() + dishPortions[dish.id].portion.slice(1)}
                               </span>
-                              {dishPortions[dish.id].accompaniments.length > 0 && (
+                              {isSidesFeatureEnabled() && dishPortions[dish.id].accompaniments.length > 0 && (
                                 <span className="text-[9px] font-bold text-slate-500">
                                   +{dishPortions[dish.id].accompaniments.length} sides
                                 </span>

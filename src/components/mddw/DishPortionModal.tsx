@@ -6,6 +6,7 @@ import {
   type PortionSize,
   getDishPortionInfo,
   getDishAccompaniments,
+  isSidesFeatureEnabled,
 } from "@/lib/mddw/dishPortions";
 import { playPop, playSuccess } from "@/lib/mddw/audio";
 
@@ -83,9 +84,11 @@ export function DishPortionModal({
     }
   };
 
+  const allowSides = isSidesFeatureEnabled();
+
   const handleSave = () => {
     playSuccess();
-    onSave(dish.id, selectedPortion, selectedSides);
+    onSave(dish.id, selectedPortion, allowSides ? selectedSides : []);
     onClose();
   };
 
@@ -214,8 +217,8 @@ export function DishPortionModal({
           <span>{buttonLabel}</span>
         </button>
 
-        {/* ── OPTIONAL ACCOMPANIMENTS ACCORDION (If dish has sides) ── */}
-        {accompaniments.length > 0 && (
+        {/* ── OPTIONAL ACCOMPANIMENTS ACCORDION (Kept for local testing, removed in deployment) ── */}
+        {allowSides && accompaniments.length > 0 && (
           <div className="flex flex-col gap-2 pt-1 border-t border-slate-100">
             <button
               type="button"

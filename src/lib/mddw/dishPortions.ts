@@ -455,3 +455,24 @@ export function getDishAccompaniments(dish: MotherDish): AccompanimentOption[] {
     ALL_ACCOMPANIMENTS.find((a) => a.id === "other")!,
   ];
 }
+
+/**
+ * Accompaniments/sides feature toggle:
+ * Active in local environments (localhost, 127.0.0.1, private IPs) for testing,
+ * but hidden in production deployment.
+ */
+export function isSidesFeatureEnabled(): boolean {
+  if (typeof window === "undefined") {
+    return process.env.NODE_ENV !== "production";
+  }
+  const host = window.location.hostname;
+  const isLocal =
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host.startsWith("192.168.") ||
+    host.startsWith("10.") ||
+    host.endsWith(".local");
+  const hasDebugFlag = new URLSearchParams(window.location.search).get("sides") === "true";
+  return isLocal || hasDebugFlag;
+}
+
